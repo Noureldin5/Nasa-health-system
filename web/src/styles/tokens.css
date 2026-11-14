@@ -1,0 +1,81 @@
+/*
+ * Design tokens: "mission ops console meets clinical record".
+ *
+ * Sources (fetched 2026-11-14):
+ *  - Neutrals, action blue, green: NASA Horizon Design System tokens
+ *    https://github.com/nasa/hds-core (tokens.json: carbon-*, nasa-blue*, active-green)
+ *  - Watch yellow: NASA Open MCT "Espresso" theme, limit-yellow icon
+ *    https://github.com/nasa/openmct (src/styles/_constants-espresso.scss)
+ *  - Status taxonomy (shape + word + color, never color alone): Astro UXDS
+ *    status system https://astrouxds.com/patterns/status-system/
+ *  - Fonts: Public Sans (body) and DM Mono (numbers, labels), as in NASA HDS.
+ *
+ * Contrast checked against --c-surface (#1e1e23): text 12.9:1, text-2 8.5:1,
+ * muted 5.6:1, ok 9.2:1, watch 10.6:1, act 5.5:1, link 6.4:1.
+ */
+:root {
+  /* Neutrals (NASA HDS carbon scale) */
+  --c-head: #0e0e11;
+  --c-bg: #17171b; /* carbon-90, HDS dark default background */
+  --c-surface: #1e1e23;
+  --c-raised: #26262c;
+  --c-sunken: #131316;
+  --c-line: #2e2e32; /* carbon-80 */
+  --c-line-strong: #444447; /* carbon-70 */
+  --c-faint: #58585b; /* carbon-60, decoration only */
+  --c-muted: #959599; /* carbon-40 */
+  --c-text-2: #b9b9bb; /* carbon-30 */
+  --c-text: #e3e3e3; /* carbon-10 */
+  --c-text-strong: #ffffff; /* spacesuit-white */
+
+  /* Action ("blue means do something here", NASA HDS) */
+  --c-action: #1c67e3; /* nasa-blue */
+  --c-action-hover: #2f78ee;
+  --c-link: #5aa2ff;
+  --c-focus: #5aa2ff;
+
+  /* Status: In range / Watch / Act now */
+  --c-ok: #47da84; /* HDS active-green */
+  --c-watch: #fdc707; /* Open MCT limit yellow */
+  --c-act: #ff5c52; /* HDS nasa-red-tint */
+  --c-ok-wash: rgb(71 218 132 / 0.1);
+  --c-watch-wash: rgb(253 199 7 / 0.1);
+  --c-act-wash: rgb(255 92 82 / 0.12);
+  --c-ok-edge: rgb(71 218 132 / 0.45);
+  --c-watch-edge: rgb(253 199 7 / 0.5);
+  --c-act-edge: rgb(255 92 82 / 0.55);
+
+  /* Data (charts only, never UI chrome). Validated with the dataviz checker. */
+  --c-series: #3987e5;
+  --c-band: rgb(185 185 187 / 0.12);
+  --c-band-edge: rgb(185 185 187 / 0.35);
+  --c-grid: #2a2a2f;
+
+  /* Type */
+  --font-sans: "Public Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "DM Mono", "SF Mono", Consolas, monospace;
+  --fs-micro: 11px;
+  --fs-small: 13px;
+  --fs-body: 15px;
+  --fs-lead: 17px;
+  --fs-h3: 17px;
+  --fs-h2: 21px;
+  --fs-h1: 28px;
+  --fs-hero: 34px;
+
+  /* Space and shape */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --r-1: 3px;
+  --r-2: 6px;
+  --r-3: 10px;
+  --tap: 44px; /* minimum touch target */
+  --tap-primary: 56px; /* primary buttons, gloves */
+  --head-h: 56px;
+  --rail-w: 232px;
+}
