@@ -7,11 +7,13 @@ description: Checklist for getting the astronaut health app ready for the NASA S
 
 ## The 3 minute story
 
-1. Problem (20 s): astronauts hide symptoms, have no Earth link, and no time for tools.
-2. Product (20 s): private, offline copilot that learns your own baseline.
-3. Live walkthrough (100 s): a 30-second check-in; a drift alert with a next step; the CO2 and headache correlation; the "what leaves this device" panel with one share decision; the crew readiness screen built only from shared items.
+Our difference is the consult layer (see `docs/README.md` and `docs/research/competitors.md`). Do not lead with "private, offline, personal baseline": other teams already have that.
+
+1. Problem (20 s): astronauts hide symptoms for fear of being grounded, and the hardest conflict is with Mission Control.
+2. Product (20 s): a health companion that learns your own baseline, and lets you consult ground on your terms.
+3. Live walkthrough (100 s): a 30-second check-in; a drift alert with a next step; the OSD-569 blood-count card with its Earth reference; flip share switches while "what ground sees" changes; write a question and send the consult brief; the CO2 and headache correlation if time allows.
 4. Offline proof (15 s): turn the network off and show it still works.
-5. Close (25 s): decision support not diagnosis, NASA data used, what comes next.
+5. Close (25 s): decision support not diagnosis, NASA data used (name OSD-569), what comes next.
 
 ## Checklist
 
@@ -26,4 +28,4 @@ description: Checklist for getting the astronaut health app ready for the NASA S
 
 ## Cut order when time runs out
 
-Radiation coach, then triage trees, then crew screen polish. Never cut the check-in, baseline and drift alert, the share panel, or offline mode.
+Radiation coach, then triage trees, then crew screen polish. Never cut the check-in, baseline and drift alert, the share panel and consult brief, the OSD-569 card, or offline mode.

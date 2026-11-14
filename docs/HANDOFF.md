@@ -4,7 +4,7 @@ Written 2026-11-14. Read this first when picking up the project, then `CLAUDE.md
 
 ## Project
 
-NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts on Space Missions". Team Kernel Panic Squad, Bishkek. Chosen product: Own Your Baseline (private, offline, personal-baseline health companion) with Cabin Link inside it.
+NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts on Space Missions". Team Kernel Panic Squad, Bishkek. Chosen product: Own Your Baseline (offline health companion that learns the astronaut's own baseline) plus a consult layer (astronaut-led consult brief and a view of what ground sees), with Cabin Link inside it. The consult layer is the difference from 40+ other teams. Offline use and baselines alone are not new. See `docs/README.md`.
 
 ## What exists
 

@@ -10,6 +10,7 @@ Priority: **Must** = needed for a credible submission. **Should** = build if tim
 |---|---|---|---|
 | M1 | Visual self-assessment tool with a clickable body map | Tapping a body region shows its status and an explainer: what it does, which measurement, how the five NASA HRP hazards affect it, when to contact the flight surgeon | A |
 | M2 | Indicators: blood pressure, heart rate, blood sugar, body temperature, sleep hours, mood | Each has a card with value, unit, status, 7-day trend and the astronaut's own baseline range | A, B |
+| M2b | Blood-count card from OSD-569 (white cells, lymphocytes) so the real NASA data is visible | Card shows the values with the OSD-569 min and max as an "Earth reference range" next to the personal baseline. Labeled "Inspiration4 crew sample, not your labs". Also reachable from an immune or blood region on the body map | C, A |
 | M3 | Color-coded status that is readable at a glance | Status uses color plus an icon shape plus a word. Never color alone | A |
 | M4 | Dynamic charts over time | Trend charts update when new data is entered | A |
 | M5 | Guidance on treatments and health improvements | Every alert gives what changed, one next step, and "Contact the flight surgeon if..." | B |
@@ -25,8 +26,8 @@ Priority: **Must** = needed for a credible submission. **Should** = build if tim
 | D1 | Personal baseline drives alerts | An alert compares the reading with the astronaut's own history. Population or Earth ranges are shown as reference, not as the alarm | B |
 | D2 | 30-second check-in | Hero flow, 4 steps or fewer, large buttons, passive data is never retyped | A |
 | D3 | Private by default, share per item | Every item is private until switched on. Switches are visible | A, B |
-| D4 | "What I see / what ground sees" preview | Flipping a share switch immediately updates a side-by-side view of exactly what ground would receive. Hidden items read "Not shared", never zero | A, B |
-| D5 | Consult brief | The astronaut picks included items, writes or edits the question, sees the final brief, and sends it at the next ground link. It is a question to a consultant, not a report to a supervisor | A, B |
+| D4 | "What I see / what ground sees" view | Flipping a share switch immediately updates a side-by-side view of exactly what ground would receive. Hidden items read "Not shared", never zero. This is how the demo shows D5 | A, B |
+| D5 | Consult brief (the main claim) | The astronaut picks included items, writes or edits the question, sees the final brief, and sends it at the next ground link. It is a question to a consultant, not a report to a supervisor. Built around the underreporting problem. AURORA already has consent and a ground batch, so the claim is the framing and the astronaut-written question | A, B |
 | D6 | Record of what was shared | A visible list of what was sent, when, and which items | B |
 
 ## Should

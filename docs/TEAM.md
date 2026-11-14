@@ -43,4 +43,4 @@ Agree the data shapes and write them in `docs/DECISIONS.md`: check-in record, se
 
 ## If time runs short
 
-Cut in this order: Radiation Budget Coach, Camera Check, Mission Quest, Crew Readiness. If A falls behind, C moves onto UI polish. Never cut: body map, indicators, check-in, share panel, offline mode, OSD-569 data.
+Cut in this order: Radiation Budget Coach, Camera Check, Mission Quest, Crew Readiness. If A falls behind, C moves onto UI polish. Never cut: body map, indicators, check-in, share panel and consult brief (our difference), offline mode, OSD-569 data.

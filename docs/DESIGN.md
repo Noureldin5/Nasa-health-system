@@ -43,6 +43,7 @@ Frontend notes:
 - Body map: build as one SVG with a `<button>` per region (brain and eyes, heart, bones, muscles). Selecting a region opens its explainer: what it does, which measurement, how the five HRP hazards affect it, when to call the flight surgeon. The design only shows labels, so the explainer panel still needs designing.
 - Check-in: one question per screen, big segmented buttons (`aria-pressed`), a 4-step progress bar, an "about 20 s left" timer. Heart rate and sleep come from the wearable, never typed.
 - Share panel: a switch per item, default off. A dashed "Next export to flight surgeon" box lists exactly what would be sent. Sending queues until the next ground link.
+- Blood-count card (needs design, requirement M2b): add a seventh card or an immune/blood region on the body map showing white cells and lymphocytes. Label it "Inspiration4 crew sample, not your labs".
 - Real data: show the OSD-569 min and max as an "Earth reference range" beside the astronaut's own baseline. Status color and alerts follow the personal baseline, not the Earth range (see `docs/research/competitors.md`).
 - Consult layer (design needed): see the added board "What I see / what ground sees" in the same canvas. Left side lists the astronaut's items, each with a share switch. Right side shows exactly what ground would receive, with hidden items shown as "Not shared", never zero. Below it, the consult brief: included items, the question, and a "Send at next ground link" button.
 

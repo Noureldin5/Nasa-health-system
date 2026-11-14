@@ -7,7 +7,7 @@ Team location: Bishkek, Kyrgyzstan. This is a hackathon: ship a working, demoabl
 
 ## Product direction (recommended, team can change it)
 
-Working title: "Own Your Baseline". A private-first, offline-first health companion that the astronaut owns. It learns a personal baseline from passive data plus a 30-second check-in, flags drift, and suggests next steps. Nothing leaves the device unless the astronaut shares it. Our difference from the 40+ other teams (see `docs/research/competitors.md`) is a consult layer built around the real reason monitoring fails, astronauts hiding symptoms for fear of being grounded: a "what I see / what ground sees" preview and an astronaut-led consult brief. Personal baseline, offline use and per-item consent alone are not new, so do not lead the pitch with them. Requirements: `docs/REQUIREMENTS.md`. Full reasoning: `docs/IDEAS.md`. Evidence: `docs/research/astronaut-health-problems.md`.
+Working title: "Own Your Baseline". A private-first, offline-first health companion that the astronaut owns. It learns a personal baseline from passive data plus a 30-second check-in, flags drift, and suggests next steps. Nothing leaves the device unless the astronaut shares it. Our difference from the 40+ other teams (see `docs/research/competitors.md`) is a consult layer built around the real reason monitoring fails, astronauts hiding symptoms for fear of being grounded: an astronaut-led consult brief, shown in the demo with a "what I see / what ground sees" view. Personal baseline, offline use and per-item consent alone are not new (AURORA already has a consent matrix and a ground batch), so do not lead the pitch with them. Requirements: `docs/REQUIREMENTS.md`. Full reasoning: `docs/IDEAS.md`. Evidence: `docs/research/astronaut-health-problems.md`.
 
 Required by the official objective (see `docs/CHALLENGE.md`): a visual self-assessment tool with a clickable body map, the indicators blood pressure, heart rate, blood sugar, body temperature, sleep hours and mood, guidance on treatments and health improvements, explainers, trend charts and color-coded status. Build this core first.
 
@@ -76,6 +76,7 @@ Read the skill before doing that kind of work. Use exact names.
 - Design checks: `bm:ui-review` (6-pillar audit of built UI), `ecc:browser-qa`, `ecc:click-path-audit`.
 - Demo and pitch: `ecc:frontend-slides` (slides), `ecc:ui-demo` (demo recording), project skill `demo-readiness`.
 - Skills are installed on one machine. If a skill is missing on yours, skip it, or run `find-skills:find-skills`.
+- Some skills list under two names, for example `taste-skill:redesign-skill` is also `taste-skill:redesign-existing-projects`, and `taste-skill:taste-skill` is also `taste-skill:design-taste-frontend`. Use the name your Skill list shows.
 - To see the designs a Claude session should match, read `docs/DESIGN.md` and `design/`.
 - Backend and data: `ecc:backend-patterns`, `ecc:fastapi-patterns` (if Python), `ecc:error-handling`.
 - Health domain: `ecc:healthcare-cdss-patterns`, `ecc:healthcare-phi-compliance`, `ecc:healthcare-eval-harness`. Adapt hospital-oriented advice to a hackathon prototype.

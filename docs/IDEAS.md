@@ -3,9 +3,11 @@
 Team: Kernel Panic Squad (Bishkek, Kyrgyzstan)
 Challenge: "Create Health Monitoring Software for Astronauts on Space Missions" (NASA Space Apps 2026)
 
-## What the challenge asks (secondary sources, verify on spaceappschallenge.org)
+> **Read the "Update after competitor research" section first.** Sections marked SUPERSEDED below are kept for history only. Current plan: `docs/README.md` and `docs/REQUIREMENTS.md`.
 
-I could not load the official page (TLS error from the fetch tools). The summary below comes from a web search and other teams' repos. Before submitting, the team must open the official page and copy the real objectives, resource list and judging criteria into `docs/CHALLENGE.md`.
+## What the challenge asks (SUPERSEDED: the official text is now in `docs/CHALLENGE.md`)
+
+This early summary came from a web search and other teams' repos, written before the official text was available. Use `docs/CHALLENGE.md` instead. The judging criteria and Resources tab links are still missing there.
 
 - Long missions expose astronauts to radiation, isolation, altered gravity and a closed environment. These cause immune changes, bone loss, cardiovascular problems and behavioral health issues.
 - Astronauts must spot changes in themselves. Build software that gathers health indicators and lets the astronaut evaluate and act.
@@ -30,7 +32,8 @@ Details: `docs/research/competitors.md`. More than 40 public repos target this s
 Recommended angle, one story: **astronauts hide symptoms for fear of being grounded, and conflict with Mission Control is the hardest problem. Build the tool that makes honest reporting safe.**
 
 - Own Your Baseline stays the product and the required core (body map, indicators, trends, guidance).
-- The difference is a **consult layer**: a "what I see / what ground sees" preview that updates as share switches flip, and an astronaut-led **consult brief** (the astronaut picks the data, writes the question, previews it, sends it at the next ground link). Ground consults; it does not direct.
+- The difference is a **consult layer**: an astronaut-led **consult brief** (the astronaut picks the data, writes the question, sees it, sends it at the next ground link) built around the underreporting problem. Ground consults; it does not direct. A "what I see / what ground sees" view that updates as share switches flip is how the demo shows it.
+- What AURORA already has (read in its source, `apps/web/src`): a consent matrix by audience and data category, a ground batch of consented records sent with a simulated Mars delay, and an audit trail. We did not find a view of the batch contents before sending, or an astronaut-written question. So the mechanism is not our claim. The claim is the problem framing and the consult brief.
 - Cabin Link stays as the signature insight screen. Crew Readiness is optional.
 - Demo beat: flip a switch, watch ground's view change, send the brief, turn the network off.
 
@@ -46,7 +49,7 @@ Frame every concept as decision support, not diagnosis.
 
 ## Ranked concepts
 
-### 1. Recommended: "Own Your Baseline" (private-first, offline-first astronaut health companion)
+### 1. Recommended: "Own Your Baseline" (offline astronaut health companion, plus the consult layer above)
 
 An onboard app the astronaut owns. It learns a personal baseline from passive data plus a 30-second daily check-in. It flags drift from that baseline and suggests next steps from an onboard knowledge base. Nothing leaves the device unless the astronaut chooses to share.
 
@@ -84,16 +87,13 @@ A guided symptom triage with offline decision trees for common problems (headach
 - Maps to: no real-time Earth support.
 - Risk: medical content must be sourced and labeled as decision support. Needs careful wording.
 
-## Recommendation
+## Recommendation (SUPERSEDED by "Update after competitor research" above)
 
-Build concept 1 as the product. Fold in concept 2 (CO2 correlation) as the signature insight and concept 3 as a shareable crew screen. Mention 4 and 5 as roadmap. This gives one clear story: "the astronaut's own health copilot, private by default, working without Earth."
+Build concept 1 as the product, with the consult layer. Fold in concept 2 (CO2 correlation) as the signature insight and concept 3 as a shareable crew screen. Mention 4 and 5 as roadmap. The old story, "private by default, working without Earth", is no longer the lead because other teams already have it.
 
-## Ways to stand out from other teams
+## Ways to stand out from other teams (SUPERSEDED)
 
-- Lead with the privacy and autonomy story, not the dashboard.
-- Use a named personal baseline and a visible "what leaves this device" panel.
-- Demo a scripted mission day (simulated data) that shows a drift alert, a CO2 correlation and a share decision in under three minutes.
-- Show the offline mode working with the network switched off.
+Use the demo beat in `docs/REQUIREMENTS.md` ("Demo (3 minutes)") instead: a check-in, a drift alert, flipping share switches while ground's view changes, sending a consult brief, then the network off.
 
 ## Open questions for the team
 

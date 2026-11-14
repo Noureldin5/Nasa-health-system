@@ -25,8 +25,8 @@ You are helping Kernel Panic Squad (Bishkek, Kyrgyzstan) build a prototype for t
    1. Simulated 14-day mission data (agent `data-sim`, model haiku).
    2. Baseline and drift logic with tests first (agent `backend`, model sonnet; skills `ecc:backend-patterns`, `ecc:healthcare-cdss-patterns`, `superpowers:test-driven-development`).
    3. The 30-second check-in and the baseline and trend views (agent `frontend`, model sonnet; skills `impeccable:impeccable`, `taste-skill:taste-skill`, `ecc:frontend-patterns`, `ecc:react-patterns`, `ecc:frontend-a11y`, `dataviz`).
-   4. The "what leaves this device" share panel and the crew readiness screen.
-   5. CO2 and symptom correlation view.
+   4. The consult layer, which is our difference (see `docs/REQUIREMENTS.md` D3 to D6): the share panel, the "what I see / what ground sees" view, the consult brief and the record of what was sent. Then, if time allows, the crew readiness screen. Match `design/own-your-baseline/Ground.dc.html`.
+   5. CO2 and symptom correlation view (Cabin Link) and the OSD-569 blood-count card (requirement M8).
    6. Offline mode (service worker) and the demo script (skill `demo-readiness`).
 5. After each slice: run the tests, open the app in a browser and check the demo path, then use `superpowers:verification-before-completion`. Report what works and what does not.
 6. Call the `advisor` again before calling any milestone done, and once more on the final build.
