@@ -40,6 +40,8 @@ docs/
   IDEAS.md                concepts and recommendation
   CHALLENGE.md            official challenge text (team fills in)
   DESIGN.md               design links, tokens and frontend notes per idea
+  TEAM.md                 who builds what (3 people)
+  HANDOFF.md              current state, open items, next step (read first)
   research/nasa-datasets.md  NASA dataset research (OSD-569 first)
   DECISIONS.md            stack and scope decisions (create when decided)
   research/               source notes
