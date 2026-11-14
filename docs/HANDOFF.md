@@ -28,7 +28,7 @@ NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts
 | `docs/README.md` | Start-here page: quick answers, file map, folder structure |
 | `docs/REQUIREMENTS.md` | Must, should and could features with acceptance checks |
 
-No application code exists yet. `docs/DECISIONS.md` does not exist yet.
+`docs/DECISIONS.md` exists (draft by C, sections 1 to 7). Role C's pipeline is built on branch `c/data-pipeline`; `web/` and `api/` are not started. See "Role C status" below.
 
 ## Decisions made
 
@@ -45,12 +45,31 @@ No application code exists yet. `docs/DECISIONS.md` does not exist yet.
 2. **Share the 7 design links** (in `docs/DESIGN.md`). They are private until shared from each artifact's Share menu.
 3. **Fill the official Resources tab links and judging criteria** into `docs/CHALLENGE.md`.
 4. **Research sections 1 to 6 are missing** from `docs/research/astronaut-health-problems.md` (the paste began at section 7). Re-paste them.
-5. **Dataset research paste was partly cut off.** Re-check the Python download sketch, the HRP risks section and the OSDR license terms.
+5. **Dataset research paste was partly cut off.** Re-check the Python download sketch. Done by C on 2026-11-14: the five HRP hazards (`data/processed/hazards.json`) and the OSDR terms (`data/raw/osd569/README.md`).
 6. **Ask the organizers:** do labeled synthetic values count where no open NASA data exists?
-7. **Placeholders to replace with cited NASA sources:** CO2 limit (3,500 ppm), flight-surgeon thresholds, radiation budget, environment hazard text.
-8. Write `docs/DECISIONS.md` (data shapes and stack) in the first hour of building.
+7. **Placeholders to replace with cited NASA sources:** flight-surgeon thresholds and radiation budget (still open). Done: CO2 limit (3 mmHg, about 3,947 ppm) and environment hazard text.
+8. `docs/DECISIONS.md`: sections 8 and 9 (record shapes, first endpoints) are B's to write.
 9. **Ask the submission deadline.** Competitor repos were pushed up to today, so the event may be running now. The deadline decides how much of the consult layer to build.
 10. **Verify the competitor claims** in `docs/research/competitors.md` (they come from each repo's README, from a sample of about a dozen). Re-check before submission whether anyone added a consult feature.
+
+## Role C status (2026-11-14, branch `c/data-pipeline`, not pushed)
+
+Done, with tests (`make check`, 102 tests): C1 VictoriaMetrics in compose, C2 ingest and queries, C3 simulator (14 days, live replay), C4 OSD-569 ETL, C5 `daily` and `baseline_window`, C6 `cabin_link`, C7 citations audit and `data/processed/hazards.json`, C9 `make clear-manual` and `make demo-reset`, C8 offline check as far as one machine allows (`deploy/README.md`). OSDR terms of use are in `data/raw/osd569/README.md`.
+
+Fixed after the advisor review:
+- OSD-569 sample C003 L-92 looks shifted in both NASA files (MPV 330 fL, platelets 12.9). It is kept as published, flagged `quality: "suspect"` and left out of `crew_sample` and `vs_range`. **Confirm against the OSDR page before the pitch.** The raw files are untouched.
+- `daily()` marks an unfinished day `complete=False` and `baseline_window` leaves it out. **B: baseline through `today - 1`** (DECISIONS section 5).
+
+Open, needs the team (not decided by C):
+1. **Cabin Link shows no correlation on the planned demo day.** With today = day 10, a1 has one headache day and the guard (at least 2 symptom days) returns `r=None`. On the full 14 days lag 0 (r about 0.82) beats lag 1 (about 0.66), which contradicts "the rise comes first". Options: add an earlier mild-headache episode to the story, or lead the UI with the day overlay and `hours_above_limit` instead of `r`. Story changes touch `docs/USER-FLOW.md`.
+2. **Simulated CO2 in node1 sits above the cited limit for about 2.5 days** (3,947 ppm). A judge will ask why no cabin alarm fired. Lowering the peak below the limit but above the 2.5 mmHg study level (about 3,289 ppm) tells the pattern story better. A story change, see 1.
+3. DECISIONS section 7, items 1 to 4 (which day is today, `source="manual"`, cadence of daily vitals, blood-count card wording). `source="manual"` is already implemented; `docs/TEAM.md` still lists only `sim` and `nasa`.
+4. B: SQLite reset command, and add it to `make demo-reset` (DECISIONS section 6).
+5. Read NASA-STD-3001 Vol 2 [V2 6004] and Law et al. 2014 first-hand. `pipeline/references.py` says they were taken from NASA's brief and the abstract.
+6. Offline check on the demo laptop with all three services (`deploy/README.md`).
+7. Acknowledgement sentence for OSDR data: confirm the exact wording on the OSDR FAQ before submission.
+8. The female reference ranges in OSD-569 differ per row (hemoglobin has two): A cannot assume one min and max per indicator.
+9. `docs/CHALLENGE.md` still lacks judging criteria and submission rules.
 
 ## Gotchas
 
@@ -62,4 +81,4 @@ No application code exists yet. `docs/DECISIONS.md` does not exist yet.
 
 ## Next step
 
-Hour 0 in `docs/TEAM.md`: all three agree `docs/DECISIONS.md` (stack, metric schema, record shapes, first endpoints), commit the skeletons, then branch per `docs/GIT-WORKFLOW.md`. To use Claude Code, paste `PROMPT.md` into a fresh session.
+Merge `c/data-pipeline` into `main` (a pull request, `docs/GIT-WORKFLOW.md`) so B and A can import `pipeline/`. Then answer the open items above, starting with 1 and 2 (they change the demo story), and B writes DECISIONS sections 8 and 9.
