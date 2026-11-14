@@ -31,6 +31,8 @@ Our current pitch ("private, offline, personal baseline") overlaps all of these.
 
 ## Consent and sharing: already built by others (corrected)
 
+Note 2026-11-14: the team moved to an open record (ground sees the full record, the astronaut sees everything ground sees). This section is now context only. Still to check: does any other team show the flight surgeon's notes to the astronaut?
+
 My first draft said nobody had per-item consent. That was wrong. After reading the README and docs of four repos:
 
 - **AURORA** (also read in its source: `apps/web/src/ui/PrivacyView.tsx`, `sync/outgoing.ts`) has a consent matrix by audience and data category, builds a ground batch of consented records, sends it with a simulated Mars delay, and writes an audit entry. No view of the batch contents before sending and no astronaut-written question were found. In its docs it has a consent module, "nothing shared by default; per-category, per-audience consent; notes stripped unless allowed", signed batches to ground containing "consented data only", a chained audit trail, and a threat model. This is the same mechanism we planned. It is strong and tested.

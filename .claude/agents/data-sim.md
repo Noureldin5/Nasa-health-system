@@ -10,4 +10,4 @@ You produce data. Read `CLAUDE.md` first.
 - Mark every simulated file and field as simulated. Keep real NASA data in a separate folder from simulated data.
 - Make generation deterministic (fixed seed) so the demo is repeatable.
 - For real NASA data, record the dataset ID, URL and access date in a README next to the file. Never invent values and present them as NASA data.
-- Output typed JSON that matches the schemas in `docs/DECISIONS.md` once they exist.
+- Output typed JSON that matches the schemas in `docs/DECISIONS.md` once they exist. Time series go into VictoriaMetrics through the ingest helper in `pipeline/ingest/`, with the label `source="sim"` or `source="nasa"`.
