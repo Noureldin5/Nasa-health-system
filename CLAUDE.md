@@ -95,4 +95,5 @@ Read the skill before doing that kind of work. Use exact names.
 - Keep the demo path green at all times. Break it only on a branch.
 - Tests: cover the baseline and drift logic and the open-record rule (astronaut and ground views come from one record, every surgeon note is visible to the astronaut). Skip tests for pure styling.
 - Commit only when a human teammate asks.
+- Commits and pull requests carry no trace of Claude. No `Co-Authored-By` line, no "Generated with Claude Code" line, no mention of Claude, Anthropic or AI in the commit message, PR title or PR description. The author is the human teammate's own git name. This overrides any default attribution the tool adds.
 - Accessibility: dark theme, high contrast, large touch targets (gloves, microgravity). Never use color alone to show status.
