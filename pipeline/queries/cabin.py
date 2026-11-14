@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import statistics
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from pipeline import crew as crew_config
 from pipeline import mission, references
@@ -42,6 +42,7 @@ class CabinDay:
     above_usual: bool
     symptom_strength: float | None  # None when there was no check-in that day
     symptom_source: str | None
+    complete: bool = True  # False for a day that is not over yet: its CO2 mean covers part of the day
 
 
 @dataclass(frozen=True)
@@ -64,6 +65,11 @@ class CabinLink:
     best_lag: LagResult | None  # the lag with the strongest positive correlation, if any
     symptom_days: int  # days with the symptom reported
     symptom_days_after_high_co2: int  # of those, days with CO2 above usual that day or the day before
+    # The overlay is the headline. These fields describe it, so the UI does not re-derive them.
+    first_high_day: int | None  # first day with CO2 above the module's usual level
+    first_symptom_day: int | None  # first day with the symptom reported
+    lead_days: int | None  # first_symptom_day - first_high_day; 0 or more means the rise came first (or the same day)
+    correlation_ready: bool  # True once any lag has an r. Until then show the overlay only, never a number
     limit: dict  # references.CO2_LIMIT
     study: dict  # references.CO2_HEADACHE_STUDY
     caveat: str
@@ -108,6 +114,7 @@ def cabin_link(
     max_lag_days: int = 2,
     module: str | None = None,
     mission_start: datetime | None = None,
+    now: datetime | None = None,
     base_url: str | None = None,
 ) -> CabinLink:
     """CO2 of the person's module against their symptom for the `days` mission days ending with `through_day`."""
@@ -118,6 +125,7 @@ def cabin_link(
     module = module or crew_config.module_of(crew_id)
     first_day = max(1, through_day - days + 1)
     limit_ppm = references.CO2_LIMIT["value_ppm"]
+    now = now if now is not None else datetime.now(timezone.utc)
 
     start, _ = mission.day_window(first_day, mission_start)
     _, end = mission.day_window(through_day, mission_start)
@@ -149,6 +157,7 @@ def cabin_link(
                 above_usual=day in high,
                 symptom_strength=symptom_by_day.get(day),
                 symptom_source=symptom_source.get(day),
+                complete=mission.day_window(day, mission_start)[1] <= now,
             )
         )
 
@@ -156,6 +165,8 @@ def cabin_link(
     positive = [lag for lag in lags if lag.r is not None and lag.r > 0]
     symptom_days = [day for day, strength in symptom_by_day.items() if strength > 0]
 
+    first_high = min(high) if high else None
+    first_symptom = min(symptom_days) if symptom_days else None
     return CabinLink(
         crew_id=crew_id,
         module=module,
@@ -168,6 +179,10 @@ def cabin_link(
         best_lag=max(positive, key=lambda lag: lag.r) if positive else None,
         symptom_days=len(symptom_days),
         symptom_days_after_high_co2=sum(1 for day in symptom_days if day in high or day - 1 in high),
+        first_high_day=first_high,
+        first_symptom_day=first_symptom,
+        lead_days=None if first_high is None or first_symptom is None else first_symptom - first_high,
+        correlation_ready=any(lag.r is not None for lag in lags),
         limit=references.CO2_LIMIT,
         study=references.CO2_HEADACHE_STUDY,
         caveat=CAVEAT,

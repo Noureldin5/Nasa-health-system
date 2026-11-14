@@ -154,6 +154,36 @@ def test_cabin_link_on_a_written_story(test_id):
     assert (link.symptom_days, link.symptom_days_after_high_co2) == (2, 2)
     assert link.best_lag is not None and link.best_lag.lag_days == 1 and link.best_lag.r > 0.5
     assert link.limit is references.CO2_LIMIT and link.caveat == CAVEAT
+    assert (link.first_high_day, link.first_symptom_day, link.lead_days) == (8, 9, 1)  # the rise came first
+    assert link.correlation_ready is True
+
+
+@pytest.mark.vm
+def test_cabin_link_on_the_demo_day_leads_with_the_overlay_not_a_number(test_id):
+    # Demo day 10: CO2 rose on day 9, the only symptom is today's live check-in. One symptom day is
+    # not a correlation, so r stays None and the UI shows the day overlay (docs/DECISIONS.md section 5).
+    start = recent_start()
+    points = []
+    for day in range(1, 11):
+        level = 3600 if day in (9, 10) else 2600
+        points += [
+            Point("co2_ppm", level, start + (day - 1) * DAY + timedelta(hours=h), {"module": test_id, "source": "sim"})
+            for h in range(24)
+        ]
+    points.append(
+        Point("symptom_strength", 2, start + 9 * DAY + timedelta(hours=7.5),
+              {"crew_id": test_id, "symptom": "headache", "source": "manual"})
+    )
+    write_points(points)
+    flush()
+
+    link = cabin_link(test_id, through_day=10, module=test_id, mission_start=start, now=start + 9 * DAY + timedelta(hours=10))
+    assert link.correlation_ready is False and link.best_lag is None
+    assert all(lag.r is None for lag in link.lags)
+    assert (link.first_high_day, link.first_symptom_day, link.lead_days) == (9, 10, 1)
+    assert [d.hours_above_limit for d in link.days] == [0] * 10  # below the cited limit: a pattern, not an alarm
+    assert [d.day for d in link.days if d.above_usual] == [9, 10]
+    assert [d.complete for d in link.days] == [True] * 9 + [False]  # today is not over
 
 
 @pytest.mark.vm
@@ -161,3 +191,4 @@ def test_cabin_link_without_data_is_empty_not_an_error(test_id):
     link = cabin_link(test_id, through_day=5, module=test_id, mission_start=recent_start())
     assert link.usual_co2_ppm is None and link.best_lag is None and link.symptom_days == 0
     assert [d.co2_mean_ppm for d in link.days] == [None] * 5
+    assert (link.first_high_day, link.first_symptom_day, link.lead_days, link.correlation_ready) == (None, None, None, False)
