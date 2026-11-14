@@ -2,7 +2,7 @@
 
 Stack and data contracts every person and every Claude session follows. This is a shared file: change it only through a small `shared/<topic>` PR with one approval (`docs/GIT-WORKFLOW.md`).
 
-Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, queries, mission clock, 14-day simulator, Cabin Link). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 and 9 are B's to write. Items marked **OPEN** need a team answer before they are final (list in section 7).
+Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, queries, mission clock, 14-day simulator, Cabin Link). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 to 10 are B's (written 2026-11-14). Items marked **OPEN** need a team answer before they are final (list in section 7).
 
 ## 1. Stack
 
@@ -194,10 +194,67 @@ Reset (C9). Two stores, so a full reset is two steps, and the demo needs both:
 
 Once answered, the affected lines in `docs/TEAM.md`, `docs/REQUIREMENTS.md` and `docs/USER-FLOW.md` get a one-line update in the same PR.
 
-## 8. Record shapes (B leads)
+## 8. Record shapes (B)
 
-TODO (B): check-in, alert, consult brief, ground reply, surgeon note, flag, sync record.
+The source of truth is `api/schemas.py`. `api/openapi.json` is generated from it (`cd api && uv run python scripts/export_openapi.py`), and A generates TypeScript types from that file.
 
-## 9. First API endpoints (B leads, A agrees)
+Records: `CheckinIn`, `CheckinEntry`, `Indicator`, `Alert`, `Brief`, `Reply`, `GroundNote` (kind `note`, `watch_flag` or `measurement_request`; flags and requests need a target and a reason), `SyncRecord`, `RecordView`, `Readout`, `Readiness`.
 
-TODO (B). Starting list: `docs/TEAM.md`, "First endpoints to agree with A in hour 0".
+**Open record rule.** One function (`api/domain/views.py`, `build_view`) builds both sides, so there are no ground-only fields. Visibility depends on who wrote the item:
+
+- Astronaut-origin items (readings, check-in answers, alerts, briefs) show on the ground side only if they existed at the last sync. The astronaut side sees them at once.
+- Ground-origin items (notes, flags, measurement requests, replies) show on the ground side at once. The astronaut sees them, word for word, after the next sync delivers them.
+- Every sync, including an empty one, is one entry in `GET /link/log`.
+
+**Personal baseline rule** (`api/domain/baseline.py`). The band is mean ± 2 standard deviations of the days older than the 3-day drift window, so the days being judged never widen the band they are judged against. A status needs 7 prior days with data. Calibration counts days that have data, so it does not need the mission clock.
+
+**Demo parameters** (`api/domain/params.py`). None has a medical source, so each is labeled Demo parameter in code and bands built from them carry `demo_parameter: true`.
+
+| Name | Value |
+|---|---|
+| Calibration | 7 days |
+| Baseline window | 14 days |
+| Band width | 2 standard deviations |
+| Minimum band half-width | heart rate 3 bpm, sleep 0.5 h, mood 0.5, temperature 0.2 °C, glucose 5 mg/dL, blood pressure 4 mmHg, CO2 100 ppm |
+| Drift | outside the band on 2 of the last 3 days |
+| Headache pattern | mild or stronger on 2 of the last 3 days |
+| Alert close | 2 days in a row back to normal |
+| Alerts per day | 1 shown, the rest in "Worth checking" |
+
+No cited safety threshold exists yet, so nothing can alert during the 7-day calibration. C7 supplies the NASA sources.
+
+## 9. API endpoints (B)
+
+```
+GET  /health
+GET  /crew                              GET  /crew/readiness
+GET  /astronaut/{id}/view               GET  /astronaut/{id}/readout
+GET  /astronaut/{id}/series/{metric}    POST /astronaut/{id}/checkin
+GET  /astronaut/{id}/briefs/draft       POST /astronaut/{id}/briefs
+POST /alerts/{id}/close                 POST /briefs/{id}/reply
+GET  /ground/inbox                      GET  /ground/{id}/view
+POST /ground/{id}/notes                 POST /link/sync
+GET  /link/log                          GET  /reference/osd569
+POST /demo/reset?day=N
+```
+
+`POST /demo/reset?day=N` makes real today mission day N: it reseeds, saves one check-in per past day so "Same as yesterday" works, logs an initial sync, and raises any alert the history already earns. On day 10 one headache check-in raises the headache and CO2 alert.
+
+`GET /reference/osd569` returns the shape `Osd569Reference` in `api/schemas.py` (`dataset_id`, `url`, `label`, `placeholder`, and `indicators` with `indicator`, `value`, `range_min`, `range_max`, `unit`). C4 writes `data/processed/osd569.json` in that shape. A file that does not match makes the endpoint fail, so run `cd api && uv run pytest` after changing it. Until the file exists the endpoint returns a labeled placeholder with no numbers.
+
+## 10. How B's metrics adapter meets section 5 (B, for C to confirm)
+
+The API reads and writes time series through one port (`api/metrics/port.py`) and runs today on an in-memory simulated mission (`api/metrics/fake.py`). The real adapter calls `pipeline.ingest` and `pipeline.queries`. These are the points where the two sides differ. B handles each in the adapter unless C objects.
+
+| # | Topic | B's side today | Plan in the adapter |
+|---|---|---|---|
+| 1 | Metric names | `heart_rate`, `sleep_hours`, `bp_systolic`, `bp_diastolic`, `glucose`, `body_temp`, `mood`, `headache`, `co2` | Map to section 2: `hr_bpm`, `sleep_hours`, `bp_systolic_mmhg`, `bp_diastolic_mmhg`, `glucose_mg_dl`, `body_temp_c`, `mood_score`, `symptom_strength{symptom="headache"}`, `co2_ppm{module}` |
+| 2 | Timestamps | Naive UTC inside the API (the clock is UTC since 2026-11-14) | Attach UTC on the way in, drop it on the way out |
+| 3 | Range end | The port's `end` is inclusive | Pass `end` plus 1 microsecond, because `series` uses `start <= ts < end` |
+| 4 | Daily value for 5-minute metrics | The API keeps the last reading of each day | Ask C5 for daily aggregates of `hr_bpm` and `co2_ppm`. B proposes the daily mean for heart rate and the daily maximum for CO2 |
+| 5 | Crew to module | A map in SQLite seed data (`a1` and `a2` in `node1`, `a3` in `lab`) | One source of truth is better. B proposes to read the pipeline config mapping from section 2 and drop its own |
+| 6 | `source="manual"` (OPEN 2) | The API schema accepts `sim` and `nasa` | B adds `manual` to the schema when the team accepts OPEN 2 |
+| 7 | Today in the demo (OPEN 1) | `POST /demo/reset?day=N` | B's reset calls C's simulator with the same day, so B supports day 10 as C proposes |
+| 8 | Live check-in | Saves the SQLite record first, then writes `mood_score`, `symptom_strength` and any measurements | Call `flush()` after the write. On `IngestUnavailable` the check-in stays saved and the views mark readings unavailable |
+
+Nothing in sections 1 to 7 needs to change for B to build this.

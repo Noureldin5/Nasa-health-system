@@ -1,5 +1,5 @@
 # Shared file (docs/GIT-WORKFLOW.md). Each person adds a check-<area> target and lists it under `check`.
-.PHONY: up down smoke sample mission follow snapshot osd569 clear-manual demo-reset check check-pipeline
+.PHONY: api-check up down smoke sample mission follow snapshot osd569 clear-manual demo-reset check check-pipeline
 
 # The demo mission. DAY is which mission day "today" is (OPEN 1 in docs/DECISIONS.md).
 MISSION = --days 14 --crew a1,a2,a3 --seed 42
@@ -38,7 +38,10 @@ demo-reset:      ## full reset before the demo: clear typed values, reload the m
 	$(MAKE) mission DAY=$(DAY) LIVE=$(LIVE)
 	@echo "Time series reset. B: also reset the SQLite records (check-ins, briefs, notes, sync log)."
 
-check: check-pipeline   ## everything that must pass before a merge
+check: check-pipeline api-check   ## everything that must pass before a merge
 
 check-pipeline:  ## pipeline tests. Tests that need VictoriaMetrics are skipped when it is down
 	python3 -m pytest pipeline/tests -q
+
+api-check:       ## API lint and tests (B)
+	cd api && uv run ruff check . && uv run pytest -q
