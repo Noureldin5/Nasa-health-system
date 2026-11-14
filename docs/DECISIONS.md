@@ -2,7 +2,7 @@
 
 Stack and data contracts every person and every Claude session follows. This is a shared file: change it only through a small `shared/<topic>` PR with one approval (`docs/GIT-WORKFLOW.md`).
 
-Status: **draft by C, 2026-11-14.** Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 to 10 are B's (written 2026-11-14). Items marked **OPEN** need a team answer before they are final (list in section 7).
+Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, queries, mission clock, 14-day simulator, Cabin Link). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 to 10 are B's (written 2026-11-14). Items marked **OPEN** need a team answer before they are final (list in section 7).
 
 ## 1. Stack
 
@@ -62,6 +62,8 @@ For every metric with cadence "1 per mission day": **one value per mission day, 
 - A second check-in on the same day writes a second sample. Nothing is overwritten in the store.
 - C's query functions apply the rule, so B and A always get one value per day.
 - This also covers a manual reading entered on top of a simulated one for the same day: the later one is shown, and its `source` comes back with it.
+- If two samples have exactly the same timestamp, the typed one wins: `manual` over `nasa` over `sim`.
+- "Latest" is not "today's". The simulated data ends when the mission was loaded, while the mission clock keeps running. Treat a daily value as today's only if `mission_day(sample.ts) == mission_day(now)`.
 
 ## 4. Mission clock
 
@@ -69,7 +71,9 @@ For every metric with cadence "1 per mission day": **one value per mission day, 
 - `mission_start` is the instant mission day 1 begins. It is set when the simulated mission is loaded.
 - A mission day is a 24-hour window counted from `mission_start`: `mission_day(ts) = floor((ts - mission_start) / 24h) + 1`.
 - **Never derive the mission day from the calendar date.** Always call `pipeline.mission.mission_day(ts)`. `pipeline.mission.mission_start()` returns the start. Where it is stored is C's detail.
-- Which mission day "today" is at demo time is OPEN 1. The simulator takes it as a parameter and never writes points later than "now".
+- Which mission day "today" is at demo time is OPEN 1. The simulator takes it as a parameter (`--today-is-day`) and never writes points later than "now".
+- The simulator starts mission days at 18:00 UTC (midnight in Bishkek, UTC+6). Anyone who groups data by "day" must use this boundary, not the UTC calendar date (section 10, row 9). Demo parameter: this way "today" already has its morning sleep and check-in values when the demo runs during the local day.
+- The start is stored in VictoriaMetrics as the internal series `mission_start_seconds{source="sim"}`, so it is replaced together with the simulated mission. If no mission is loaded, `mission_start()` raises `MissionNotLoaded`: run `make sample`.
 
 Why this matters to B: calibration ("Learning your baseline: day N of 7") and the one-alert-per-day rule both need the mission day.
 
@@ -98,17 +102,65 @@ from pipeline.queries import Sample, series, latest
 Sample(ts: datetime, value: float, source: str)        # ts is UTC, timezone-aware
 
 series(metric: str, *, start: datetime, end: datetime,
-       crew_id: str | None = None, labels: dict[str, str] | None = None) -> list[Sample]
+       crew_id: str | None = None, labels: dict[str, str] | None = None,
+       mission_start: datetime | None = None) -> list[Sample]
 latest(metric: str, *, crew_id: str | None = None,
        labels: dict[str, str] | None = None, at: datetime | None = None) -> Sample | None
 ```
 
-- `series` returns samples sorted by time, `start <= ts < end`, merged across `source`. Daily metrics come back as one sample per mission day (section 3). 5-minute metrics come back raw.
+- `series` returns samples sorted by time, `start <= ts < end`, merged across `source`. `end` is exclusive: to include a point written at `now`, pass `end = now + 1 second`. Timestamps are stored in whole milliseconds, rounded down. Daily metrics come back as one sample per mission day (section 3). 5-minute metrics come back raw.
 - `latest` returns the newest sample at or before `at` (default: now), or `None`.
 - `labels` is for the extra labels: `{"symptom": "headache"}`, `{"module": "node1"}`.
+- A call must name exactly one series: `crew_id` for crew metrics, plus `symptom` or `module` where the metric has it. Anything else raises `ValueError`. Do not pass `source`: each `Sample` says its own.
+- `mission_start` is optional and only matters for daily metrics. Without it the stored start is read. Pass it in tests.
+- All datetimes must be timezone-aware.
+- Label values (`crew_id`, `symptom`, `module`) may contain only letters, digits, `_`, `-` and `.`; anything else raises `ValueError` on read and `IngestError` on write. They are **not** checked against the lists in section 2, so a typo in a `crew_id` silently creates or reads a new, empty series.
+- Errors: `ValueError` for a bad call, `pipeline.vm.VMUnavailable` when VictoriaMetrics is down (the same class as `IngestUnavailable`), `pipeline.vm.VMError` when it answers with an error, and `MissionNotLoaded` from `series` on a daily metric when data exists but no mission is loaded and no `mission_start` was passed.
+
+Mission clock:
+
+```python
+from pipeline.mission import mission_day, mission_start, day_window, MissionNotLoaded
+
+mission_start() -> datetime                                   # raises MissionNotLoaded
+mission_day(ts: datetime, start: datetime | None = None) -> int   # 1 on the first day
+day_window(day: int, start: datetime) -> tuple[datetime, datetime]   # begin (inclusive), end (exclusive)
+```
 - Time is always passed in or defaulted at the edge. `api/domain/` never calls these, the adapter in `api/metrics/` does.
 
-Coming later in `c/queries` (C5, C6), same style: baseline window stats, daily aggregates for the 5-minute metrics, CO2 versus headache with lag. **B never writes raw MetricsQL.** If a query is missing, ask C.
+Baseline input and daily aggregates (C5):
+
+```python
+from pipeline.queries import DailyValue, WindowStats, daily, baseline_window
+
+daily(metric, *, first_day: int, last_day: int, crew_id=None, labels=None,
+      mission_start=None) -> list[DailyValue]          # day, mean, min, max, n, sources
+baseline_window(metric, *, through_day: int, days: int = 7, crew_id=None, labels=None,
+                mission_start=None) -> WindowStats     # first_day, last_day, n_days, mean, sd, min, max
+```
+
+- Days are mission days, both ends included. Days without data are left out of `daily`.
+- `DailyValue.complete` is `False` for a 5-minute metric (heart rate, CO2) on a day that is not over yet. A partial day is biased: the simulated heart rate is lower at night, so a morning mean sits about 5 bpm below a full day, many times the spread of full-day means (`pipeline/tests/test_demo_moment.py` shows it). `baseline_window` leaves such days out by default (`complete_only=True`), so `n_days` counts finished days. **B: build the baseline from finished days (`through_day = today - 1`). For a 5-minute metric with `complete=False`, do not compare the day's mean to the baseline at all. Compare the last complete day instead, or the raw recent samples.** Daily metrics (sleep, mood, blood pressure) are one value per day and always `complete`.
+- `complete` is decided by the clock only. If the data is stale (a mission loaded long ago, or `follow` stopped), a day can be "complete" with few samples. `DailyValue.n` (samples that day, 288 for a full 5-minute day) is the data-based check: B should require a minimum `n` before trusting a daily mean.
+- `baseline_window` only measures: mean and sample standard deviation of the daily means. What counts as drift is B's rule in `api/domain/`. `n_days` below `days` means the window is not full yet (calibration).
+
+Cabin Link (C6):
+
+```python
+from pipeline.queries.cabin import cabin_link
+
+cabin_link(crew_id, *, through_day: int, days: int = 14, symptom="headache",
+           max_lag_days: int = 2, mission_start=None) -> CabinLink
+```
+
+- `CabinLink.days`: per mission day the mean and max CO2 of the person's module, hours above the cited limit, whether the day was above the module's usual level, and the symptom strength.
+- `CabinLink.lags`: correlation of the symptom with CO2 0, 1 and 2 days earlier. `r` is `None` when there are fewer than 5 paired days or fewer than 2 days with the symptom (Demo parameters), so a single headache never shows up as a correlation.
+- **Decision 2026-11-14: Cabin Link leads with the day overlay, not with a correlation number.** The overlay is `CabinLink.days`: per day the CO2 mean and max, `above_usual`, `hours_above_limit`, `symptom_strength` and `complete`. The headline fields say what to draw and write: `first_high_day` (CO2 first above the module's usual level), `first_symptom_day`, `lead_days` (`first_symptom_day - first_high_day`; 0 or more means the rise came first) and `correlation_ready`. **A: show `lags` and `best_lag` only when `correlation_ready` is true, and as a secondary line under the overlay.** On demo day 10 it is false (one symptom day is not a correlation), so the screen shows the overlay and the sentence built from `lead_days`, for example "CO2 rose on day 9, your headache came on day 10". Before the live check-in `first_symptom_day` is `None`: show the CO2 rise alone. `first_symptom_day` is the first symptom in the whole window: a headache before the rise gives a negative `lead_days`, and then there is no "the rise came first" sentence to write. Do not read the correlation as "which lag is the cause": on the 14-day story lag 0 is the strongest only because CO2 stays high for three days.
+- `CabinDay.complete` is `False` for a day that is not over yet (today), whose CO2 mean covers part of the day.
+- `CabinLink.limit` is the cited CO2 limit and `CabinLink.caveat` the decision-support line. Both must reach the UI with the numbers.
+- Cited values live in `pipeline/references.py`: CO2 limit 3 mmHg as a 1-hour average (NASA-STD-3001 Volume 2, [V2 6004], via NASA technical brief OCHMO-TB-004), about 3,947 ppm at 760 mmHg cabin pressure. This replaces the 3,500 ppm placeholder in `docs/HANDOFF.md`.
+
+**B never writes raw MetricsQL.** If a query is missing, ask C.
 
 ## 6. VictoriaMetrics behaviour everyone should know
 
@@ -117,6 +169,7 @@ Checked against the VictoriaMetrics docs on 2026-11-14.
 | Behaviour | What we do |
 |---|---|
 | Queries hide the last 30 s of data by default | Compose sets `-search.latencyOffset=1s` |
+| Reading raw samples (`/api/v1/export`) without `start` and `end` does not return a point written this instant | C's query functions always send both. Found with the smoke test on 2026-11-14 |
 | Freshly written samples stay in memory and are invisible for up to a few seconds, whatever the offset | `flush()` after a live check-in. It calls `/internal/force_flush`, which the docs describe as a debug and test endpoint. **Demo shortcut**, not for production |
 | A plain instant query looks back only 5 minutes, so daily metrics look empty | C's query functions read raw samples. This is why B does not write MetricsQL |
 | Default retention is 1 month | Compose sets `-retentionPeriod=90d`. Demo parameter |
@@ -124,7 +177,11 @@ Checked against the VictoriaMetrics docs on 2026-11-14.
 | Two samples with the same timestamp on one series: the larger value is kept, not the later write | Do not rely on overwriting. Section 3 is the rule |
 | Deleting works on whole series only, there is no time range | See "Reset" below |
 
-Reset: reloading the mission deletes every `source="sim"` series and writes them again. B's SQLite records (check-ins, briefs, notes) are a separate store, so a full demo reset is one command that C and B build together (C9, B8). Values typed in the demo sit in `source="manual"` series (OPEN 2) and can be cleared without reloading the mission.
+Reset (C9). Two stores, one command. **The demo reset is B's `POST /demo/reset?day=N`** (it already reseeds SQLite). When B's real metrics adapter replaces the in-memory fake, its `seed` calls `pipeline.reset.demo_reset(day)`, which clears the typed values and reloads the simulated mission with today = `day`. Then one call resets both stores and they cannot disagree.
+
+- **Until then** (the API runs on its fake metrics, `METRICS_BACKEND=fake`): `make demo-reset` (defaults `DAY=10 LIVE=a1`) resets VictoriaMetrics only: it deletes every `source="manual"` series and reloads the mission. `make clear-manual` does the first half alone and `python3 -m pipeline.reset --dry-run` only counts. Clear first, reload second: the reload moves the mission start, so a leftover manual value would land on another mission day and override the simulated one (section 3). The manual-series part assumes OPEN 2 is answered yes.
+- **B, to do:** call `demo_reset(day)` from the adapter's `seed` (no separate `api.reset` command is needed), and do not touch VictoriaMetrics for the reset in any other way. Details of the call: section 10, row 7.
+- If only one store were reset, the chart and the record would disagree on the demo screen. This is why the adapter owns the call.
 
 ## 7. Open, needs a team answer
 
@@ -200,4 +257,27 @@ The API reads and writes time series through one port (`api/metrics/port.py`) an
 | 7 | Today in the demo (OPEN 1) | `POST /demo/reset?day=N` | B's reset calls C's simulator with the same day, so B supports day 10 as C proposes |
 | 8 | Live check-in | Saves the SQLite record first, then writes `mood_score`, `symptom_strength` and any measurements | Call `flush()` after the write. On `IngestUnavailable` the check-in stays saved and the views mark readings unavailable |
 
-Nothing in sections 1 to 7 needs to change for B to build this.
+### C's answer to section 10 (2026-11-14, checked against the code and a loaded mission)
+
+| # | C confirms? | Detail |
+|---|---|---|
+| 1 | Yes | Mapping is exactly section 2 and `pipeline/schema.py`. For the symptom pass `labels={"symptom": "headache"}`; for CO2 pass `labels={"module": ...}` and no `crew_id`. A wrong metric or label raises `ValueError` |
+| 2 | Yes | Every call needs timezone-aware datetimes and returns UTC-aware ones. Attach UTC in, drop it out |
+| 3 | Yes, tested | `end + 1 microsecond` includes a sample written at `end` (checked on the loaded mission: with plain `end` the last sample is missing, with `+1us` it is there). Timestamps are whole milliseconds, so one microsecond is enough |
+| 4 | Yes, with two cautions | `daily(metric, first_day, last_day, crew_id=..., labels=...)` gives `mean` and `max` per mission day for `hr_bpm` and `co2_ppm`. (a) **Today is a partial day** (`complete=False`, `n` below 288): see section 5, do not compare today's heart-rate mean to the baseline. (b) **The daily maximum of CO2 is a 5-minute peak, not a 1-hour average.** The cited limit is a 1-hour average, so do not compare `max` to it: a 5-minute peak and a 1-hour average are different things, even though on the demo mission neither crosses the limit (peak about 3,800 ppm). For limit questions use `CabinDay.hours_above_limit` from `cabin_link` |
+| 5 | Yes, with one caution | Use `pipeline.crew.module_of(crew_id)` and drop B's own map. An unknown `crew_id` silently falls back to `node1`, so B validates the crew id against `pipeline.crew.CREW` first |
+| 6 | Yes, still OPEN 2 | The pipeline already accepts and returns `source="manual"`, and `make clear-manual` clears it. C recommends yes. B adds it to the schema when the team answers |
+| 7 | Yes, and a gap is closed | There was no importable call for this, only the CLI. Now: `from pipeline.reset import demo_reset; demo_reset(day)` clears typed values and reloads the mission with today = `day`, live crew `a1`, seed 42, 14 days. Lower level: `pipeline.simulator.load.load_mission(today_is_day=..., live_crew=..., now=...)`. It is synchronous and takes a few seconds: call it from a normal `def` endpoint. It raises `ValueError` for a day outside 1 to 14 and `IngestUnavailable` when VictoriaMetrics is down. It does not touch SQLite |
+| 8 | Yes | `write_points` then `flush()`. `IngestUnavailable` is the same class as `pipeline.vm.VMUnavailable` (checked with an unreachable address). Keep the check-in saved in SQLite and mark the readings unavailable, as B proposes |
+
+### Row 9, found by C: the day boundary
+
+| # | Topic | B's side today | C's side | Proposal |
+|---|---|---|---|---|
+| 9 | What a "day" is | The API groups by the UTC calendar date (`api/domain/views.py:65`, `now.date()`, `p.at.date()`) | A mission day runs from 18:00 UTC to 18:00 UTC (section 4), which is midnight to midnight in Bishkek (UTC+6) | **Not agreed.** Section 4 says never to derive the mission day from the calendar date |
+
+Why it matters once the real adapter is on: the simulated sleep, blood pressure and check-in values are stamped 6 to 7.5 hours after the day starts, so 00:00 to 01:30 UTC on the next calendar date. The API would file "mission day 9" values under day 10. Heart rate and CO2 samples from 18:00 to 24:00 UTC would also fall on the wrong day.
+
+Smallest fix, on B's side: group by the Bishkek date, `(at + timedelta(hours=6)).date()`, instead of `at.date()`, in one helper used everywhere the API says "day". That matches the pipeline exactly, with no change to C. The other options are a pipeline mission that starts at 00:00 UTC (then at 10:00 in Bishkek, which is 04:00 UTC, today's wake-up values would not exist yet) or B calling `pipeline.mission.mission_day` everywhere. Needs a team answer before the adapter goes in. Not changed in `api/` by C.
+
+Nothing else in sections 1 to 7 needs to change for B to build this.

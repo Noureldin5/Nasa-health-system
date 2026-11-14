@@ -1,0 +1,7 @@
+{
+  "dataset_id": "OSD-569",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-569",
+  "file_list_api": "https://osdr.nasa.gov/osdr/data/osd/files/569",
+  "download_url_pattern": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-569/download?source=datamanager&file={file_name}",
+  "accessed": "2026-11-14"
+}

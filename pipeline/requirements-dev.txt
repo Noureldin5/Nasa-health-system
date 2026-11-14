@@ -1,0 +1,2 @@
+# Runtime code in pipeline/ uses the standard library only. This is for the tests.
+pytest>=7.4
