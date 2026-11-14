@@ -8,21 +8,25 @@ All data in the designs is simulated. Thresholds and the radiation budget are pl
 
 ## Shared design language
 
-Dark, high-contrast, instrument-panel feel. Use these as CSS variables.
+Dark, high-contrast, "mission ops console meets clinical record". Since 2026-11-14 the built app (`web/`, branch `FE`) uses tokens taken from real NASA and mission-ops sources instead of the teal-on-navy set in the canvases. Source of truth: `web/src/styles/tokens.css`.
 
-| Token | Value | Use |
-|---|---|---|
-| `--bg` | `#0B1220` | page background |
-| `--card` | `#121B2E` | cards |
-| `--line` | `#23304A` | borders |
-| `--text` | `#E6ECF5` | main text |
-| `--muted` | `#9AA8BF` | secondary text |
-| `--accent` | `#3DD6C3` | primary actions, focus |
-| `--ok` | `#5FE0B5` | in range |
-| `--watch` | `#F5BF55` | worth checking |
-| `--crit` | `#FF8A7E` | contact the flight surgeon |
+| Token | Value | Use | Source |
+|---|---|---|---|
+| `--c-bg` | `#17171b` | page background | NASA HDS `carbon-90` (dark default) |
+| `--c-surface` | `#1e1e23` | cards | between HDS `carbon-90` and `carbon-80` |
+| `--c-line` | `#2e2e32` | borders | HDS `carbon-80` |
+| `--c-text` | `#e3e3e3` | main text | HDS `carbon-10` |
+| `--c-muted` | `#959599` | secondary text (5.6:1) | HDS `carbon-40` |
+| `--c-action` | `#1c67e3` | primary buttons, white text 5.1:1 | HDS `nasa-blue` ("blue means do something here") |
+| `--c-link` | `#5aa2ff` | links, focus ring | lighter tint of NASA blue |
+| `--c-ok` | `#47da84` | in range | HDS `active-green` |
+| `--c-watch` | `#fdc707` | worth checking | NASA Open MCT Espresso, limit-yellow icon |
+| `--c-act` | `#ff5c52` | contact the flight surgeon | HDS `nasa-red-tint` |
+| `--c-series` | `#3987e5` | chart line (charts only) | checked with the dataviz validator |
 
-- Fonts: IBM Plex Sans for text, IBM Plex Mono for numbers (tabular figures). The designs load them from Google Fonts. The app must work offline, so self-host the font files.
+Sources: NASA Horizon Design System tokens (https://github.com/nasa/hds-core, `tokens.json`), NASA Open MCT (`src/styles/_constants-espresso.scss`), Astro UXDS status system (https://astrouxds.com/patterns/status-system/), IEC 60601-1-8 alarm colors (red high priority, yellow medium). No NASA insignia is used.
+
+- Fonts: Public Sans for text and DM Mono for numbers and micro-labels, as in NASA HDS. Bundled through `@fontsource`, so the app works offline.
 - Never show status by color alone. Every status pill has an icon shape and a word: circle "In range", triangle "Watch", diamond "Act now".
 - Touch targets at least 44px, primary buttons 56px tall.
 - Every health message has three parts: what changed, one next step, and "Contact the flight surgeon if...".
