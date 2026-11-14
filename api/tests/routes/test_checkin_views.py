@@ -22,9 +22,39 @@ def test_hero_alert_fires_on_seeded_day_10(client):
 
 
 def test_checkin_without_symptoms_reads_all_in_range(client):
-    out = checkin(client, headache="none", mood=4).json()
+    out = checkin(client, crew="a3", headache="none", mood=4).json()
     assert out["headline"] == "All in your usual range"
     assert out["alert"] is None
+
+
+def test_card_out_of_band_without_alert_is_not_all_in_range(client):
+    # a1's cabin CO2 was high yesterday, but no headache pattern today, so no alert
+    out = checkin(client, headache="none", mood=4).json()
+    assert out["alert"] is None
+    assert out["overall"] == "worth_checking"
+    assert out["headline"] == "1 thing worth checking"
+
+
+def test_same_as_yesterday_on_a_fresh_reset_uses_the_seeded_checkin(client, state):
+    resp = checkin(client, same_as_yesterday=True)
+    assert resp.status_code == 201
+    saved = state.repo.get_checkins("a1", TODAY, TODAY)[0][1]
+    assert saved.headache == "mild" and saved.mood == 4 and saved.rested == 4
+    # yesterday's mild headache plus today's makes 2 of the last 3 days
+    assert resp.json()["alert"]["indicator"] == "headache"
+    calm = checkin(client, crew="a3", same_as_yesterday=True).json()
+    assert calm["headline"] == "All in your usual range"
+
+
+def test_checkin_answers_are_in_both_views(client, clock):
+    clock.set(datetime(2026, 11, 14, 9, 5))
+    checkin(client, mood=3, headache="none", vision_change=True)
+    station = client.get("/astronaut/a1/view").json()
+    today = next(c for c in station["checkins"] if c["day"] == "2026-11-14")
+    assert today["answers"]["vision_change"] is True and today["answers"]["mood"] == 3
+    ground = client.get("/ground/a1/view").json()
+    assert all(c["day"] != "2026-11-14" for c in ground["checkins"])  # not synced yet
+    assert any(c["day"] == "2026-11-13" for c in ground["checkins"])  # seeded history was
 
 
 def test_checkin_writes_metrics_and_returns_readout(client, state):

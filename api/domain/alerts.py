@@ -138,13 +138,18 @@ def should_close(
 
 
 def build_readout(indicators: list[Indicator], shown: Alert | None, worth: list[Alert]) -> Readout:
-    total = (1 if shown else 0) + len(worth)
+    alerts = ([shown] if shown else []) + worth
+    explained = {a.indicator for a in alerts} | {
+        i.indicator for a in alerts for i in a.related_items
+    }
+    loose_cards = [i for i in indicators if i.status == "worth_checking" and i.key not in explained]
+    total = len(alerts) + len(loose_cards)
     if total:
         headline = (
             copy.HEADLINE_WORTH_ONE if total == 1 else copy.HEADLINE_WORTH_MANY.format(n=total)
         )
-        lead = shown or worth[0]
-        return Readout(overall="worth_checking", headline=headline, tip=lead.next_step, alert=shown)
+        tip = alerts[0].next_step if alerts else copy.TIP_CARD
+        return Readout(overall="worth_checking", headline=headline, tip=tip, alert=shown)
 
     active = [i for i in indicators if i.status != "unavailable"]
     if not active:

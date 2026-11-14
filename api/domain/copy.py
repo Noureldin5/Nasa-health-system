@@ -62,6 +62,7 @@ HEADLINE_LEARNING = "Learning your baseline: day {day} of {total}"
 HEADLINE_WORTH_ONE = "1 thing worth checking"
 HEADLINE_WORTH_MANY = "{n} things worth checking"
 
+TIP_CARD = "Open the card marked worth checking and compare it with your usual range."
 TIP_USUAL = "Try moving screen time out of the hour before sleep."
 TIP_LEARNING = "Check in each day. Your own usual range appears after {total} days."
 TIP_UNAVAILABLE = "Your check-in is saved. Readings will fill in when the data link is back."

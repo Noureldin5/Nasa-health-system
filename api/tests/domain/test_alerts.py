@@ -143,7 +143,7 @@ def test_readout_all_in_range():
 
 def test_readout_with_alert():
     shown = make_alert(build_alert(SLEEP_DRIFT, "a1", NOW))
-    r = build_readout([indicator(status="worth_checking")], shown, [])
+    r = build_readout([indicator("sleep_hours", "worth_checking")], shown, [])
     assert r.overall == "worth_checking"
     assert r.headline == "1 thing worth checking"
     assert r.alert == shown
@@ -155,6 +155,20 @@ def test_readout_counts_worth_checking_too():
     other = make_alert(build_alert(HEADACHE, "a1", NOW), id="al2")
     r = build_readout([indicator()], shown, [other])
     assert r.headline == "2 things worth checking"
+
+
+def test_readout_counts_a_card_outside_range_that_no_alert_explains():
+    r = build_readout([indicator(), indicator("co2", "worth_checking")], None, [])
+    assert r.overall == "worth_checking"
+    assert r.headline == "1 thing worth checking"
+    assert r.alert is None
+    assert "usual range" in r.tip
+
+
+def test_readout_does_not_double_count_a_card_an_alert_explains():
+    shown = make_alert(build_alert(HEADACHE, "a1", NOW))  # pins headache and co2
+    cards = [indicator("headache", "worth_checking"), indicator("co2", "worth_checking")]
+    assert build_readout(cards, shown, []).headline == "1 thing worth checking"
 
 
 def test_readout_while_learning():

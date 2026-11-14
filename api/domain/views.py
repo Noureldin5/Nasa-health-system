@@ -22,6 +22,7 @@ from domain.params import UNITS
 from schemas import (
     Alert,
     Brief,
+    CheckinEntry,
     GroundNote,
     Indicator,
     IndicatorKey,
@@ -57,6 +58,7 @@ class Record:
     last_sync_at: datetime | None
     metrics_available: bool = True
     readiness: Readiness | None = field(default=None)
+    checkins: list[CheckinEntry] = field(default_factory=list)
 
 
 def daily_points(points: list[Point]) -> list[DailyPoint]:
@@ -117,6 +119,7 @@ def build_view(record: Record, side: Side, now: datetime) -> RecordView:
         indicators=indicators,
         alert=open_alerts[0] if open_alerts else None,
         worth_checking=open_alerts[1:],
+        checkins=[c for c in record.checkins if astronaut_origin_visible(c.at)],
         briefs=briefs,
         replies=replies,
         notes=notes,

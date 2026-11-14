@@ -78,6 +78,7 @@ def load_record(s: Services, crew_id: str, now: datetime) -> Record:
         notes=s.repo.notes(crew_id),
         last_sync_at=s.repo.last_sync_at(),
         metrics_available=available,
+        checkins=s.repo.checkin_entries(crew_id, now.date() - timedelta(days=14), now.date()),
     )
 
 
@@ -197,12 +198,34 @@ def submit_checkin(s: Services, crew_id: str, body: CheckinIn, now: datetime) ->
     return readout(s, crew_id)
 
 
+HEADACHE_NAME = {level: name for name, level in HEADACHE_LEVEL.items()}
+
+
+def _seed_checkins(s: Services, now: datetime, day: int) -> None:
+    """One saved check-in per story day, built from the seeded mood and headache readings, so
+    "Same as yesterday" works on a fresh demo. Rested 4 is a simulated answer."""
+    start = now - timedelta(days=day)
+    for c in s.repo.crew():
+        moods = s.metrics.series(c["id"], "mood", start, now)
+        heads = {p.at.date(): p for p in s.metrics.series(c["id"], "headache", start, now)}
+        for p in moods:
+            h = heads.get(p.at.date())
+            answers = CheckinIn(
+                mood=round(p.value),
+                headache=HEADACHE_NAME[round(h.value)] if h else None,
+                rested=4,
+                vision_change=False,
+            )
+            s.repo.upsert_checkin(c["id"], p.at.date(), answers, p.at)
+
+
 def reset_demo(s: Services, day: int) -> None:
     """Reseed so real today is mission day `day`, raise alerts the history already earns, and log
     an initial sync so ground has a last sync time."""
     now = s.clock.now()
     s.repo.reset()
     s.metrics.seed(now.date(), day)
+    _seed_checkins(s, now, day)
     for c in s.repo.crew():
         evaluate(s, c["id"], now)
     s.repo.append_sync(SyncRecord(id=new_id("sy"), at=now, up={}, down={}, item_ids=[]))

@@ -246,6 +246,31 @@
         "title": "BriefIn",
         "type": "object"
       },
+      "CheckinEntry": {
+        "description": "A saved check-in as both sides see it, including answers no chart shows (vision change).",
+        "properties": {
+          "answers": {
+            "$ref": "#/components/schemas/CheckinIn"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "at",
+          "answers"
+        ],
+        "title": "CheckinEntry",
+        "type": "object"
+      },
       "CheckinIn": {
         "properties": {
           "body_temp": {
@@ -925,6 +950,14 @@
               "$ref": "#/components/schemas/Brief"
             },
             "title": "Briefs",
+            "type": "array"
+          },
+          "checkins": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CheckinEntry"
+            },
+            "title": "Checkins",
             "type": "array"
           },
           "crew_id": {

@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 
 from domain.views import Record, build_view, daily_points
-from schemas import Alert, Brief, GroundNote, ItemRef, Point, Reply
+from schemas import Alert, Brief, CheckinEntry, CheckinIn, GroundNote, ItemRef, Point, Reply
 
 SYNC = datetime(2026, 11, 14, 8, 0)
 NOW = datetime(2026, 11, 14, 9, 0)
@@ -175,6 +175,14 @@ def test_brief_is_answered_only_when_the_reply_is_visible():
     assert build_view(rec, "station", NOW).briefs[0].state == "sent"
     rec = record(briefs=[brief(state="answered")], replies=[reply(delivered=AFTER)])
     assert build_view(rec, "station", NOW).briefs[0].state == "answered"
+
+
+def test_checkins_follow_the_astronaut_origin_rule():
+    old = CheckinEntry(day=DAY - timedelta(days=1), at=BEFORE, answers=CheckinIn(mood=4))
+    new = CheckinEntry(day=DAY, at=AFTER, answers=CheckinIn(mood=2, vision_change=True))
+    rec = record(checkins=[old, new])
+    assert [c.day for c in build_view(rec, "station", NOW).checkins] == [old.day, new.day]
+    assert [c.day for c in build_view(rec, "ground", NOW).checkins] == [old.day]
 
 
 def test_oldest_open_alert_is_shown_the_rest_wait():

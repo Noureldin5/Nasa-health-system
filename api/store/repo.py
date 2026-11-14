@@ -11,7 +11,7 @@ import threading
 import uuid
 from datetime import date, datetime
 
-from schemas import Alert, Brief, CheckinIn, GroundNote, ItemRef, Reply, SyncRecord
+from schemas import Alert, Brief, CheckinEntry, CheckinIn, GroundNote, ItemRef, Reply, SyncRecord
 
 
 def new_id(prefix: str) -> str:
@@ -68,6 +68,21 @@ class Repo:
         )
         return [
             (date.fromisoformat(r["day"]), CheckinIn.model_validate_json(r["data"])) for r in rows
+        ]
+
+    def checkin_entries(self, crew_id: str, start: date, end: date) -> list[CheckinEntry]:
+        rows = self._all(
+            "SELECT day, data, created_at FROM checkins WHERE crew_id = ? "
+            "AND day BETWEEN ? AND ? ORDER BY day",
+            (crew_id, start.isoformat(), end.isoformat()),
+        )
+        return [
+            CheckinEntry(
+                day=date.fromisoformat(r["day"]),
+                at=datetime.fromisoformat(r["created_at"]),
+                answers=CheckinIn.model_validate_json(r["data"]),
+            )
+            for r in rows
         ]
 
     # alerts

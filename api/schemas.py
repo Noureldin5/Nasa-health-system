@@ -49,6 +49,14 @@ class CheckinIn(BaseModel):
     body_temp: float | None = Field(default=None, gt=25, lt=45)
 
 
+class CheckinEntry(BaseModel):
+    """A saved check-in as both sides see it, including answers no chart shows (vision change)."""
+
+    day: date
+    at: datetime
+    answers: CheckinIn
+
+
 class ItemRef(BaseModel):
     indicator: IndicatorKey
     start: date
@@ -165,6 +173,7 @@ class RecordView(BaseModel):
     indicators: list[Indicator]
     alert: Alert | None = None
     worth_checking: list[Alert] = []
+    checkins: list[CheckinEntry] = []
     briefs: list[Brief] = []
     replies: list[Reply] = []
     notes: list[GroundNote] = []
