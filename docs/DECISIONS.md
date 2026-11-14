@@ -2,7 +2,7 @@
 
 Stack and data contracts every person and every Claude session follows. This is a shared file: change it only through a small `shared/<topic>` PR with one approval (`docs/GIT-WORKFLOW.md`).
 
-Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, `series`, `latest`, mission clock, 3-day sample). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 and 9 are B's to write. Items marked **OPEN** need a team answer before they are final (list in section 7).
+Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, queries, mission clock, 14-day simulator, Cabin Link). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 and 9 are B's to write. Items marked **OPEN** need a team answer before they are final (list in section 7).
 
 ## 1. Stack
 
@@ -128,7 +128,35 @@ day_window(day: int, start: datetime) -> tuple[datetime, datetime]   # begin (in
 ```
 - Time is always passed in or defaulted at the edge. `api/domain/` never calls these, the adapter in `api/metrics/` does.
 
-Coming later in `c/queries` (C5, C6), same style: baseline window stats, daily aggregates for the 5-minute metrics, CO2 versus headache with lag. **B never writes raw MetricsQL.** If a query is missing, ask C.
+Baseline input and daily aggregates (C5):
+
+```python
+from pipeline.queries import DailyValue, WindowStats, daily, baseline_window
+
+daily(metric, *, first_day: int, last_day: int, crew_id=None, labels=None,
+      mission_start=None) -> list[DailyValue]          # day, mean, min, max, n, sources
+baseline_window(metric, *, through_day: int, days: int = 7, crew_id=None, labels=None,
+                mission_start=None) -> WindowStats     # first_day, last_day, n_days, mean, sd, min, max
+```
+
+- Days are mission days, both ends included. Days without data are left out of `daily`.
+- `baseline_window` only measures: mean and sample standard deviation of the daily means. What counts as drift is B's rule in `api/domain/`. `n_days` below `days` means the window is not full yet (calibration).
+
+Cabin Link (C6):
+
+```python
+from pipeline.queries.cabin import cabin_link
+
+cabin_link(crew_id, *, through_day: int, days: int = 14, symptom="headache",
+           max_lag_days: int = 2, mission_start=None) -> CabinLink
+```
+
+- `CabinLink.days`: per mission day the mean and max CO2 of the person's module, hours above the cited limit, whether the day was above the module's usual level, and the symptom strength.
+- `CabinLink.lags`: correlation of the symptom with CO2 0, 1 and 2 days earlier. `r` is `None` when there are fewer than 5 paired days or fewer than 2 days with the symptom (Demo parameters), so a single headache never shows up as a correlation.
+- `CabinLink.limit` is the cited CO2 limit and `CabinLink.caveat` the decision-support line. Both must reach the UI with the numbers.
+- Cited values live in `pipeline/references.py`: CO2 limit 3 mmHg as a 1-hour average (NASA-STD-3001 Volume 2, [V2 6004], via NASA technical brief OCHMO-TB-004), about 3,947 ppm at 760 mmHg cabin pressure. This replaces the 3,500 ppm placeholder in `docs/HANDOFF.md`.
+
+**B never writes raw MetricsQL.** If a query is missing, ask C.
 
 ## 6. VictoriaMetrics behaviour everyone should know
 

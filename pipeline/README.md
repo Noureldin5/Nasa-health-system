@@ -9,6 +9,9 @@ Runtime code uses the Python standard library only (3.12). Run everything from t
 ```bash
 make up        # start VictoriaMetrics
 make sample    # load 3 simulated days for crew a1 (replaces all source="sim" data)
+make mission   # load the 14-day demo mission for a1, a2, a3; today = day 10 (make mission DAY=14 for all of it)
+make follow    # live replay: keep adding simulated readings while the demo runs
+make osd569    # rebuild data/processed/osd569.json from the raw NASA files
 make check     # run the tests
 ```
 
@@ -40,9 +43,12 @@ Each `Sample` has `ts`, `value` and `source` (`sim`, `nasa` or `manual`), so the
 |---|---|
 | `schema.py` | Metric names, units, labels, cadence. Twin of the table in `docs/DECISIONS.md` |
 | `ingest/` | `Point`, `write_points`, `flush` |
-| `queries/` | `series`, `latest`. More in C5 and C6 |
-| `mission.py` | Mission clock: `mission_start`, `mission_day` |
-| `simulator/` | Simulated mission data. Flat baseline for now, the 14-day story is C3 |
+| `queries/` | `series`, `latest`, `daily`, `baseline_window`; `queries/cabin.py` has `cabin_link` (CO2 against a symptom, with lag) |
+| `mission.py` | Mission clock: `mission_start`, `mission_day`, `day_window` |
+| `simulator/` | Simulated 14-day mission with the demo story, live replay, daily snapshot |
+| `osd569/` | ETL: raw NASA OSD-569 files to `data/processed/osd569.json` |
+| `references.py` | Cited reference values (CO2 limit). Anything not cited is a Demo parameter |
+| `crew.py` | Demo crew and which module each person lives in |
 | `vm.py` | The only module that talks HTTP to VictoriaMetrics |
 | `tests/` | `make check`. Tests that need VictoriaMetrics are skipped when it is down; set `PIPELINE_REQUIRE_VM=1` to fail instead |
 
