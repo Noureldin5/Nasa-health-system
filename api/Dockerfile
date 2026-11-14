@@ -9,6 +9,7 @@ WORKDIR /srv/api
 RUN uv sync --frozen --no-dev
 COPY api/ /srv/api/
 
-ENV SQLITE_PATH=/data/records.db METRICS_BACKEND=fake
+# SEED_DAY reseeds the simulated mission on every start (demo). Set it to empty to keep data.
+ENV SQLITE_PATH=/data/records.db METRICS_BACKEND=fake SEED_DAY=10
 EXPOSE 8000
-CMD ["uv", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

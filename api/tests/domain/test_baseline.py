@@ -8,8 +8,12 @@ from domain.baseline import DailyPoint, compute_baseline
 AS_OF = date(2026, 11, 14)
 
 
-def pts(values, end=AS_OF - timedelta(days=1)):
-    """One point per day, the last value on `end`, going back one day per value."""
+def pts(values, end=AS_OF - timedelta(days=3)):
+    """One point per day, the last value on `end`, going back one day per value.
+
+    Default `end` is 3 days before AS_OF: old enough to be inside the baseline, which holds out
+    the 2 days just before today (they are the days drift is judged on).
+    """
     n = len(values)
     return [
         DailyPoint(day=end - timedelta(days=n - 1 - i), value=v, source="sim")
@@ -55,6 +59,24 @@ def test_ignores_points_on_or_after_as_of():
     points = pts([60] * 7) + [DailyPoint(day=AS_OF, value=999, source="sim")]
     b = compute_baseline(points, AS_OF, "heart_rate")
     assert b.band.mean == pytest.approx(60.0)
+
+
+def test_recent_days_do_not_dilute_the_band():
+    # 7 steady days, then the 2 most recent days jump. The band must describe the steady days.
+    steady = pts([60] * 7, end=AS_OF - timedelta(days=3))
+    recent = pts([90, 90], end=AS_OF - timedelta(days=1))  # AS_OF-2 and AS_OF-1
+    b = compute_baseline(steady + recent, AS_OF, "heart_rate")
+    assert b.status == "ready"
+    assert b.band.mean == pytest.approx(60.0)
+
+
+def test_ready_on_day_8_even_though_the_last_2_days_are_held_out():
+    # days 1..7 recorded, day 8 is today: usual range comes from days 1..5
+    b = compute_baseline(
+        pts([60, 61, 62, 61, 60, 62, 61], end=AS_OF - timedelta(days=1)), AS_OF, "heart_rate"
+    )
+    assert b.status == "ready"
+    assert b.calibration_day == 7
 
 
 def test_empty_list_is_learning_day_0():

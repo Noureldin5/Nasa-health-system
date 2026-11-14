@@ -1503,6 +1503,17 @@
             "name": "metric",
             "required": true,
             "schema": {
+              "enum": [
+                "bp_systolic",
+                "bp_diastolic",
+                "heart_rate",
+                "glucose",
+                "body_temp",
+                "sleep_hours",
+                "mood",
+                "headache",
+                "co2"
+              ],
               "title": "Metric",
               "type": "string"
             }
@@ -1513,6 +1524,8 @@
             "required": false,
             "schema": {
               "default": 7,
+              "maximum": 60,
+              "minimum": 1,
               "title": "Days",
               "type": "integer"
             }
@@ -1642,6 +1655,7 @@
     },
     "/crew": {
       "get": {
+        "description": "Crew list as ground sees it: status as of the last sync.",
         "operationId": "crew_crew_get",
         "responses": {
           "200": {
@@ -1692,6 +1706,7 @@
     },
     "/demo/reset": {
       "post": {
+        "description": "Real today becomes mission `day`. Day 10: one headache check-in raises the hero alert.",
         "operationId": "demo_reset_demo_reset_post",
         "parameters": [
           {
@@ -1700,6 +1715,8 @@
             "required": false,
             "schema": {
               "default": 10,
+              "maximum": 14,
+              "minimum": 1,
               "title": "Day",
               "type": "integer"
             }
@@ -1929,6 +1946,7 @@
     },
     "/reference/osd569": {
       "get": {
+        "description": "Serves data/processed/osd569.json (C's ETL). Until it exists, a labeled placeholder with\nno invented numbers.",
         "operationId": "reference_osd569_reference_osd569_get",
         "responses": {
           "200": {
