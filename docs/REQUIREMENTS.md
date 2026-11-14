@@ -25,10 +25,35 @@ Priority: **Must** = needed for a credible submission. **Should** = build if tim
 |---|---|---|---|
 | D1 | Personal baseline drives alerts | An alert compares the reading with the astronaut's own history. Population or Earth ranges are shown as reference, not as the alarm | B |
 | D2 | 30-second check-in | Hero flow, 4 steps or fewer, large buttons, passive data is never retyped | A |
-| D3 | Private by default, share per item | Every item is private until switched on. Switches are visible | A, B |
-| D4 | "What I see / what ground sees" view | Flipping a share switch immediately updates a side-by-side view of exactly what ground would receive. Hidden items read "Not shared", never zero. This is how the demo shows D5 | A, B |
-| D5 | Consult brief (the main claim) | The astronaut picks included items, writes or edits the question, sees the final brief, and sends it at the next ground link. It is a question to a consultant, not a report to a supervisor. Built around the underreporting problem. AURORA already has consent and a ground batch, so the claim is the framing and the astronaut-written question | A, B |
-| D6 | Record of what was shared | A visible list of what was sent, when, and which items | B |
+| D3 | Open record | The astronaut view and the flight surgeon view are built from the same record. Ground sees every item. No setting hides data from ground | A, B |
+| D4 | Astronaut sees what ground sees | "What ground sees" in the astronaut's app matches the flight surgeon screen exactly, including the surgeon's notes, flags and assessments. Nothing exists on the ground side that the astronaut cannot see | A, B |
+| D5 | Consult brief and reply (the main claim) | The astronaut writes or accepts a question, the app pins the items related to the current alert, and the brief is sent at the next ground link. The flight surgeon screen shows the brief on top of the full record. The reply comes back as a card linked to the brief. Advice to a colleague, not an order | A, B |
+| D6 | Sync log | A visible list of every sync to ground: when, and what was sent | B |
+| D7 | Flight surgeon screen | A "Ground" role switch in the same app shows the surgeon's view: the astronaut's full dashboard, the inbox of briefs, a reply box and notes. Notes appear on the astronaut side. Simulated link, local backend only | A, B |
+
+## Must (user flow)
+
+From `docs/USER-FLOW.md`.
+
+| # | Requirement | Done when | Owner |
+|---|---|---|---|
+| U1 | Today's readout after the check-in | One screen: overall status (icon, word, color), the strongest change in plain words, one tip | A, B |
+| U2 | "Same as yesterday" check-in | One tap on the first check-in screen completes it. Any step can be skipped | A |
+| U3 | Calibration period | For the first 7 days (demo parameter) cards read "Learning your baseline: day N of 7" and no drift alerts fire. Only cited safety thresholds can alert | B |
+| U4 | At most one alert per day | The most important one is shown. Others wait in the "Worth checking" card | B |
+| U5 | Drafted consult brief | "Ask the flight surgeon" opens a brief with the alert's items pinned and a suggested question the astronaut can edit (part of D5) | A, B |
+| U6 | Surgeon crew list, inbox and last-sync time | Crew list with status per person, inbox with briefs first, and "Last sync" on every ground screen (part of D7) | A, B |
+| U7 | Points never depend on health values | Streaks and points count completed check-ins only. Reporting a symptom never lowers a score (applies if S4 is built) | A |
+
+## Should (user flow)
+
+| # | Requirement | Owner |
+|---|---|---|
+| U8 | Symptom logging by tapping a body region and a strength | A |
+| U9 | Automatic alert follow-up and close, from passive data and check-ins | B |
+| U10 | Ground reply card linked to its brief | A, B |
+| U11 | Surgeon notes per item, watch flag and measurement request, all visible to the astronaut | A, B |
+| U12 | Weekly measurement slot (BP, glucose, temperature) and weekly summary | A, B |
 
 ## Should
 
@@ -36,7 +61,7 @@ Priority: **Must** = needed for a credible submission. **Should** = build if tim
 |---|---|---|
 | S1 | Cabin Link: CO2 and symptom correlation view with a cited limit | B, C, A |
 | S2 | Environment Switcher: station, spacecraft, rover, surface base change hazards and checks | A, C |
-| S3 | Crew Readiness view built only from shared items | B, A |
+| S3 | Crew Readiness view for the commander: readiness status per person, not raw medical data. The astronaut sees what the commander sees about them | B, A |
 | S4 | Mission Quest: gentle daily goals, streak and score. Reminders, never requirements | A |
 
 ## Could (roadmap, mention in the pitch)
@@ -53,8 +78,8 @@ Radiation Budget Coach, Camera Check (photo compare on the device), Earth-Indepe
 ## Quality requirements
 
 - Accessibility: contrast 4.5:1 or better, 44px touch targets, keyboard use, `prefers-reduced-motion`.
-- Offline: self-host fonts and scripts. No runtime CDN.
-- Tests: baseline and drift logic, consent filtering (nothing unshared is ever in a brief), and the "Not shared, never zero" rule.
+- Offline: self-host fonts and scripts. No runtime CDN. Docker images pinned and pre-pulled. The whole stack (web, API, VictoriaMetrics) starts with no internet.
+- Tests: baseline and drift logic, the open-record rule (astronaut and ground views come from the same record, and every surgeon note is visible to the astronaut), and pinning of alert items in the consult brief.
 - No real patient data. Decision support language on every health message.
 
 ## Not building
@@ -63,4 +88,4 @@ Diagnosis or treatment prescriptions, real patient data, face or voice analysis,
 
 ## Demo (3 minutes)
 
-Problem (astronauts hide symptoms) -> a 30-second check-in -> a drift alert with a next step -> flip share switches and watch "what ground sees" change -> send a consult brief -> turn the network off and show it still works -> close with decision support, NASA data used, roadmap. Details: `.claude/skills/demo-readiness/SKILL.md`.
+Problem (ground directs, astronauts do not see their own medical picture) -> a 30-second check-in -> a drift alert with a next step -> send a consult brief -> switch to the Ground role: the surgeon sees the full record and the question, writes a note and a reply -> back to the astronaut: the note and reply are there, same picture on both ends -> turn the network off and show it still works -> close with decision support, NASA data used, roadmap. Story version: `docs/USER-FLOW.md`. Details: `.claude/skills/demo-readiness/SKILL.md`.

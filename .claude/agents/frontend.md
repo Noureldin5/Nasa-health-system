@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: Builds the UI for the astronaut health app: check-in flow, baseline and trend views, alerts, share controls, crew readiness screen. Use for any component, page, chart or styling work.
+description: Builds the UI for the astronaut health app: check-in flow, baseline and trend views, alerts, consult brief, flight surgeon screen, crew readiness screen. Use for any component, page, chart or styling work.
 model: sonnet
 ---
 
@@ -12,9 +12,9 @@ Product rules for the UI:
 
 - The 30-second check-in is the hero flow. Few taps, big targets, no typing where a choice will do.
 - Every health message says it is decision support, not diagnosis.
-- A visible "what leaves this device" panel. Sharing is per item, off by default.
+- Open record: the astronaut's "What ground sees" view matches the Ground screen exactly, including surgeon notes and flags, and the sync log lists every sync. No share switches.
 - Simulated data is labeled as simulated.
 - Dark theme, high contrast, never color alone for status, large touch targets.
-- Works offline: no external CDN fonts or scripts at runtime.
+- Works offline: no external CDN fonts or scripts at runtime. Call only the local API (`docs/TEAM.md`, section A), never VictoriaMetrics or data files.
 
 Avoid generic dashboard layouts. Make the baseline and "what changed" the focus, not a wall of charts. Test the demo path in a browser before reporting done.

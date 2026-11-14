@@ -1,102 +1,73 @@
-# Ideas: Health Monitoring Software for Astronauts
+# The idea
 
-Team: Kernel Panic Squad (Bishkek, Kyrgyzstan)
-Challenge: "Create Health Monitoring Software for Astronauts on Space Missions" (NASA Space Apps 2026)
+Team: Kernel Panic Squad (Bishkek, Kyrgyzstan). Challenge: "Create Health Monitoring Software for Astronauts on Space Missions" (NASA Space Apps 2026, official text in `docs/CHALLENGE.md`).
 
-> **Read the "Update after competitor research" section first.** Sections marked SUPERSEDED below are kept for history only. Current plan: `docs/README.md` and `docs/REQUIREMENTS.md`.
+This is the current idea, as decided on 2026-11-14. How people use it day to day: `docs/USER-FLOW.md`. What must be built: `docs/REQUIREMENTS.md`. Earlier versions and the reasoning behind changes: `docs/research/ideas-history.md`.
 
-## What the challenge asks (SUPERSEDED: the official text is now in `docs/CHALLENGE.md`)
+## In one sentence
 
-This early summary came from a web search and other teams' repos, written before the official text was available. Use `docs/CHALLENGE.md` instead. The judging criteria and Resources tab links are still missing there.
+**Own Your Baseline** is an offline health app for astronauts that learns each person's own normal, tells them in plain words when something drifts and what to do, and gives the astronaut and the flight surgeon on Earth the same picture, so ground consults instead of directing.
 
-- Long missions expose astronauts to radiation, isolation, altered gravity and a closed environment. These cause immune changes, bone loss, cardiovascular problems and behavioral health issues.
-- Astronauts must spot changes in themselves. Build software that gathers health indicators and lets the astronaut evaluate and act.
-- Difficulty: Intermediate. Subjects: Human Exploration, Software, Space Exploration.
-- Data other teams report using: NASA OSDR (Inspiration4 studies OSD-575, OSD-656; OSD-569 blood counts and lab ranges), NASA RadLab (ISS radiation: DOSTEL, CRaTER, MSL-RAD), NASA Human Research Program guidance.
+## The problem we solve
 
-## Update after reading the official text (`docs/CHALLENGE.md`)
+From the team's research (`docs/research/astronaut-health-problems.md`):
 
-The official objective asks for a visual tool with guidance on treatments and health improvements. Judges will expect these, so concept 1 must include them, not only the privacy angle:
+1. Astronauts must assess their own health far from Earth, often without a live link (the official objective).
+2. Workdays are long (about 16 hours) and procedures tedious. Tools that need a lot of input go unused.
+3. The hardest interpersonal conflict on missions is between the crew and Mission Control. Research recommends moving ground from directing the crew to consulting it.
+4. Astronauts do not see their own medical picture the way ground does.
 
-- Clickable human body map showing per-body-part function and status (the challenge's own example).
-- The listed indicators: blood pressure, heart rate, blood sugar, body temperature, sleep hours, mood.
-- Explainer cards: which measurement, why, how the five HRP hazards affect it, when to call the flight surgeon.
-- Trend charts, status color coding, and optional gamification and environment selector.
+## The product, in five parts
 
-Privacy, offline and the baseline stay as the differentiator on top of this required core. The research notes' claim that the section above is still partial remains true.
+| Part | What it does | Why |
+|---|---|---|
+| 1. Personal baseline | Learns the astronaut's own normal over the first 7 days (demo parameter) and compares new readings with it. Earth ranges (NASA OSD-569) are shown only as reference | Space changes the body, so Earth ranges would raise false alarms |
+| 2. Low-effort input | Passive data from a wearable and cabin sensors. A 30-second morning check-in, one tap on a normal day | Astronauts have no time |
+| 3. Self-assessment and guidance | Clickable body map, six indicators (blood pressure, heart rate, blood sugar, temperature, sleep, mood), trend charts, color plus icon plus word status, explainers. Each alert says what changed, one next step, and when to contact the flight surgeon | Required by the official objective |
+| 4. Open record | The flight surgeon sees the astronaut's full record. The astronaut sees everything the flight surgeon sees, including notes, flags and assessments. Nothing is hidden either way | Same picture on both ends, no secret judgements |
+| 5. Consult layer | The astronaut asks ground a question through a consult brief, with related data pinned. The surgeon replies with advice, not orders. Replies and notes show up in the astronaut's app | Ground consults, it does not direct |
 
-## Update after competitor research (read this first)
+Inside the product, as one screen: **Cabin Link**, which shows when symptoms such as headaches follow rises in cabin CO2, and suggests what to try.
 
-Details: `docs/research/competitors.md`. More than 40 public repos target this same challenge. The strongest, AURORA, already has an offline app, personal baselines, cited alerts, radiation data and per-audience consent. Personal baseline, offline use and per-item consent are therefore not new.
+Always: decision support, never diagnosis. Works with the network off. Simulated data is labeled.
 
-Recommended angle, one story: **astronauts hide symptoms for fear of being grounded, and conflict with Mission Control is the hardest problem. Build the tool that makes honest reporting safe.**
+## Who uses it
 
-- Own Your Baseline stays the product and the required core (body map, indicators, trends, guidance).
-- The difference is a **consult layer**: an astronaut-led **consult brief** (the astronaut picks the data, writes the question, sees it, sends it at the next ground link) built around the underreporting problem. Ground consults; it does not direct. A "what I see / what ground sees" view that updates as share switches flip is how the demo shows it.
-- What AURORA already has (read in its source, `apps/web/src`): a consent matrix by audience and data category, a ground batch of consented records sent with a simulated Mars delay, and an audit trail. We did not find a view of the batch contents before sending, or an astronaut-written question. So the mechanism is not our claim. The claim is the problem framing and the consult brief.
-- Cabin Link stays as the signature insight screen. Crew Readiness is optional.
-- Demo beat: flip a switch, watch ground's view change, send the brief, turn the network off.
+| Role | Uses it to | Sees |
+|---|---|---|
+| Astronaut (main user) | Check in, understand their status, act on tips, ask ground | Everything about themselves, plus everything ground writes about them |
+| Flight surgeon (ground) | Review the record, answer briefs, add notes, request a measurement | The astronaut's full record, as of the last ground link |
+| Commander (optional) | Plan workload | Readiness status per person, not raw medical data. The astronaut sees what the commander sees about them |
 
-Risks: another team may add a similar consult feature, and the claim that nobody covers it comes from a sample of about a dozen repos. Mitigation: tell the story through the research (National Academies, "Safe Passage", ch. 8) and make the demo beat fast and visual.
+Step-by-step flows for each role: `docs/USER-FLOW.md`.
 
-Requirements: `docs/REQUIREMENTS.md`.
+## What makes us different
 
-## Why differentiate
+More than 40 teams work on this challenge (`docs/research/competitors.md`). Personal baselines, offline apps, body maps, cited alerts and radiation data are common, so we do not lead with them.
 
-Many teams will build a vitals dashboard with charts and an alert. Judges will see dozens. The team's own research (`docs/research/astronaut-health-problems.md`) gives a better angle: the real problems are hidden symptoms, no Earth link, no time, and loss of autonomy. A tool that ignores those will not be used on a real mission.
+Our pitch: **"Same picture on both ends. Ground consults, it does not direct."** The astronaut sees everything ground sees and writes about them, and asks questions instead of receiving orders.
 
-Frame every concept as decision support, not diagnosis.
+Not yet verified: whether any other team shows the flight surgeon's notes to the astronaut. Check the competitor repos before calling it new.
 
-## Ranked concepts
+## Risks and our answers
 
-### 1. Recommended: "Own Your Baseline" (offline astronaut health companion, plus the consult layer above)
+| Risk | Answer |
+|---|---|
+| An astronaut who knows ground sees everything may underreport symptoms in check-ins | Every note and flag from ground is visible, so there are no secret judgements. Replies are advice. Reporting a symptom never lowers a score. Passive sensor data is not affected. Expect this question from judges |
+| Too much to build in a hackathon | Cut order in `docs/TEAM.md`. Never cut the body map, indicators, check-in, consult brief, flight surgeon screen, offline mode and OSD-569 data |
+| Another team adds a similar consult feature | Tell the story through the research (crew versus ground conflict) and keep the demo beat fast and visual |
+| Thresholds without sources | Every threshold has a citation or the label "Demo parameter" (CLAUDE.md, rule 7) |
 
-An onboard app the astronaut owns. It learns a personal baseline from passive data plus a 30-second daily check-in. It flags drift from that baseline and suggests next steps from an onboard knowledge base. Nothing leaves the device unless the astronaut chooses to share.
+## Other concepts and their status
 
-- Maps to: astronaut self-evaluation and action (the objective), fear of grounding, no real-time Earth support, no time.
-- Core features: personal baseline and trend view; 30-second check-in (sleep, headache, mood, vision); drift alerts with plain-language next steps; share-with-ground switch per item; offline operation.
-- Data: OSDR blood-count ranges for reference values; simulated wearable and cabin data for the demo.
-- Why judges remember it: it solves the human reason monitoring fails (people hide symptoms), not just the chart.
+| Concept | Status |
+|---|---|
+| Cabin Link (CO2 and symptoms) | Built inside the product (Should) |
+| Crew Readiness (commander view) | Optional screen (Should) |
+| Environment Switcher (station, spacecraft, rover, surface base) | Optional (Should) |
+| Mission Quest (streaks and points for check-ins, never for health values) | Optional (Should) |
+| Radiation Budget Coach | Roadmap, mention in the pitch |
+| Camera Check (photo compare on the device) | Roadmap |
+| Earth-Independent Triage (offline decision trees) | Roadmap |
 
-### 2. "Cabin Link": symptoms correlated with the environment
-
-Combines symptom check-ins with CO2 and cabin environment data. Shows when headaches or low focus follow CO2 rises, and suggests fixes (ventilation checks, task timing).
-
-- Maps to: environment effects on cognition (NASA CO2 research), SANS and headaches.
-- Why judges remember it: concrete, science-backed, and it turns data into a cause the crew can act on.
-- Risk: needs a believable simulated cabin dataset. Good as a feature inside concept 1.
-
-### 3. "Crew Readiness": crew-level view
-
-Shows aggregate crew readiness (sleep debt, workload, stress) without exposing individual raw data. Helps the commander plan work.
-
-- Maps to: whole crew sleep-deprived or medicated, interpersonal friction.
-- Risk: touches privacy. Only shared items appear, otherwise it feels like surveillance. Good as a second screen.
-
-### 4. "Radiation Budget Coach"
-
-Tracks cumulative radiation dose from RadLab-style data against limits and shows remaining budget per crew member.
-
-- Maps to: radiation exposure, a stated mission risk. Uses real NASA data directly.
-- Risk: narrower, and a dose number alone does not tell the astronaut what to do.
-
-### 5. "Earth-Independent Triage"
-
-A guided symptom triage with offline decision trees for common problems (headache, nausea, sleep loss). Output: self-care steps, when to escalate.
-
-- Maps to: no real-time Earth support.
-- Risk: medical content must be sourced and labeled as decision support. Needs careful wording.
-
-## Recommendation (SUPERSEDED by "Update after competitor research" above)
-
-Build concept 1 as the product, with the consult layer. Fold in concept 2 (CO2 correlation) as the signature insight and concept 3 as a shareable crew screen. Mention 4 and 5 as roadmap. The old story, "private by default, working without Earth", is no longer the lead because other teams already have it.
-
-## Ways to stand out from other teams (SUPERSEDED)
-
-Use the demo beat in `docs/REQUIREMENTS.md` ("Demo (3 minutes)") instead: a check-in, a drift alert, flipping share switches while ground's view changes, sending a consult brief, then the network off.
-
-## Open questions for the team
-
-1. Which teammate owns frontend, backend, data and the demo story?
-2. Do we have the missing sections 1-6 of the research notes?
-3. What is the official judging criteria text? (fill `docs/CHALLENGE.md`)
+Designs for all of them: `docs/DESIGN.md`.

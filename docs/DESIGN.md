@@ -17,7 +17,7 @@ Dark, high-contrast, instrument-panel feel. Use these as CSS variables.
 | `--line` | `#23304A` | borders |
 | `--text` | `#E6ECF5` | main text |
 | `--muted` | `#9AA8BF` | secondary text |
-| `--accent` | `#3DD6C3` | primary actions, focus, "private" cues |
+| `--accent` | `#3DD6C3` | primary actions, focus |
 | `--ok` | `#5FE0B5` | in range |
 | `--watch` | `#F5BF55` | worth checking |
 | `--crit` | `#FF8A7E` | contact the flight surgeon |
@@ -42,10 +42,11 @@ Frontend notes:
 - Indicator card: name, status pill, big value with unit, a 7-point sparkline with the last point emphasized, and "Your baseline min to max".
 - Body map: build as one SVG with a `<button>` per region (brain and eyes, heart, bones, muscles). Selecting a region opens its explainer: what it does, which measurement, how the five HRP hazards affect it, when to call the flight surgeon. The design only shows labels, so the explainer panel still needs designing.
 - Check-in: one question per screen, big segmented buttons (`aria-pressed`), a 4-step progress bar, an "about 20 s left" timer. Heart rate and sleep come from the wearable, never typed.
-- Share panel: a switch per item, default off. A dashed "Next export to flight surgeon" box lists exactly what would be sent. Sending queues until the next ground link.
+- Share panel: superseded by the open record (2026-11-14, see `docs/IDEAS.md`). Drop the switches. Reuse the screen as the sync log: what was sent to ground and when, plus queued briefs.
 - Blood-count card (needs design, requirement M2b): add a seventh card or an immune/blood region on the body map showing white cells and lymphocytes. Label it "Inspiration4 crew sample, not your labs".
 - Real data: show the OSD-569 min and max as an "Earth reference range" beside the astronaut's own baseline. Status color and alerts follow the personal baseline, not the Earth range (see `docs/research/competitors.md`).
-- Consult layer (design needed): see the added board "What I see / what ground sees" in the same canvas. Left side lists the astronaut's items, each with a share switch. Right side shows exactly what ground would receive, with hidden items shown as "Not shared", never zero. Below it, the consult brief: included items, the question, and a "Send at next ground link" button.
+- Consult layer (needs redesign): `Ground.dc.html` was drawn for the old per-item sharing. Rework it for the open record: no switches and no "Not shared". The astronaut's "What ground sees" view shows the same record as the surgeon screen, plus the surgeon's notes. Below it, the consult brief: pinned items, the question, and a "Send at next ground link" button.
+- Flight surgeon screen (design needed, requirement D7): a "Ground" role switch. Full dashboard of the astronaut, an inbox of briefs with the question on top, a reply box and a notes field. Everything written here also appears in the astronaut's app.
 
 ### 2. Cabin Link
 
@@ -61,8 +62,7 @@ Link: https://claude.ai/artifact/Fa8RRwgeqKbHrhRg6jf3CR . Source: `design/cabin-
 Link: https://claude.ai/artifact/24pLRqM1CYeeKgDa5pTqwy . Source: `design/crew-readiness/`.
 
 - Four crew cards in a grid, each with a sleep bar and a workload bar, plus a suggestion card for the commander.
-- A hidden item shows "Not shared", never zero, and a member who shares nothing gets a dashed card. This is the core privacy rule. Test it.
-- Build the view only from records the astronaut exported. It must have no access to private data.
+- Open record default (2026-11-14): the commander sees a readiness status per person (sleep and workload level), not raw medical data. The astronaut can see what the commander sees about them. The design's "Not shared" cards are superseded.
 
 ### 4. Mission Quest
 
@@ -98,10 +98,10 @@ Link: https://claude.ai/artifact/KydsKCxifXmm25KRvecMxx . Source: `design/camera
 ## Build order for the frontend
 
 1. Tokens and the status pill component (icon + word + color).
-2. Indicator card with sparkline, fed by OSD-569 values and ranges.
+2. Indicator card with sparkline and personal baseline, fed by the API. OSD-569 goes on the separate blood-count card as an Earth reference range.
 3. Dashboard layout and body map.
 4. Check-in flow.
-5. Share panel and Crew Readiness (shared logic: only exported records).
+5. Consult brief, flight surgeon screen (Ground role), "What ground sees", sync log.
 6. Cabin Link chart.
-7. Environment Switcher and Mission Quest.
-8. Offline: service worker, self-hosted fonts.
+7. Environment Switcher, then Crew Readiness and Mission Quest if time is left.
+8. Offline: self-hosted fonts and bundled scripts, no runtime CDN. The app talks only to the local API.
