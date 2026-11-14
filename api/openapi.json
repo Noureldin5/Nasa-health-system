@@ -1,0 +1,1952 @@
+{
+  "components": {
+    "schemas": {
+      "Alert": {
+        "properties": {
+          "closed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "contact_if": {
+            "title": "Contact If",
+            "type": "string"
+          },
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "indicator": {
+            "enum": [
+              "bp_systolic",
+              "bp_diastolic",
+              "heart_rate",
+              "glucose",
+              "body_temp",
+              "sleep_hours",
+              "mood",
+              "headache",
+              "co2"
+            ],
+            "title": "Indicator",
+            "type": "string"
+          },
+          "next_step": {
+            "title": "Next Step",
+            "type": "string"
+          },
+          "opened_at": {
+            "format": "date-time",
+            "title": "Opened At",
+            "type": "string"
+          },
+          "related_items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "title": "Related Items",
+            "type": "array"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "number"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "closed"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "what_changed": {
+            "title": "What Changed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "crew_id",
+          "indicator",
+          "what_changed",
+          "next_step",
+          "contact_if",
+          "related_items",
+          "severity",
+          "state",
+          "opened_at"
+        ],
+        "title": "Alert",
+        "type": "object"
+      },
+      "Band": {
+        "properties": {
+          "demo_parameter": {
+            "default": true,
+            "title": "Demo Parameter",
+            "type": "boolean"
+          },
+          "high": {
+            "title": "High",
+            "type": "number"
+          },
+          "low": {
+            "title": "Low",
+            "type": "number"
+          },
+          "mean": {
+            "title": "Mean",
+            "type": "number"
+          }
+        },
+        "required": [
+          "low",
+          "high",
+          "mean"
+        ],
+        "title": "Band",
+        "type": "object"
+      },
+      "Brief": {
+        "properties": {
+          "alert_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alert Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "pinned_items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "title": "Pinned Items",
+            "type": "array"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "sent_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sent At"
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "sent",
+              "answered"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "crew_id",
+          "question",
+          "pinned_items",
+          "state",
+          "created_at"
+        ],
+        "title": "Brief",
+        "type": "object"
+      },
+      "BriefDraft": {
+        "properties": {
+          "alert_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alert Id"
+          },
+          "pinned_items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "title": "Pinned Items",
+            "type": "array"
+          },
+          "question_suggestion": {
+            "title": "Question Suggestion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_suggestion",
+          "pinned_items"
+        ],
+        "title": "BriefDraft",
+        "type": "object"
+      },
+      "BriefIn": {
+        "properties": {
+          "alert_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alert Id"
+          },
+          "question": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "title": "BriefIn",
+        "type": "object"
+      },
+      "CheckinIn": {
+        "properties": {
+          "body_temp": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 45.0,
+                "exclusiveMinimum": 25.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body Temp"
+          },
+          "bp_diastolic": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 200.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bp Diastolic"
+          },
+          "bp_systolic": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 300.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bp Systolic"
+          },
+          "glucose": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 800.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glucose"
+          },
+          "headache": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "mild",
+                  "moderate",
+                  "strong"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headache"
+          },
+          "mood": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mood"
+          },
+          "rested": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rested"
+          },
+          "same_as_yesterday": {
+            "default": false,
+            "title": "Same As Yesterday",
+            "type": "boolean"
+          },
+          "vision_change": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vision Change"
+          }
+        },
+        "title": "CheckinIn",
+        "type": "object"
+      },
+      "CrewRow": {
+        "properties": {
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "last_sync_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sync At"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "open_alerts": {
+            "title": "Open Alerts",
+            "type": "integer"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "learning",
+              "in_range",
+              "worth_checking",
+              "contact_surgeon",
+              "unavailable"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "unanswered_briefs": {
+            "title": "Unanswered Briefs",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "crew_id",
+          "name",
+          "status",
+          "open_alerts",
+          "unanswered_briefs"
+        ],
+        "title": "CrewRow",
+        "type": "object"
+      },
+      "GroundNote": {
+        "properties": {
+          "author": {
+            "title": "Author",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "note",
+              "watch_flag",
+              "measurement_request"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "enum": [
+                  "bp_systolic",
+                  "bp_diastolic",
+                  "heart_rate",
+                  "glucose",
+                  "body_temp",
+                  "sleep_hours",
+                  "mood",
+                  "headache",
+                  "co2"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "crew_id",
+          "kind",
+          "text",
+          "author",
+          "created_at"
+        ],
+        "title": "GroundNote",
+        "type": "object"
+      },
+      "GroundNoteIn": {
+        "properties": {
+          "author": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Author",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "note",
+              "watch_flag",
+              "measurement_request"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "enum": [
+                  "bp_systolic",
+                  "bp_diastolic",
+                  "heart_rate",
+                  "glucose",
+                  "body_temp",
+                  "sleep_hours",
+                  "mood",
+                  "headache",
+                  "co2"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "text": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "text",
+          "author"
+        ],
+        "title": "GroundNoteIn",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "InboxItem": {
+        "properties": {
+          "alert": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Alert"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "brief": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Brief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "brief",
+              "alert"
+            ],
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "crew_id",
+          "at"
+        ],
+        "title": "InboxItem",
+        "type": "object"
+      },
+      "Indicator": {
+        "properties": {
+          "baseline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Band"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "calibration_day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Day"
+          },
+          "earth_reference": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Band"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "key": {
+            "enum": [
+              "bp_systolic",
+              "bp_diastolic",
+              "heart_rate",
+              "glucose",
+              "body_temp",
+              "sleep_hours",
+              "mood",
+              "headache",
+              "co2"
+            ],
+            "title": "Key",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "sim",
+              "nasa"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "learning",
+              "in_range",
+              "worth_checking",
+              "contact_surgeon",
+              "unavailable"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "unit",
+          "status",
+          "source"
+        ],
+        "title": "Indicator",
+        "type": "object"
+      },
+      "ItemRef": {
+        "properties": {
+          "end": {
+            "format": "date",
+            "title": "End",
+            "type": "string"
+          },
+          "indicator": {
+            "enum": [
+              "bp_systolic",
+              "bp_diastolic",
+              "heart_rate",
+              "glucose",
+              "body_temp",
+              "sleep_hours",
+              "mood",
+              "headache",
+              "co2"
+            ],
+            "title": "Indicator",
+            "type": "string"
+          },
+          "start": {
+            "format": "date",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "indicator",
+          "start",
+          "end"
+        ],
+        "title": "ItemRef",
+        "type": "object"
+      },
+      "Osd569Reference": {
+        "properties": {
+          "dataset_id": {
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/ReferenceRange"
+            },
+            "title": "Indicators",
+            "type": "array"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "placeholder": {
+            "default": false,
+            "title": "Placeholder",
+            "type": "boolean"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dataset_id",
+          "url",
+          "label",
+          "indicators"
+        ],
+        "title": "Osd569Reference",
+        "type": "object"
+      },
+      "Point": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "sim",
+              "nasa"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "at",
+          "value",
+          "source"
+        ],
+        "title": "Point",
+        "type": "object"
+      },
+      "Readiness": {
+        "properties": {
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "readiness": {
+            "enum": [
+              "ready",
+              "check",
+              "learning"
+            ],
+            "title": "Readiness",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "readiness",
+          "reason"
+        ],
+        "title": "Readiness",
+        "type": "object"
+      },
+      "Readout": {
+        "properties": {
+          "alert": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Alert"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "disclaimer": {
+            "default": "Decision support, not a diagnosis.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "overall": {
+            "enum": [
+              "learning",
+              "in_range",
+              "worth_checking",
+              "contact_surgeon",
+              "unavailable"
+            ],
+            "title": "Overall",
+            "type": "string"
+          },
+          "tip": {
+            "title": "Tip",
+            "type": "string"
+          }
+        },
+        "required": [
+          "overall",
+          "headline",
+          "tip"
+        ],
+        "title": "Readout",
+        "type": "object"
+      },
+      "RecordView": {
+        "properties": {
+          "alert": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Alert"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "briefs": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Brief"
+            },
+            "title": "Briefs",
+            "type": "array"
+          },
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "disclaimer": {
+            "default": "Decision support, not a diagnosis.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/Indicator"
+            },
+            "title": "Indicators",
+            "type": "array"
+          },
+          "last_sync_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sync At"
+          },
+          "notes": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundNote"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "readiness": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Readiness"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "replies": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Reply"
+            },
+            "title": "Replies",
+            "type": "array"
+          },
+          "side": {
+            "enum": [
+              "station",
+              "ground"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "worth_checking": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Alert"
+            },
+            "title": "Worth Checking",
+            "type": "array"
+          }
+        },
+        "required": [
+          "crew_id",
+          "side",
+          "as_of",
+          "indicators"
+        ],
+        "title": "RecordView",
+        "type": "object"
+      },
+      "ReferenceRange": {
+        "properties": {
+          "indicator": {
+            "title": "Indicator",
+            "type": "string"
+          },
+          "range_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Max"
+          },
+          "range_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Min"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "indicator",
+          "unit"
+        ],
+        "title": "ReferenceRange",
+        "type": "object"
+      },
+      "Reply": {
+        "properties": {
+          "author": {
+            "title": "Author",
+            "type": "string"
+          },
+          "brief_id": {
+            "title": "Brief Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "brief_id",
+          "author",
+          "text",
+          "created_at"
+        ],
+        "title": "Reply",
+        "type": "object"
+      },
+      "ReplyIn": {
+        "properties": {
+          "author": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Author",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "author",
+          "text"
+        ],
+        "title": "ReplyIn",
+        "type": "object"
+      },
+      "Series": {
+        "properties": {
+          "crew_id": {
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "key": {
+            "enum": [
+              "bp_systolic",
+              "bp_diastolic",
+              "heart_rate",
+              "glucose",
+              "body_temp",
+              "sleep_hours",
+              "mood",
+              "headache",
+              "co2"
+            ],
+            "title": "Key",
+            "type": "string"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/Point"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "crew_id",
+          "key",
+          "points"
+        ],
+        "title": "Series",
+        "type": "object"
+      },
+      "SyncRecord": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "down": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Down",
+            "type": "object"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "item_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Item Ids",
+            "type": "array"
+          },
+          "up": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Up",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "at",
+          "up",
+          "down",
+          "item_ids"
+        ],
+        "title": "SyncRecord",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Station-server API. Decision support, not a diagnosis.",
+    "title": "Own Your Baseline API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/alerts/{alert_id}/close": {
+      "post": {
+        "operationId": "close_alert_alerts__alert_id__close_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alert"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close Alert",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/briefs": {
+      "post": {
+        "operationId": "post_brief_astronaut__crew_id__briefs_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BriefIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Brief"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Brief",
+        "tags": [
+          "briefs"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/briefs/draft": {
+      "get": {
+        "operationId": "brief_draft_astronaut__crew_id__briefs_draft_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BriefDraft"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brief Draft",
+        "tags": [
+          "briefs"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/checkin": {
+      "post": {
+        "operationId": "post_checkin_astronaut__crew_id__checkin_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckinIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readout"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Checkin",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/readout": {
+      "get": {
+        "operationId": "astronaut_readout_astronaut__crew_id__readout_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readout"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Astronaut Readout",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/series/{metric}": {
+      "get": {
+        "operationId": "astronaut_series_astronaut__crew_id__series__metric__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "metric",
+            "required": true,
+            "schema": {
+              "title": "Metric",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Series"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Astronaut Series",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/astronaut/{crew_id}/view": {
+      "get": {
+        "operationId": "astronaut_view_astronaut__crew_id__view_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Astronaut View",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/briefs/{brief_id}/reply": {
+      "post": {
+        "operationId": "post_reply_briefs__brief_id__reply_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brief_id",
+            "required": true,
+            "schema": {
+              "title": "Brief Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reply"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Reply",
+        "tags": [
+          "briefs"
+        ]
+      }
+    },
+    "/crew": {
+      "get": {
+        "operationId": "crew_crew_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CrewRow"
+                  },
+                  "title": "Response Crew Crew Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Crew",
+        "tags": [
+          "crew"
+        ]
+      }
+    },
+    "/crew/readiness": {
+      "get": {
+        "operationId": "crew_readiness_crew_readiness_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Readiness"
+                  },
+                  "title": "Response Crew Readiness Crew Readiness Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Crew Readiness",
+        "tags": [
+          "crew"
+        ]
+      }
+    },
+    "/demo/reset": {
+      "post": {
+        "operationId": "demo_reset_demo_reset_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "day",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "title": "Day",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Demo Reset Demo Reset Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Demo Reset",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/ground/inbox": {
+      "get": {
+        "operationId": "ground_inbox_ground_inbox_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/InboxItem"
+                  },
+                  "title": "Response Ground Inbox Ground Inbox Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ground Inbox",
+        "tags": [
+          "ground"
+        ]
+      }
+    },
+    "/ground/{crew_id}/notes": {
+      "post": {
+        "operationId": "post_note_ground__crew_id__notes_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroundNoteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroundNote"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Note",
+        "tags": [
+          "ground"
+        ]
+      }
+    },
+    "/ground/{crew_id}/view": {
+      "get": {
+        "operationId": "ground_view_ground__crew_id__view_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ground View",
+        "tags": [
+          "ground"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/link/log": {
+      "get": {
+        "operationId": "link_log_link_log_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SyncRecord"
+                  },
+                  "title": "Response Link Log Link Log Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Link Log",
+        "tags": [
+          "link"
+        ]
+      }
+    },
+    "/link/sync": {
+      "post": {
+        "operationId": "link_sync_link_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Link Sync",
+        "tags": [
+          "link"
+        ]
+      }
+    },
+    "/reference/osd569": {
+      "get": {
+        "operationId": "reference_osd569_reference_osd569_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Osd569Reference"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Reference Osd569",
+        "tags": [
+          "reference"
+        ]
+      }
+    }
+  }
+}
