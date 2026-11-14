@@ -57,6 +57,8 @@ def _fetch(metric: schema.Metric, chosen: dict[str, str], start: datetime, end: 
         Sample(datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc), value, labels.get("source", ""))
         for labels, timestamp_ms, value in rows
     ]
+    # The same point written twice (a reload without a delete) comes back twice. Keep one.
+    samples = list(dict.fromkeys(samples))
     samples.sort(key=_order)
     return samples
 

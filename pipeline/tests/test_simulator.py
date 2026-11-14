@@ -80,3 +80,96 @@ def test_start_for_puts_now_inside_the_requested_day():
         start = start_for(now, today_is_day=10)
         assert mission_day(now, start) == 10
         assert (start.hour, start.minute, start.utcoffset()) == (18, 0, timedelta(0))
+
+
+# --- the 14-day story -------------------------------------------------------------------
+
+from pathlib import Path  # noqa: E402
+
+from pipeline.crew import CREW, module_of  # noqa: E402
+from pipeline.simulator import CHECKIN_METRICS, co2_extra_ppm, daily_snapshot  # noqa: E402
+
+MISSION = MissionPlan(seed=42, mission_start=START, days=14, crew=CREW)
+MISSION_END = START + 14 * DAY
+SNAPSHOT = Path(__file__).resolve().parents[2] / "data" / "simulated" / "mission_seed42_14d_daily.csv"
+
+
+def daily_mean(points, metric, key, value, day):
+    values = [p.value for p in points if p.metric == metric and p.labels.get(key) == value and mission_day(p.ts, START) == day]
+    return sum(values) / len(values)
+
+
+def headache_by_day(points, crew_id):
+    return {
+        mission_day(p.ts, START): p.value
+        for p in points
+        if p.metric == "symptom_strength" and p.labels["crew_id"] == crew_id
+    }
+
+
+def test_co2_rises_in_node1_before_the_first_headache():
+    points = generate(MISSION, MISSION_END)
+    usual = daily_mean(points, "co2_ppm", "module", "node1", 8)
+    assert daily_mean(points, "co2_ppm", "module", "node1", 9) > usual + 1000  # the rise is on day 9
+    headaches = headache_by_day(points, "a1")
+    assert [day for day, strength in headaches.items() if strength > 0] == [10, 11]  # the headache follows on day 10
+    assert headaches[10] == 2 and headaches[11] == 1
+
+
+def test_co2_returns_to_its_usual_level_and_headaches_stop():
+    points = generate(MISSION, MISSION_END)
+    usual = daily_mean(points, "co2_ppm", "module", "node1", 8)
+    assert abs(daily_mean(points, "co2_ppm", "module", "node1", 13) - usual) < 100
+    assert all(headache_by_day(points, "a1")[day] == 0 for day in (12, 13, 14))
+
+
+def test_the_other_module_and_its_crew_member_stay_steady():
+    points = generate(MISSION, MISSION_END)
+    assert module_of("a3") == "lab"
+    lab = [daily_mean(points, "co2_ppm", "module", "lab", day) for day in range(1, 15)]
+    assert max(lab) - min(lab) < 100
+    assert set(headache_by_day(points, "a3").values()) == {0}
+    assert all(co2_extra_ppm("lab", t / 10) == 0 for t in range(0, 140))
+
+
+def test_sleep_debt_drifts_down_then_recovers():
+    points = generate(MISSION, MISSION_END)
+    sleep = {mission_day(p.ts, START): p.value for p in points if p.metric == "sleep_hours" and p.labels["crew_id"] == "a2"}
+    baseline = sum(sleep[day] for day in range(1, 8)) / 7
+    assert sleep[11] < baseline - 1 and sleep[12] < baseline - 1  # the debt
+    assert sleep[14] > baseline - 0.5  # the recovery
+    resting = lambda day: daily_mean(points, "hr_bpm", "crew_id", "a2", day)  # noqa: E731
+    assert resting(12) > resting(7) + 4 and abs(resting(14) - resting(7)) < 1
+
+
+def test_the_first_week_is_a_steady_baseline_for_everyone():
+    points = [p for p in generate(MISSION, MISSION_END) if mission_day(p.ts, START) <= 7]
+    assert {p.value for p in points if p.metric == "symptom_strength"} == {0}
+    for crew_id in CREW:
+        means = [daily_mean(points, "hr_bpm", "crew_id", crew_id, day) for day in range(1, 8)]
+        assert max(means) - min(means) < 1
+
+
+def test_live_crew_has_no_simulated_check_in_from_today():
+    now = START + 9 * DAY + timedelta(hours=12)  # midday on day 10
+    points = generate(MISSION, now, live_crew=("a1",), live_from_day=10)
+    a1_days = {mission_day(p.ts, START) for p in points if p.metric in CHECKIN_METRICS and p.labels["crew_id"] == "a1"}
+    a2_days = {mission_day(p.ts, START) for p in points if p.metric in CHECKIN_METRICS and p.labels["crew_id"] == "a2"}
+    assert max(a1_days) == 9 and max(a2_days) == 10
+    # Passive data for the live crew member is still there today.
+    assert any(p.metric == "sleep_hours" and p.labels["crew_id"] == "a1" and mission_day(p.ts, START) == 10 for p in points)
+
+
+def test_replay_adds_exactly_the_points_that_became_due():
+    earlier, later = START + 9 * DAY + timedelta(hours=12), START + 9 * DAY + timedelta(hours=13)
+    loaded, replayed = generate(MISSION, earlier), generate(MISSION, later, after=earlier)
+    assert sorted(map(repr, loaded + replayed)) == sorted(map(repr, generate(MISSION, later)))
+    assert replayed and min(p.ts for p in replayed) > earlier
+
+
+def test_committed_snapshot_matches_the_generator():
+    # If this fails, run: make snapshot
+    text = SNAPSHOT.read_text(encoding="utf-8")
+    assert text == daily_snapshot(MISSION)
+    assert text.startswith("# SIMULATED DATA")
+    assert len(text.splitlines()) == 2 + 14 * len(CREW)
