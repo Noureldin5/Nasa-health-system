@@ -1,6 +1,6 @@
 # OSD-569 raw files (NASA data, source="nasa")
 
-Raw files from NASA OSDR, **never edited**. Processing is a script that reads them (C4, `pipeline/osd569/`, not written yet).
+Raw files from NASA OSDR, **never edited**. Processing is a script that reads them: `python3 -m pipeline.osd569` writes `data/processed/osd569.json`. `source.json` is the machine-readable provenance the script reads.
 
 | | |
 |---|---|
@@ -24,7 +24,7 @@ Files (checksums in `SHA256SUMS`):
 What was checked on 2026-11-14:
 
 - 4 subjects (C001 to C004, public de-identified IDs), 7 blood draws each: L-92, L-44, L-3 (days before launch) and R+1, R+45, R+82, R+194 (days after return). **No in-flight samples.**
-- 20 indicators. 553 values in the submitted file; 7 samples have 19 instead of 20 (MCHC is missing).
+- 20 indicators. 553 values in the submitted file. 7 values are absent and are not filled in: MCHC in 4 samples, MCH in 2, MCV in 1.
 - Values agree between the two CSV files.
 - The transformed file labels hemoglobin as "percent". The submitted file says g/dL, which is the correct unit.
 - In the submitted file, sample C003 R+1 names three analytes with a "(FEMALE)" suffix, and the printed reference range for female subjects is not the same on every row. Keep the range printed on each row; do not pick one.

@@ -1,0 +1,5096 @@
+{
+  "schema_version": 1,
+  "source": "nasa",
+  "label": "Inspiration4 crew sample, not your labs",
+  "dataset": {
+    "id": "OSD-569",
+    "title": "Whole Blood Measurements from the SpaceX Inspiration4 Mission (RNA-seq, epitranscriptome, WGS, clonal hematopoiesis, CBC)",
+    "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-569",
+    "doi": "10.26030/e0rx-sh52",
+    "public_release": "14-May-2024",
+    "mission": "SpaceX Inspiration4",
+    "mission_start": "2021-09-16",
+    "mission_end": "2021-09-18",
+    "accessed": "2026-11-14",
+    "citation": "NASA Open Science Data Repository, OSD-569, doi:10.26030/e0rx-sh52, https://osdr.nasa.gov/bio/repo/data/studies/OSD-569 (accessed 2026-11-14)",
+    "files": [
+      {
+        "name": "LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv",
+        "sha256": "10a878b009eb2ea11a13fe92ad698098858639e8ed02f5ee849431313b9457d3"
+      },
+      {
+        "name": "LSDS-7_Complete_Blood_Count_CBC_TRANSFORMED.csv",
+        "sha256": "32e4f9c97d3b636b5d5c2e72dab8c4d3319dee64c437508b092dad04603b2b8f"
+      },
+      {
+        "name": "OSD-569_metadata_OSD-569-ISA.zip",
+        "sha256": "5b3c19c5079816b283125caf4009db8e39d48377d92763e9e61e86e3e1b4c159"
+      }
+    ]
+  },
+  "notes": [
+    "Real, public, de-identified NASA data from 4 Inspiration4 crew members. Not the user's own lab results.",
+    "Samples were taken before launch and after return only. There are no in-flight samples.",
+    "range_min and range_max are the laboratory reference range printed with each value: an Earth reference range. It is shown for context and never triggers an alert.",
+    "For female subjects the file does not print the same range on every row; each value keeps its own.",
+    "Decision support, not diagnosis."
+  ],
+  "featured": [
+    "white_blood_cell_count",
+    "absolute_lymphocytes",
+    "lymphocytes"
+  ],
+  "subjects": [
+    {
+      "id": "C001",
+      "sex": "M"
+    },
+    {
+      "id": "C002",
+      "sex": "F"
+    },
+    {
+      "id": "C003",
+      "sex": "F"
+    },
+    {
+      "id": "C004",
+      "sex": "M"
+    }
+  ],
+  "timepoints": [
+    {
+      "id": "L-92",
+      "phase": "pre-flight",
+      "day": -92,
+      "relative_to": "launch",
+      "label": "92 days before launch"
+    },
+    {
+      "id": "L-44",
+      "phase": "pre-flight",
+      "day": -44,
+      "relative_to": "launch",
+      "label": "44 days before launch"
+    },
+    {
+      "id": "L-3",
+      "phase": "pre-flight",
+      "day": -3,
+      "relative_to": "launch",
+      "label": "3 days before launch"
+    },
+    {
+      "id": "R+1",
+      "phase": "post-flight",
+      "day": 1,
+      "relative_to": "return",
+      "label": "1 day after return"
+    },
+    {
+      "id": "R+45",
+      "phase": "post-flight",
+      "day": 45,
+      "relative_to": "return",
+      "label": "45 days after return"
+    },
+    {
+      "id": "R+82",
+      "phase": "post-flight",
+      "day": 82,
+      "relative_to": "return",
+      "label": "82 days after return"
+    },
+    {
+      "id": "R+194",
+      "phase": "post-flight",
+      "day": 194,
+      "relative_to": "return",
+      "label": "194 days after return"
+    }
+  ],
+  "indicators": [
+    {
+      "id": "white_blood_cell_count",
+      "name": "White blood cell count",
+      "unit": "Thousand/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 3.8,
+          "max": 10.8,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 3.8,
+          "max": 10.8,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 4.9,
+        "max": 10.6,
+        "mean": 6.99,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 5.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 5.5,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 7,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 5,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 4.9,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 4.9,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 4.9,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 6.5,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 5.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 7.2,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 5.5,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 6.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 5.3,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 6.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 9.6,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 9.3,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 9.8,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 7,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 7.8,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 8.8,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 7.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 7.7,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 6.4,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 10.6,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 8.1,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 6.8,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 7.9,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 8.3,
+          "range_min": 3.8,
+          "range_max": 10.8,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "red_blood_cell_count",
+      "name": "Red blood cell count",
+      "unit": "Million/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 3.8,
+          "max": 5.1,
+          "rows": 11
+        },
+        {
+          "sex": "F",
+          "min": 4.2,
+          "max": 5.8,
+          "rows": 3
+        },
+        {
+          "sex": "M",
+          "min": 4.2,
+          "max": 5.8,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 3.72,
+        "max": 5.58,
+        "mean": 4.74,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 4.58,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 4.85,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 4.69,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 4.84,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 4.63,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 5.02,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 4.66,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 4.36,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 3.93,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 3.72,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 4.02,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 4.02,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 3.84,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 4.11,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 4.46,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 4.62,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 4.5,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 4.67,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 5.09,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 4.89,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 4.64,
+          "range_min": 3.8,
+          "range_max": 5.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 5.48,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 5.57,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 5.4,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 5.55,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 5.54,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 5.45,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 5.58,
+          "range_min": 4.2,
+          "range_max": 5.8,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "hemoglobin",
+      "name": "Hemoglobin",
+      "unit": "g/dL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 11.7,
+          "max": 15.5,
+          "rows": 11
+        },
+        {
+          "sex": "F",
+          "min": 13.2,
+          "max": 17.1,
+          "rows": 3
+        },
+        {
+          "sex": "M",
+          "min": 13.2,
+          "max": 17.1,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 11.5,
+        "max": 17,
+        "mean": 14.35,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 14.1,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 14.9,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 14.7,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 14.7,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 14.3,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 15.7,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 14.1,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 13.2,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 12.8,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 11.5,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 12.1,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 12.2,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 11.5,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 12.7,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 13.2,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 14.4,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 13.3,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 13.5,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 14.6,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 14.4,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 13.3,
+          "range_min": 11.7,
+          "range_max": 15.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 17,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 16.6,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 16.8,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 16.5,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 16.8,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 16.4,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 16.5,
+          "range_min": 13.2,
+          "range_max": 17.1,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "hematocrit",
+      "name": "Hematocrit",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 35,
+          "max": 45,
+          "rows": 11
+        },
+        {
+          "sex": "F",
+          "min": 38.5,
+          "max": 50,
+          "rows": 3
+        },
+        {
+          "sex": "M",
+          "min": 38.5,
+          "max": 50,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 34.7,
+        "max": 50,
+        "mean": 43.01,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 42.5,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 45.1,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 44.5,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 43.6,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 43.3,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 46.1,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 41.8,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 40.8,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 37.8,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 35.9,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 36.4,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 37.1,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 34.7,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 38.3,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 40.7,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 42.6,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 41.6,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 41.4,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 44.3,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 44.6,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 40.4,
+          "range_min": 35,
+          "range_max": 45,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 49.1,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 50,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 49,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 48.3,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 49,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 47.5,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 48,
+          "range_min": 38.5,
+          "range_max": 50,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "mcv",
+      "name": "MCV",
+      "unit": "fL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 80,
+          "max": 100,
+          "rows": 13
+        },
+        {
+          "sex": "M",
+          "min": 80,
+          "max": 100,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 86,
+        "max": 96.5,
+        "mean": 90.89,
+        "n": 27
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 92.8,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 93,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 94.9,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 90.1,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 93.5,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 91.8,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 89.7,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 93.6,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 96.2,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 96.5,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 90.5,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 92.3,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 90.4,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 91.3,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 92.2,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 92.4,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 88.7,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 87,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 91.2,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 87.1,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 89.6,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 89.8,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 90.7,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 87,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 88.4,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 87.2,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 86,
+          "range_min": 80,
+          "range_max": 100,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "mch",
+      "name": "MCH",
+      "unit": "pg",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 27,
+          "max": 33,
+          "rows": 13
+        },
+        {
+          "sex": "M",
+          "min": 27,
+          "max": 33,
+          "rows": 13
+        }
+      ],
+      "crew_sample": {
+        "min": 28.7,
+        "max": 32.6,
+        "mean": 30.3,
+        "n": 26
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 30.8,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 30.7,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 31.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 30.4,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 30.9,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 31.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 30.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 30.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 32.6,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 30.9,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 30.1,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 30.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 29.9,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 30.9,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 31.2,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 29.6,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 28.9,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 28.7,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 29.4,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 28.7,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 29.8,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 31.1,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 29.7,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 30.3,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 30.1,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 29.6,
+          "range_min": 27,
+          "range_max": 33,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "mchc",
+      "name": "MCHC",
+      "unit": "g/dL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 32,
+          "max": 36,
+          "rows": 10
+        },
+        {
+          "sex": "M",
+          "min": 32,
+          "max": 36,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 29.6,
+        "max": 34.6,
+        "mean": 33.27,
+        "n": 24
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 33.2,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 33,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 33,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 33.7,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 33,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 34.1,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 33.7,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 32.9,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 33.1,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 33.2,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 29.6,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 33.8,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 32,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 32.6,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 33,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 32.3,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 32.9,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 34.6,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 33.2,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 34.3,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 34.2,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 34.3,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 34.5,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 34.4,
+          "range_min": 32,
+          "range_max": 36,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "rdw",
+      "name": "RDW",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 11,
+          "max": 15,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 11,
+          "max": 15,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 11.8,
+        "max": 32.4,
+        "mean": 13.34,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 13,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 12.6,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 12.6,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 12.5,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 12.8,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 12.3,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 12.8,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 12.7,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 12.6,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 12.1,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 11.8,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 12,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 11.9,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 12.1,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 32.4,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 13.2,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 12.5,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 12.7,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 12.5,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 12.9,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 13.1,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 12.5,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 12.7,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 13.3,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 13.2,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 12.6,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 12.9,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 13.1,
+          "range_min": 11,
+          "range_max": 15,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "platelet_count",
+      "name": "Platelet count",
+      "unit": "Thousand/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 140,
+          "max": 400,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 140,
+          "max": 400,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 12.9,
+        "max": 396,
+        "mean": 253.96,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 241,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 237,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 258,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 227,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 228,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 257,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 214,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 241,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 229,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 241,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 252,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 252,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 245,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 243,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 12.9,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 345,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 367,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 359,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 396,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 345,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 185,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 239,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 227,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 295,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 240,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 281,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 198,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 256,
+          "range_min": 140,
+          "range_max": 400,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "mpv",
+      "name": "MPV",
+      "unit": "fL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 7.5,
+          "max": 12.5,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 7.5,
+          "max": 12.5,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 9.5,
+        "max": 330,
+        "mean": 21.81,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 10.3,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 10.6,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 10.9,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 10.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 10.5,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 10.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 10.5,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 10.1,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 10.9,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 10.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 10.2,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 11,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 10.5,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 10.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 330,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 10.3,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 10.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 10.5,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 10.4,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 10.2,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 10.2,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 9.5,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 9.9,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 10.1,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 10,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 9.9,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 10.4,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 9.8,
+          "range_min": 7.5,
+          "range_max": 12.5,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "absolute_neutrophils",
+      "name": "Absolute neutrophils",
+      "unit": "cells/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 1500,
+          "max": 7800,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 1500,
+          "max": 7800,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 10.1,
+        "max": 6408,
+        "mean": 3640.97,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 2349,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 2998,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 3570,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 2685,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 2200,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 1994,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 2391,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 3705,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 2873,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 3701,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 3328,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 2765,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 3132,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 3123,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 10.1,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "below"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 6408,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 5792,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 4088,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 4618,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 4576,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 4151,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 4766,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 3699,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 6318,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 4528,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 3618,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 4361,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 4200,
+          "range_min": 1500,
+          "range_max": 7800,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "absolute_lymphocytes",
+      "name": "Absolute lymphocytes",
+      "unit": "cells/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 850,
+          "max": 3900,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 850,
+          "max": 3900,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 1540,
+        "max": 6826,
+        "mean": 2414.82,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 2241,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 1859,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 2667,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 1640,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 2146,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 2171,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 1847,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 2119,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 1982,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 2873,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 1540,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 2874,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 1701,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 2573,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 6826,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 2083,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 3156,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 2086,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 2379,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 3247,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 2220,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 1786,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 1613,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 2947,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 2155,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 1938,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 2307,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 2639,
+          "range_min": 850,
+          "range_max": 3900,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "absolute_monocytes",
+      "name": "Absolute monocytes",
+      "unit": "cells/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 200,
+          "max": 950,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 200,
+          "max": 950,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 302,
+        "max": 1997,
+        "mean": 666.07,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 481,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 391,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 553,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 455,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 368,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 485,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 392,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 364,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 302,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 446,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 435,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 499,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 345,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 518,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 1997,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 632,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 715,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 658,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 624,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 730,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 762,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 870,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 832,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 965,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 1029,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 898,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 916,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 988,
+          "range_min": 200,
+          "range_max": 950,
+          "vs_range": "above"
+        }
+      ]
+    },
+    {
+      "id": "absolute_eosinophils",
+      "name": "Absolute eosinophils",
+      "unit": "cells/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 15,
+          "max": 500,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 15,
+          "max": 500,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 88,
+        "max": 614,
+        "mean": 211.21,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 259,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 204,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 161,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 170,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 127,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 181,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 221,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 280,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 211,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 151,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 160,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 211,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 90,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 166,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 614,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 130,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 88,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 140,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 117,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 176,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 207,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 200,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 173,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 276,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 300,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 258,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 269,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 374,
+          "range_min": 15,
+          "range_max": 500,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "absolute_basophils",
+      "name": "Absolute basophils",
+      "unit": "cells/uL",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 0,
+          "max": 200,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 0,
+          "max": 200,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 19,
+        "max": 125,
+        "mean": 58.93,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 70,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 50,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 49,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 50,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 59,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 69,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 49,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 33,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 32,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 29,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 39,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 51,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 32,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 19,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 125,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 47,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 49,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 28,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 62,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 70,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 59,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 77,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 83,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 95,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 89,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 88,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 47,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 100,
+          "range_min": 0,
+          "range_max": 200,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "neutrophils",
+      "name": "Neutrophils",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 38,
+          "max": 80,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 38,
+          "max": 80,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 40.7,
+        "max": 71.1,
+        "mean": 54.62,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 43.5,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 54.5,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 51,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 53.7,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 44.9,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 40.7,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 48.8,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 57,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 53.2,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 51.4,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 60.5,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 43.2,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 59.1,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 48.8,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 71.1,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 68.9,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 59.1,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 58.4,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 59.2,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 52,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 56.1,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 61.9,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 57.8,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 59.6,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 55.9,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 53.2,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 55.2,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 50.6,
+          "range_min": 38,
+          "range_max": 80,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "lymphocytes",
+      "name": "Lymphocytes",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 15,
+          "max": 49,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 15,
+          "max": 49,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 20.8,
+        "max": 44.9,
+        "mean": 32.9,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 41.5,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 33.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 38.1,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 32.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 43.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 44.3,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 37.7,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 32.6,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 36.7,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 39.9,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 28,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 44.9,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 32.1,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 40.2,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 20.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 22.4,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 32.2,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 29.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 30.5,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 36.9,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 30,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 23.2,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 25.2,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 27.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 26.6,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 28.5,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 29.2,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 31.8,
+          "range_min": 15,
+          "range_max": 49,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "monocytes",
+      "name": "Monocytes",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 0,
+          "max": 13,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 0,
+          "max": 13,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 5.6,
+        "max": 13.2,
+        "mean": 8.76,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 8.9,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 7.1,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 7.9,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 9.1,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 7.5,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 9.9,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 8,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 5.6,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 5.6,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 6.2,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 7.9,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 7.8,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 6.5,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 8.1,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 6.4,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 6.8,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 7.3,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 9.4,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 8,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 8.3,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 10.3,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 11.3,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 13,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 9.1,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 12.7,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 13.2,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "above"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 11.6,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 11.9,
+          "range_min": 0,
+          "range_max": 13,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "eosinophils",
+      "name": "Eosinophils",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 0,
+          "max": 8,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 0,
+          "max": 8,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 0.9,
+        "max": 4.8,
+        "mean": 2.89,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 4.8,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 3.7,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 2.3,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 3.4,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 2.6,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 3.7,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 4.5,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 4.3,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 3.9,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 2.1,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 2.9,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 3.3,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 1.7,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 2.6,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 1.3,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 1.4,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 0.9,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 2,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 1.5,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 2,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 2.8,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 2.6,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 2.7,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 2.6,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 3.7,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 3.8,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 3.4,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 4.5,
+          "range_min": 0,
+          "range_max": 8,
+          "vs_range": "inside"
+        }
+      ]
+    },
+    {
+      "id": "basophils",
+      "name": "Basophils",
+      "unit": "%",
+      "earth_reference_ranges": [
+        {
+          "sex": "F",
+          "min": 0,
+          "max": 2,
+          "rows": 14
+        },
+        {
+          "sex": "M",
+          "min": 0,
+          "max": 2,
+          "rows": 14
+        }
+      ],
+      "crew_sample": {
+        "min": 0.3,
+        "max": 1.4,
+        "mean": 0.82,
+        "n": 28
+      },
+      "values": [
+        {
+          "subject": "C001",
+          "timepoint": "L-92",
+          "value": 1.3,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-44",
+          "value": 0.9,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "L-3",
+          "value": 0.7,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+1",
+          "value": 1,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+45",
+          "value": 1.2,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+82",
+          "value": 1.4,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C001",
+          "timepoint": "R+194",
+          "value": 1,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-92",
+          "value": 0.5,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-44",
+          "value": 0.6,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "L-3",
+          "value": 0.4,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+1",
+          "value": 0.7,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+45",
+          "value": 0.8,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+82",
+          "value": 0.6,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C002",
+          "timepoint": "R+194",
+          "value": 0.3,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-92",
+          "value": 0.4,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-44",
+          "value": 0.5,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "L-3",
+          "value": 0.5,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+1",
+          "value": 0.4,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+45",
+          "value": 0.8,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+82",
+          "value": 0.8,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C003",
+          "timepoint": "R+194",
+          "value": 0.8,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-92",
+          "value": 1,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-44",
+          "value": 1.3,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "L-3",
+          "value": 0.9,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+1",
+          "value": 1.1,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+45",
+          "value": 1.3,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+82",
+          "value": 0.6,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        },
+        {
+          "subject": "C004",
+          "timepoint": "R+194",
+          "value": 1.2,
+          "range_min": 0,
+          "range_max": 2,
+          "vs_range": "inside"
+        }
+      ]
+    }
+  ]
+}
