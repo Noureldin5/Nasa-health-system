@@ -65,6 +65,8 @@ def test_empty_list_is_learning_day_0():
 
 
 def test_window_drops_points_older_than_14_days():
-    old = [DailyPoint(day=AS_OF - timedelta(days=30 + i), value=200, source="sim") for i in range(5)]
+    old = [
+        DailyPoint(day=AS_OF - timedelta(days=30 + i), value=200, source="sim") for i in range(5)
+    ]
     b = compute_baseline(old + pts([60] * 7), AS_OF, "heart_rate")
     assert b.band.mean == pytest.approx(60.0)
