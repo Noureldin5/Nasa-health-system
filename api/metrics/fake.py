@@ -44,6 +44,7 @@ def _daily_values(crew_index: int, crew_id: str, d: int) -> dict[IndicatorKey, f
 class FakeMetrics:
     def __init__(self) -> None:
         self._points: dict[tuple[str, IndicatorKey], list[Point]] = {}
+        self._mission_start: datetime | None = None
         self.fail = False  # tests flip this to simulate VictoriaMetrics being down
 
     def _check(self) -> None:
@@ -64,11 +65,19 @@ class FakeMetrics:
                 Point(at=at, value=float(value), source="sim")
             )
 
+    def mission_start(self) -> datetime | None:
+        self._check()
+        return self._mission_start
+
     def seed(self, today: date, day: int) -> None:
         """Mission day `day` is real `today`. Days 1..day-1 are already recorded at 07:30."""
         if day < 1:
             raise ValueError("mission day must be 1 or more")
         self._points = {}
+        # Mission days run 18:00 UTC to 18:00 UTC (domain/days.py): day N of `today` starts 6h early.
+        self._mission_start = datetime.combine(
+            today - timedelta(days=day - 1), datetime.min.time()
+        ) - timedelta(hours=6)
         for crew_index, crew_id in enumerate(CREW_IDS):
             for d in range(1, day):
                 when = datetime.combine(today - timedelta(days=day - d), datetime.min.time())

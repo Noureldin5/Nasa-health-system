@@ -20,9 +20,11 @@ from store.repo import Repo
 def make_metrics(settings: Settings) -> MetricsPort:
     if settings.metrics_backend == "fake":
         return FakeMetrics()
-    raise NotImplementedError(
-        f"metrics backend {settings.metrics_backend!r} arrives with the pipeline integration"
-    )
+    if settings.metrics_backend == "vm":
+        from metrics.vm import VmMetrics  # imports C's pipeline package, so only when asked for
+
+        return VmMetrics()
+    raise ValueError(f"unknown METRICS_BACKEND {settings.metrics_backend!r}: use 'fake' or 'vm'")
 
 
 def create_app(settings: Settings | None = None, clock: Clock | None = None) -> FastAPI:

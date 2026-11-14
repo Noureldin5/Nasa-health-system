@@ -1,6 +1,6 @@
 # Official challenge text
 
-Source: pasted by the team from the NASA Space Apps challenge page (spaceappschallenge.org), 2026-11-14. Verbatim. The Resources tab, judging criteria and submission rules were not included and still need to be added below.
+Source: pasted by the team from the NASA Space Apps challenge page (spaceappschallenge.org), 2026-11-14. Verbatim. The Resources tab was added below the same day. Judging criteria and submission rules are still missing.
 
 Challenge title: Create Health Monitoring Software for Astronauts on Space Missions
 
@@ -32,9 +32,25 @@ You may (but are not required to) consider the following:
 
 For data and resources related to this challenge, refer to the Resources tab at the top of the page. More resources may be added before the hackathon begins.
 
+## Resources tab (pasted by the team, 2026-11-14)
+
+NASA does not endorse any non-U.S. Government entity. For non-U.S. Government websites, participants must comply with that website's data use parameters.
+
+NASA data and resources (no datasets or API, only articles):
+- 5 Hazards of Human Spaceflight: https://www.nasa.gov/hrp/hazards/
+- Risks of Human Spaceflight: https://www.nasa.gov/hrp/risks/ (17 risks: 11 physiology, 5 behavioral, 1 radiation)
+- Ongoing HRP Research in Space: https://www.nasa.gov/hrp/ongoing-hrp-research/
+
+Space agency partner resources (CSA):
+- Monitoring Radiation for Astronaut Health: https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp
+- Why Do We Conduct Science Experiments in Space?: https://www.asc-csa.gc.ca/eng/iss/science/why-do-we-conduct-science-experiments-in-space.asp
+
+The Resources tab lists no dataset. OSD-569 (OSDR) comes from the team's own research (`docs/research/nasa-datasets.md`).
+
+How the app uses them: hazards in `data/processed/hazards.json` (served at `GET /reference/hazards`); risk pages cited on each indicator and on the Environment screen (`web/src/content/risks.ts`, our mapping, labeled as such); the CSA articles linked from the Environment screen.
+
 ## TODO (teammate)
 
-- Datasets: the team's research is in `docs/research/nasa-datasets.md` (OSD-569 CBC is the recommended starting dataset). Still paste the official Resources tab links here to confirm.
 - Paste the judging criteria and submission requirements.
 - Date copied for those: 
 
@@ -50,6 +66,6 @@ For data and resources related to this challenge, refer to the Resources tab at 
 | Prompt measurements as mission routine | Scheduled measurement prompts, passive data where possible |
 | Dynamic charts over time | Trend charts against the personal baseline |
 | Color coding at a glance | Status colors plus icons and text (never color alone) |
-| Gamification (optional) | Streaks and a "mission health score" for completed check-ins |
-| Different environments (optional) | Environment selector: station, spacecraft, rover, lunar/Mars base |
+| Gamification (optional) | Check-in streak on Today (counts check-ins only, never health values). Built. No health score |
+| Different environments (optional) | Environment selector (screen "Where you are"): station, spacecraft, rover, surface base. Built |
 | Simple instructions for non-experts | Step-by-step "how to take this measurement" guides |

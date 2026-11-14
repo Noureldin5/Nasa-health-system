@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from routes.deps import Svc
-from schemas import SyncRecord
+from schemas import LinkStatus, SyncRecord
 from services import link as link_service
 
 router = APIRouter(tags=["link"])
@@ -19,3 +19,10 @@ def link_sync(s: Svc) -> SyncRecord:
 def link_log(s: Svc) -> list[SyncRecord]:
     """Every sync, newest first, with what it carried."""
     return s.repo.sync_log()
+
+
+@router.get("/link", response_model=LinkStatus)
+def link_status(s: Svc) -> LinkStatus:
+    """What waits for the next link and when the simulated window opens. Nothing is hidden: this is
+    the list of what ground will receive."""
+    return link_service.link_status(s)

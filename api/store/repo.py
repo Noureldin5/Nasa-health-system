@@ -9,7 +9,7 @@ import json
 import sqlite3
 import threading
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from schemas import Alert, Brief, CheckinEntry, CheckinIn, GroundNote, ItemRef, Reply, SyncRecord
 
@@ -306,6 +306,39 @@ class Repo:
     def last_sync_at(self) -> datetime | None:
         rows = self._all("SELECT last_sync_at FROM link_state WHERE id = 1")
         return _dt(rows[0]["last_sync_at"]) if rows else None
+
+    def shift_back(self, by: timedelta) -> None:
+        """Demo time travel: make every stored time `by` older. Day keys move with them."""
+        columns = {
+            "alerts": ["opened_at", "closed_at"],
+            "briefs": ["created_at", "sent_at"],
+            "replies": ["created_at", "delivered_at"],
+            "ground_notes": ["created_at", "delivered_at"],
+            "sync_log": ["at"],
+            "link_state": ["last_sync_at"],
+        }
+        with self._lock, self.conn:
+            for table, cols in columns.items():
+                for col in cols:
+                    for rowid, text in self.conn.execute(
+                        f"SELECT rowid, {col} FROM {table} WHERE {col} IS NOT NULL"
+                    ).fetchall():
+                        moved = (datetime.fromisoformat(text) - by).isoformat()
+                        self.conn.execute(
+                            f"UPDATE {table} SET {col} = ? WHERE rowid = ?", (moved, rowid)
+                        )
+            for crew_id, day, created in self.conn.execute(
+                "SELECT crew_id, day, created_at FROM checkins ORDER BY day"
+            ).fetchall():  # oldest first, so a moved day never lands on one that is still there
+                self.conn.execute(
+                    "UPDATE checkins SET day = ?, created_at = ? WHERE crew_id = ? AND day = ?",
+                    (
+                        (date.fromisoformat(day) - by).isoformat(),
+                        (datetime.fromisoformat(created) - by).isoformat(),
+                        crew_id,
+                        day,
+                    ),
+                )
 
     def reset(self) -> None:
         with self._lock, self.conn:

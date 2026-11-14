@@ -8,7 +8,7 @@ from domain.days import mission_date
 from domain.views import INDICATOR_ORDER
 from link.sync import plan_sync
 from metrics.port import MetricsUnavailable
-from schemas import SyncRecord
+from schemas import LinkStatus, SyncRecord
 from services.record import LOOKBACK_DAYS, Services
 from store.repo import new_id
 
@@ -17,8 +17,11 @@ def _after(t: datetime, since: datetime | None, now: datetime) -> bool:
     return (since is None or t > since) and t <= now
 
 
-def do_sync(s: Services) -> SyncRecord:
-    now = s.clock.now()
+LINK_WINDOW = timedelta(minutes=90)  # Demo parameter: the simulated link opens this often.
+
+
+def _collect(s: Services, now: datetime):
+    """What the next sync would carry. Reads only."""
     since = s.repo.last_sync_at()
     first_day = mission_date(since) if since else mission_date(now) - timedelta(days=14)
 
@@ -40,7 +43,24 @@ def do_sync(s: Services) -> SyncRecord:
 
     briefs = [b for b in s.repo.queued_briefs() if b.created_at <= now]
     replies, notes = s.repo.undelivered_down()
+    return checkins, readings, alerts, briefs, replies, notes
 
+
+def link_status(s: Services) -> LinkStatus:
+    now = s.clock.now()
+    since = s.repo.last_sync_at()
+    planned = plan_sync("pending", now, *_collect(s, now))
+    return LinkStatus(
+        last_sync_at=since,
+        next_window_at=max(now, since + LINK_WINDOW) if since else now,
+        pending_up=planned.up,
+        pending_down=planned.down,
+    )
+
+
+def do_sync(s: Services) -> SyncRecord:
+    now = s.clock.now()
+    checkins, readings, alerts, briefs, replies, notes = _collect(s, now)
     record = plan_sync(new_id("sy"), now, checkins, readings, alerts, briefs, replies, notes)
     s.repo.mark_sent([b.id for b in briefs], now)
     s.repo.mark_delivered([x.id for x in (*replies, *notes)], now)

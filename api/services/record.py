@@ -27,6 +27,8 @@ from schemas import (
     CheckinIn,
     CrewRow,
     IndicatorKey,
+    MeasurementIn,
+    Mission,
     Readout,
     RecordView,
     Series,
@@ -52,6 +54,8 @@ class NotFound(Exception):
 
 class Conflict(Exception):
     pass
+
+MAX_DEMO_DAY = 14  # the simulated mission has 14 days (pipeline/simulator)
 
 
 @dataclass
@@ -120,6 +124,7 @@ def crew_rows(s: Services) -> list[CrewRow]:
             CrewRow(
                 crew_id=c["id"],
                 name=c["name"],
+                module=c["module"],
                 status=out.overall,
                 open_alerts=(1 if v.alert else 0) + len(v.worth_checking),
                 unanswered_briefs=sum(1 for b in v.briefs if b.state != "answered"),
@@ -212,7 +217,7 @@ def submit_checkin(s: Services, crew_id: str, body: CheckinIn, now: datetime) ->
 HEADACHE_NAME = {level: name for name, level in HEADACHE_LEVEL.items()}
 
 
-def _seed_checkins(s: Services, now: datetime, day: int) -> None:
+def _seed_checkins(s: Services, now: datetime, day: int, keep_saved: bool = False) -> None:
     """One saved check-in per story day, built from the seeded mood and headache readings, so
     "Same as yesterday" works on a fresh demo. Rested 4 is a simulated answer."""
     start = now - timedelta(days=day)
@@ -227,7 +232,31 @@ def _seed_checkins(s: Services, now: datetime, day: int) -> None:
                 rested=4,
                 vision_change=False,
             )
-            s.repo.upsert_checkin(c["id"], mission_date(p.at), answers, p.at)
+            when = mission_date(p.at)
+            if keep_saved and s.repo.get_checkins(c["id"], when, when):
+                continue  # a real check-in for that day stays as it was
+            s.repo.upsert_checkin(c["id"], when, answers, p.at)
+
+
+def advance_demo(s: Services) -> Mission:
+    """Demo: move to the next mission day so the story can play on ("alert closed" beat).
+
+    The simulated series are loaded again with real today as the next mission day, and every record
+    in SQLite (check-ins, alerts, briefs, replies, notes, sync log) is moved back one day, so the
+    time between them and today is right. Nothing is deleted. Values typed into the time series
+    store are cleared by the pipeline's reload; the check-in record of them stays. The clock is not
+    moved, because VictoriaMetrics drops samples dated more than about 2 days ahead of real time.
+    """
+    now = s.clock.now()
+    current = mission(s).day
+    if current >= MAX_DEMO_DAY:
+        raise Conflict(f"Mission day {current} is the last day of the demo mission.")
+    s.repo.shift_back(timedelta(days=1))  # the story moves on: everything recorded is a day older
+    s.metrics.seed(mission_date(now), current + 1)
+    _seed_checkins(s, now, current + 1, keep_saved=True)
+    for c in s.repo.crew():
+        evaluate(s, c["id"], now)
+    return mission(s)
 
 
 def reset_demo(s: Services, day: int) -> None:
@@ -240,3 +269,26 @@ def reset_demo(s: Services, day: int) -> None:
     for c in s.repo.crew():
         evaluate(s, c["id"], now)
     s.repo.append_sync(SyncRecord(id=new_id("sy"), at=now, up={}, down={}, item_ids=[]))
+
+
+def submit_measurements(s: Services, crew_id: str, body: MeasurementIn, now: datetime) -> Readout:
+    """Readings on their own. The check-in is not touched, so nothing has to be answered again."""
+    require_crew(s, crew_id)
+    values: dict[IndicatorKey, float] = {
+        key: value  # type: ignore[misc]
+        for key, value in body.model_dump().items()
+        if value is not None
+    }
+    s.metrics.write(crew_id, values, now)  # unavailable store: 503, nothing was saved
+    evaluate(s, crew_id, now)
+    return readout(s, crew_id)
+
+
+def mission(s: Services) -> Mission:
+    now = s.clock.now()
+    start = s.metrics.mission_start()
+    if start is None:
+        raise NotFound("No mission is loaded. Reset the demo.")
+    return Mission(
+        mission_start=start, day=(mission_date(now) - mission_date(start)).days + 1, now=now
+    )

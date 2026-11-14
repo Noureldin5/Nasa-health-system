@@ -26,6 +26,10 @@ class MetricsPort(Protocol):
         """Append one point per key at time `at`. Raises MetricsUnavailable."""
         ...
 
+    def mission_start(self) -> datetime | None:
+        """Naive UTC instant mission day 1 begins, or None when no mission is loaded."""
+        ...
+
     def seed(self, today: date, day: int) -> None:
         """Demo reset: replace data with the scripted mission so real `today` is mission day `day`."""
         ...
