@@ -18,6 +18,7 @@ from typing import Literal
 
 from domain.alerts import build_readout
 from domain.baseline import DailyPoint, compute_baseline
+from domain.days import mission_date
 from domain.drift import status_for
 from domain.params import UNITS
 from domain.readiness import readiness_for
@@ -65,7 +66,7 @@ def daily_points(points: list[Point]) -> list[DailyPoint]:
     """One value per calendar day, the latest reading of that day."""
     by_day: dict = {}
     for p in sorted(points, key=lambda p: p.at):
-        by_day[p.at.date()] = p
+        by_day[mission_date(p.at)] = p
     return [DailyPoint(day=d, value=p.value, source=p.source) for d, p in sorted(by_day.items())]
 
 
@@ -143,7 +144,7 @@ def _indicator(
         return Indicator(key=key, value=None, unit=UNITS[key], status="unavailable", source="sim")
     points = [p for p in record.series.get(key, []) if cutoff is None or p.at <= cutoff]
     daily = daily_points(points)
-    baseline = compute_baseline(daily, as_of.date(), key)
+    baseline = compute_baseline(daily, mission_date(as_of), key)
     value = daily[-1].value if daily else None
     if value is None:
         status = "learning" if baseline.status == "learning" else "unavailable"

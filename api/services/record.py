@@ -18,6 +18,7 @@ from domain.alerts import (
     should_close,
 )
 from domain.baseline import compute_baseline
+from domain.days import mission_date
 from domain.drift import detect_drift
 from domain.views import INDICATOR_ORDER, Record, Side, build_view, daily_points
 from metrics.port import MetricsPort, MetricsUnavailable
@@ -86,7 +87,9 @@ def load_record(s: Services, crew_id: str, now: datetime) -> Record:
         notes=s.repo.notes(crew_id),
         last_sync_at=s.repo.last_sync_at(),
         metrics_available=available,
-        checkins=s.repo.checkin_entries(crew_id, now.date() - timedelta(days=14), now.date()),
+        checkins=s.repo.checkin_entries(
+            crew_id, mission_date(now) - timedelta(days=14), mission_date(now)
+        ),
     )
 
 
@@ -131,12 +134,12 @@ def evaluate(s: Services, crew_id: str, now: datetime) -> None:
     rec = load_record(s, crew_id, now)
     if not rec.metrics_available:
         return
-    as_of = now.date()
+    as_of = mission_date(now)
     daily = {key: daily_points(pts) for key, pts in rec.series.items()}
     baselines = {key: compute_baseline(daily[key], as_of, key) for key in INDICATOR_ORDER}
 
     for a in s.repo.open_alerts(crew_id):
-        since = [p for p in daily[a.indicator] if p.day >= a.opened_at.date()]
+        since = [p for p in daily[a.indicator] if p.day >= mission_date(a.opened_at)]
         if should_close(a, since, baselines[a.indicator], as_of):
             s.repo.close_alert(a.id, now)
 
@@ -155,7 +158,7 @@ def evaluate(s: Services, crew_id: str, now: datetime) -> None:
     already_open = {a.indicator for a in open_now}
     drafts = [build_alert(sig, crew_id, now) for sig in signals]
     drafts = [d for d in drafts if d.indicator not in already_open]
-    shown_today = any(a.opened_at.date() == as_of for a in open_now)
+    shown_today = any(mission_date(a.opened_at) == as_of for a in open_now)
     shown, worth = select_daily(drafts, shown_today)
     for d in ([shown] if shown else []) + worth:
         s.repo.save_alert(
@@ -176,7 +179,7 @@ def evaluate(s: Services, crew_id: str, now: datetime) -> None:
 
 def submit_checkin(s: Services, crew_id: str, body: CheckinIn, now: datetime) -> Readout:
     require_crew(s, crew_id)
-    today = now.date()
+    today = mission_date(now)
     resolved = body
     if body.same_as_yesterday:
         earlier = s.repo.get_checkins(crew_id, today - timedelta(days=7), today - timedelta(days=1))
@@ -215,16 +218,16 @@ def _seed_checkins(s: Services, now: datetime, day: int) -> None:
     start = now - timedelta(days=day)
     for c in s.repo.crew():
         moods = s.metrics.series(c["id"], "mood", start, now)
-        heads = {p.at.date(): p for p in s.metrics.series(c["id"], "headache", start, now)}
+        heads = {mission_date(p.at): p for p in s.metrics.series(c["id"], "headache", start, now)}
         for p in moods:
-            h = heads.get(p.at.date())
+            h = heads.get(mission_date(p.at))
             answers = CheckinIn(
                 mood=round(p.value),
                 headache=HEADACHE_NAME[round(h.value)] if h else None,
                 rested=4,
                 vision_change=False,
             )
-            s.repo.upsert_checkin(c["id"], p.at.date(), answers, p.at)
+            s.repo.upsert_checkin(c["id"], mission_date(p.at), answers, p.at)
 
 
 def reset_demo(s: Services, day: int) -> None:
@@ -232,7 +235,7 @@ def reset_demo(s: Services, day: int) -> None:
     an initial sync so ground has a last sync time."""
     now = s.clock.now()
     s.repo.reset()
-    s.metrics.seed(now.date(), day)
+    s.metrics.seed(mission_date(now), day)
     _seed_checkins(s, now, day)
     for c in s.repo.crew():
         evaluate(s, c["id"], now)

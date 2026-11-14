@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
+from domain.days import mission_date
 from domain.views import INDICATOR_ORDER
 from link.sync import plan_sync
 from metrics.port import MetricsUnavailable
@@ -19,14 +20,14 @@ def _after(t: datetime, since: datetime | None, now: datetime) -> bool:
 def do_sync(s: Services) -> SyncRecord:
     now = s.clock.now()
     since = s.repo.last_sync_at()
-    first_day = since.date() if since else now.date() - timedelta(days=14)
+    first_day = mission_date(since) if since else mission_date(now) - timedelta(days=14)
 
     checkins = 0
     readings = 0
     alerts = []
     for c in s.repo.crew():
         crew_id = c["id"]
-        entries = s.repo.checkin_entries(crew_id, first_day, now.date())
+        entries = s.repo.checkin_entries(crew_id, first_day, mission_date(now))
         checkins += sum(1 for e in entries if _after(e.at, since, now))
         alerts += [a for a in s.repo.alerts(crew_id) if _after(a.opened_at, since, now)]
         try:

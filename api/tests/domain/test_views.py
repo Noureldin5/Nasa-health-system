@@ -100,6 +100,20 @@ def test_daily_points_keeps_last_value_per_day():
     assert [(p.day, p.value) for p in out] == [(d - timedelta(days=1), 2.0), (d, 3.0)]
 
 
+def test_daily_points_groups_by_mission_day_not_utc_date():
+    # 20:00 UTC on Nov 13 is 02:00 in Bishkek on Nov 14: the same mission day as 07:30 UTC Nov 14.
+    pts = [
+        Point(at=datetime(2026, 11, 13, 20, 0), value=1.0, source="sim"),
+        Point(at=datetime(2026, 11, 14, 7, 30), value=2.0, source="sim"),
+        Point(at=datetime(2026, 11, 13, 7, 30), value=9.0, source="sim"),
+    ]
+    out = daily_points(pts)
+    assert [(p.day, p.value) for p in out] == [
+        (date(2026, 11, 13), 9.0),
+        (date(2026, 11, 14), 2.0),
+    ]
+
+
 def test_ground_note_hidden_from_station_until_delivered():
     rec = record(notes=[note()])
     assert [n.id for n in build_view(rec, "ground", NOW).notes] == ["n1"]
