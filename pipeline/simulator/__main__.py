@@ -29,7 +29,8 @@ from pipeline import mission, vm
 from pipeline.ingest import flush, write_points
 from pipeline.mission import DAY
 from pipeline.queries import latest
-from pipeline.simulator import MissionPlan, daily_snapshot, generate, start_for
+from pipeline.simulator import MissionPlan, daily_snapshot, generate
+from pipeline.simulator.load import load_mission
 
 SNAPSHOT_DIR = Path(__file__).resolve().parents[2] / "data" / "simulated"
 SNAPSHOT_START = datetime(2026, 1, 1, 18, 0, tzinfo=timezone.utc)  # any fixed start: the CSV uses mission days only
@@ -61,32 +62,26 @@ def _ids(text: str) -> tuple[str, ...]:
 
 
 def _load(args, crew: tuple[str, ...], live_crew: tuple[str, ...]) -> int:
-    today_is_day = args.days if args.today_is_day is None else args.today_is_day
-    if not 1 <= today_is_day <= args.days:
-        print("--today-is-day must be between 1 and --days", file=sys.stderr)
+    try:
+        result = load_mission(
+            today_is_day=args.today_is_day, days=args.days, crew=crew, seed=args.seed,
+            live_crew=live_crew, dry_run=args.dry_run,
+        )
+    except ValueError as error:
+        print(f"--today-is-day must be between 1 and --days ({error})", file=sys.stderr)
         return 2
-    now = datetime.now(timezone.utc)
-    plan = MissionPlan(args.seed, start_for(now, today_is_day=today_is_day), args.days, crew)
-    points = generate(plan, now, live_crew=live_crew, live_from_day=today_is_day)
-    counts = Counter(point.metric for point in points)
-
+    plan = result.plan
     print(f'Simulated mission (source="sim", not real patient data), seed {plan.seed}')
-    print(f"  mission start  {plan.mission_start.isoformat()}  (today is mission day {today_is_day} of {plan.days})")
+    print(f"  mission start  {plan.mission_start.isoformat()}  (today is mission day {result.today_is_day} of {plan.days})")
     print(f"  crew           {', '.join(plan.crew)}    modules  {', '.join(plan.modules)}")
     if live_crew:
-        print(f"  live check-in  {', '.join(live_crew)}: no simulated mood or symptoms from day {today_is_day}")
-    for metric in sorted(counts):
-        print(f"  {metric:<20} {counts[metric]:>6} points")
+        print(f"  live check-in  {', '.join(live_crew)}: no simulated mood or symptoms from day {result.today_is_day}")
+    for metric in sorted(result.counts):
+        print(f"  {metric:<20} {result.counts[metric]:>6} points")
     if args.dry_run:
         print("Dry run: nothing written.")
         return 0
-
-    vm.delete_series('{source="sim"}')
-    mission.set_mission_start(plan.mission_start)
-    written = write_points(points)
-    flush()
-    vm.reset_cache()
-    print(f"Loaded {written} points into {vm.resolve_url()}.")
+    print(f"Loaded {result.written} points into {vm.resolve_url()}.")
     return 0
 
 

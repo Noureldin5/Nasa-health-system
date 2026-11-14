@@ -257,4 +257,17 @@ The API reads and writes time series through one port (`api/metrics/port.py`) an
 | 7 | Today in the demo (OPEN 1) | `POST /demo/reset?day=N` | B's reset calls C's simulator with the same day, so B supports day 10 as C proposes |
 | 8 | Live check-in | Saves the SQLite record first, then writes `mood_score`, `symptom_strength` and any measurements | Call `flush()` after the write. On `IngestUnavailable` the check-in stays saved and the views mark readings unavailable |
 
+### C's answer to section 10 (2026-11-14, checked against the code and a loaded mission)
+
+| # | C confirms? | Detail |
+|---|---|---|
+| 1 | Yes | Mapping is exactly section 2 and `pipeline/schema.py`. For the symptom pass `labels={"symptom": "headache"}`; for CO2 pass `labels={"module": ...}` and no `crew_id`. A wrong metric or label raises `ValueError` |
+| 2 | Yes | Every call needs timezone-aware datetimes and returns UTC-aware ones. Attach UTC in, drop it out |
+| 3 | Yes, tested | `end + 1 microsecond` includes a sample written at `end` (checked on the loaded mission: with plain `end` the last sample is missing, with `+1us` it is there). Timestamps are whole milliseconds, so one microsecond is enough |
+| 4 | Yes, with two cautions | `daily(metric, first_day, last_day, crew_id=..., labels=...)` gives `mean` and `max` per mission day for `hr_bpm` and `co2_ppm`. (a) **Today is a partial day** (`complete=False`, `n` below 288): see section 5, do not compare today's heart-rate mean to the baseline. (b) **The daily maximum of CO2 is a 5-minute peak, not a 1-hour average.** The cited limit is a 1-hour average, so do not compare `max` to it: on the demo mission the peak is about 3,960 ppm while no hour is above the limit. For limit questions use `CabinDay.hours_above_limit` from `cabin_link` |
+| 5 | Yes, with one caution | Use `pipeline.crew.module_of(crew_id)` and drop B's own map. An unknown `crew_id` silently falls back to `node1`, so B validates the crew id against `pipeline.crew.CREW` first |
+| 6 | Yes, still OPEN 2 | The pipeline already accepts and returns `source="manual"`, and `make clear-manual` clears it. C recommends yes. B adds it to the schema when the team answers |
+| 7 | Yes, and a gap is closed | There was no importable call for this, only the CLI. Now: `from pipeline.reset import demo_reset; demo_reset(day)` clears typed values and reloads the mission with today = `day`, live crew `a1`, seed 42, 14 days. Lower level: `pipeline.simulator.load.load_mission(today_is_day=..., live_crew=..., now=...)`. It is synchronous and takes a few seconds: call it from a normal `def` endpoint. It raises `ValueError` for a day outside 1 to 14 and `IngestUnavailable` when VictoriaMetrics is down. It does not touch SQLite |
+| 8 | Yes | `write_points` then `flush()`. `IngestUnavailable` is the same class as `pipeline.vm.VMUnavailable` (checked with an unreachable address). Keep the check-in saved in SQLite and mark the readings unavailable, as B proposes |
+
 Nothing in sections 1 to 7 needs to change for B to build this.

@@ -40,6 +40,20 @@ def clear_manual(*, crew_id: str | None = None, base_url: str | None = None) -> 
     return found
 
 
+def demo_reset(
+    day: int = 10, *, live_crew: tuple[str, ...] = ("a1",), base_url: str | None = None
+) -> tuple[int, int]:
+    """Everything C owns, in the right order: clear typed values, then reload the mission with today = `day`.
+
+    Returns (manual series, manual points) that were cleared. B's SQLite records are B's to reset.
+    """
+    from pipeline.simulator.load import load_mission
+
+    cleared = clear_manual(base_url=base_url)
+    load_mission(today_is_day=day, live_crew=live_crew, base_url=base_url)
+    return cleared
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python3 -m pipeline.reset", description=__doc__.split("\n\n")[0])
     parser.add_argument("--dry-run", action="store_true", help="count, delete nothing")

@@ -173,3 +173,22 @@ def test_committed_snapshot_matches_the_generator():
     assert text == daily_snapshot(MISSION)
     assert text.startswith("# SIMULATED DATA")
     assert len(text.splitlines()) == 2 + 14 * len(CREW)
+
+
+def test_load_mission_dry_run_counts_without_writing():
+    from pipeline.simulator.load import load_mission
+
+    now = datetime(2026, 11, 14, 4, 0, tzinfo=timezone.utc)
+    result = load_mission(today_is_day=10, live_crew=("a1",), now=now, dry_run=True)
+    assert result.written == 0 and result.today_is_day == 10
+    assert result.counts["hr_bpm"] > 0 and result.plan.crew == ("a1", "a2", "a3")
+    assert mission_day(now, result.plan.mission_start) == 10
+
+
+def test_load_mission_rejects_a_day_outside_the_mission():
+    import pytest
+
+    from pipeline.simulator.load import load_mission
+
+    with pytest.raises(ValueError):
+        load_mission(today_is_day=15, dry_run=True)
