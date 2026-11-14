@@ -6,10 +6,20 @@ cited source (CLAUDE.md rule 7).
 
 from __future__ import annotations
 
-from datetime import date, datetime
-from typing import Literal
+from datetime import UTC, date, datetime
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, PlainSerializer, model_validator
+
+
+def _as_utc(moment: datetime) -> str:
+    """Stored times are naive UTC (docs/DECISIONS.md section 4). Send them with a `Z`."""
+    if moment.tzinfo is not None:
+        moment = moment.astimezone(UTC).replace(tzinfo=None)
+    return moment.isoformat() + "Z"
+
+
+UtcDatetime = Annotated[datetime, PlainSerializer(_as_utc, return_type=str, when_used="json")]
 
 DISCLAIMER = "Decision support, not a diagnosis."
 
@@ -25,7 +35,7 @@ IndicatorKey = Literal[
     "co2",
 ]
 Status = Literal["learning", "in_range", "worth_checking", "contact_surgeon", "unavailable"]
-Source = Literal["sim", "nasa"]
+Source = Literal["sim", "nasa", "manual"]
 HeadacheLevel = Literal["none", "mild", "moderate", "strong"]
 NoteKind = Literal["note", "watch_flag", "measurement_request"]
 
@@ -53,7 +63,7 @@ class CheckinEntry(BaseModel):
     """A saved check-in as both sides see it, including answers no chart shows (vision change)."""
 
     day: date
-    at: datetime
+    at: UtcDatetime
     answers: CheckinIn
 
 
@@ -84,8 +94,8 @@ class Alert(BaseModel):
     related_items: list[ItemRef]
     severity: float
     state: Literal["open", "closed"]
-    opened_at: datetime
-    closed_at: datetime | None = None
+    opened_at: UtcDatetime
+    closed_at: UtcDatetime | None = None
 
 
 class Brief(BaseModel):
@@ -95,8 +105,8 @@ class Brief(BaseModel):
     question: str
     pinned_items: list[ItemRef]
     state: Literal["queued", "sent", "answered"]
-    created_at: datetime
-    sent_at: datetime | None = None
+    created_at: UtcDatetime
+    sent_at: UtcDatetime | None = None
 
 
 class BriefIn(BaseModel):
@@ -120,8 +130,8 @@ class Reply(BaseModel):
     brief_id: str
     author: str
     text: str
-    created_at: datetime
-    delivered_at: datetime | None = None
+    created_at: UtcDatetime
+    delivered_at: UtcDatetime | None = None
 
 
 class GroundNoteIn(BaseModel):
@@ -147,13 +157,13 @@ class GroundNote(BaseModel):
     text: str
     reason: str | None = None
     author: str
-    created_at: datetime
-    delivered_at: datetime | None = None
+    created_at: UtcDatetime
+    delivered_at: UtcDatetime | None = None
 
 
 class SyncRecord(BaseModel):
     id: str
-    at: datetime
+    at: UtcDatetime
     up: dict[str, int]
     down: dict[str, int]
     item_ids: list[str]
@@ -176,7 +186,7 @@ class Readout(BaseModel):
 class RecordView(BaseModel):
     crew_id: str
     side: Literal["station", "ground"]
-    as_of: datetime
+    as_of: UtcDatetime
     indicators: list[Indicator]
     alert: Alert | None = None
     worth_checking: list[Alert] = []
@@ -185,12 +195,12 @@ class RecordView(BaseModel):
     replies: list[Reply] = []
     notes: list[GroundNote] = []
     readiness: Readiness | None = None
-    last_sync_at: datetime | None = None
+    last_sync_at: UtcDatetime | None = None
     disclaimer: str = DISCLAIMER
 
 
 class Point(BaseModel):
-    at: datetime
+    at: UtcDatetime
     value: float
     source: Source
 
@@ -207,24 +217,75 @@ class CrewRow(BaseModel):
     status: Status
     open_alerts: int
     unanswered_briefs: int
-    last_sync_at: datetime | None = None
+    last_sync_at: UtcDatetime | None = None
     simulated: bool = True
+    module: str
+    role: str = "Crew member"
 
 
 class InboxItem(BaseModel):
     kind: Literal["brief", "alert"]
     crew_id: str
-    at: datetime
+    at: UtcDatetime
     brief: Brief | None = None
     alert: Alert | None = None
 
 
+class EarthRange(BaseModel):
+    """A lab reference range for healthy adults on Earth. Reference only, never an alarm."""
+
+    sex: str | None = None
+    min: float
+    max: float
+    rows: int | None = None
+
+
+class CrewSample(BaseModel):
+    min: float | None = None
+    max: float | None = None
+    mean: float | None = None
+    n: int
+
+
+class SampleValue(BaseModel):
+    """One Inspiration4 blood-count value. `quality` "suspect" values have no usable range."""
+
+    subject: str
+    timepoint: str
+    value: float | None = None
+    quality: str
+    range_min: float | None = None
+    range_max: float | None = None
+    vs_range: str | None = None
+
+
 class ReferenceRange(BaseModel):
+    """One blood-count indicator. `indicator`, `value`, `range_min`, `range_max` and `unit` are the
+    flat fields the web adapter reads: `value` is the crew sample mean and the range is the widest
+    Earth range across sexes. The fields below them carry everything C's file has."""
+
     indicator: str
     value: float | None = None
     range_min: float | None = None
     range_max: float | None = None
     unit: str
+    name: str | None = None
+    earth_reference_ranges: list[EarthRange] = []
+    crew_sample: CrewSample | None = None
+    values: list[SampleValue] = []
+
+
+class OsdSubject(BaseModel):
+    id: str
+    sex: str | None = None
+
+
+class OsdTimepoint(BaseModel):
+    id: str
+    label: str | None = None
+    phase: str | None = None
+    day: int | None = None
+    relative_to: str | None = None
 
 
 class Osd569Reference(BaseModel):
@@ -233,3 +294,40 @@ class Osd569Reference(BaseModel):
     label: str
     placeholder: bool = False
     indicators: list[ReferenceRange]
+    dataset: dict | None = None  # citation, DOI, files and access date, as C's ETL wrote them
+    notes: list[str] = []
+    featured: list[str] = []
+    subjects: list[OsdSubject] = []
+    timepoints: list[OsdTimepoint] = []
+
+
+class Mission(BaseModel):
+    mission_start: UtcDatetime
+    day: int
+    now: UtcDatetime
+
+
+class LinkStatus(BaseModel):
+    """What waits for the next ground link, so the astronaut can see it before it leaves."""
+
+    last_sync_at: UtcDatetime | None = None
+    next_window_at: UtcDatetime
+    window_is_demo_parameter: bool = True
+    pending_up: dict[str, int]
+    pending_down: dict[str, int]
+
+
+class MeasurementIn(BaseModel):
+    """Readings taken on their own, without answering the check-in again."""
+
+    heart_rate: float | None = Field(default=None, gt=20, lt=250)
+    bp_systolic: float | None = Field(default=None, gt=0, lt=300)
+    bp_diastolic: float | None = Field(default=None, gt=0, lt=200)
+    glucose: float | None = Field(default=None, gt=0, lt=800)
+    body_temp: float | None = Field(default=None, gt=25, lt=45)
+
+    @model_validator(mode="after")
+    def at_least_one(self) -> MeasurementIn:
+        if all(v is None for v in self.model_dump().values()):
+            raise ValueError("send at least one reading")
+        return self

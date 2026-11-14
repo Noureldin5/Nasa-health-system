@@ -5,6 +5,7 @@ import { AppProvider } from "./lib/app";
 import { BriefComposer } from "./screens/BriefComposer";
 import { Cabin } from "./screens/Cabin";
 import { CheckIn } from "./screens/CheckIn";
+import { Environment } from "./screens/Environment";
 import { Consult } from "./screens/Consult";
 import { Crew } from "./screens/ground/Crew";
 import { Inbox } from "./screens/ground/Inbox";
@@ -40,6 +41,7 @@ export function App() {
           <Route path="/health/:metric" element={<IndicatorDetail />} />
           <Route path="/measure" element={<Measure />} />
           <Route path="/cabin" element={<Cabin />} />
+          <Route path="/environment" element={<Environment />} />
           <Route path="/consult" element={<Consult />} />
           <Route path="/consult/new" element={<BriefComposer />} />
           <Route path="/consult/ground-view" element={<WhatGroundSees />} />

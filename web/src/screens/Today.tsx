@@ -12,6 +12,59 @@ import { fmtNum, fmtPoint, fmtTime } from "../lib/format";
 /** Weekly slot: due when the last reading is this many days old. Demo parameter. */
 const WEEKLY_DUE_DAYS = 4;
 
+/**
+ * Mission Quest (S4): a gentle streak of completed check-ins. It counts check-ins only, never health
+ * values, and reporting a symptom never lowers it (docs/REQUIREMENTS.md U7). A missed day pauses the
+ * streak at yesterday instead of showing a failure.
+ */
+export function Streak({ days, today }: { days: number[]; today: number }) {
+  const done = new Set(days);
+  let end = done.has(today) ? today : today - 1;
+  let streak = 0;
+  while (end > 0 && done.has(end)) {
+    streak += 1;
+    end -= 1;
+  }
+  const week = Array.from({ length: 7 }, (_, i) => today - 6 + i).filter((d) => d > 0);
+  const weekDone = week.filter((d) => done.has(d)).length;
+  return (
+    <section className="card card--pad" aria-label="Check-in streak">
+      <div className="row row--between" style={{ flexWrap: "wrap", gap: 12 }}>
+        <div className="stack" style={{ ["--gap" as string]: "2px" }}>
+          <span className="micro">Mission quest · check-in streak</span>
+          <b style={{ fontSize: 22 }}>
+            {streak} {streak === 1 ? "day" : "days"} in a row
+          </b>
+          <span className="small text-2">
+            {weekDone} of the last {week.length} days checked in. Counts check-ins only, never your health values.
+          </span>
+        </div>
+        <ol className="row" style={{ gap: 6, listStyle: "none", padding: 0 }} aria-label="Last 7 days">
+          {week.map((d) => (
+            <li
+              key={d}
+              aria-label={`Day ${d}: ${done.has(d) ? "checked in" : d === today ? "not yet" : "no check-in"}`}
+              style={{
+                minWidth: 44,
+                minHeight: 44,
+                display: "grid",
+                placeItems: "center",
+                border: "1px solid var(--c-line-strong)",
+                borderRadius: 8,
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+              }}
+            >
+              {done.has(d) ? "✓" : d === today ? "•" : "–"}
+              <span className="small muted">{d}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export function Today() {
   const { mission } = useApp();
   const nav = useNavigate();
@@ -96,6 +149,8 @@ export function Today() {
       ) : (
         <ReadoutHero readout={r.readout} />
       )}
+
+      <Streak days={r.checkIns.map((c) => c.day)} today={r.mission.day} />
 
       {openAlert && (
         <AlertCard

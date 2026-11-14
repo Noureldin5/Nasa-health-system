@@ -1,5 +1,11 @@
 from datetime import date, datetime, timedelta
 
+from fastapi.testclient import TestClient
+
+from app import create_app
+from clock import Clock
+from settings import Settings
+
 TODAY = date(2026, 11, 14)
 START = datetime(2026, 11, 1)
 
@@ -25,6 +31,22 @@ def test_checkin_without_symptoms_reads_all_in_range(client):
     out = checkin(client, crew="a3", headache="none", mood=4).json()
     assert out["headline"] == "All in your usual range"
     assert out["alert"] is None
+
+
+def test_evening_utc_belongs_to_the_next_mission_day(tmp_path):
+    # 20:00 UTC on Nov 13 is 02:00 on Nov 14 in Bishkek: mission day 10 is Nov 14. A check-in now
+    # must not overwrite seeded mission day 9 (Nov 13), so the 2-of-3 headache pattern still holds.
+    clock = Clock()
+    clock.set(datetime(2026, 11, 13, 20, 0))
+    settings = Settings(sqlite_path=":memory:", seed_day=10, osd569_path=tmp_path / "none.json")
+    c = TestClient(create_app(settings, clock=clock))
+    out = c.post("/astronaut/a1/checkin", json={"headache": "moderate", "mood": 4}).json()
+    assert out["alert"] is not None and out["alert"]["indicator"] == "headache"
+    saved = c.app.state.services.repo
+    assert len(saved.get_checkins("a1", date(2026, 11, 14), date(2026, 11, 14))) == 1
+    assert (
+        len(saved.get_checkins("a1", date(2026, 11, 13), date(2026, 11, 13))) == 1
+    )  # seeded day 9
 
 
 def test_card_out_of_band_without_alert_is_not_all_in_range(client):

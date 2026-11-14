@@ -76,6 +76,43 @@ For B and A: `data/processed/osd569.json` gained `values[].quality` (`"ok"` or `
 
 Edits C made outside C's folders (shared or A's notes): `Makefile` (targets `clear-manual`, `demo-reset`; `check` now runs the API checks too after the merge), `docs/DECISIONS.md`, `docs/DESIGN.md` (one line, the CO2 limit).
 
+## Role B update (2026-11-14, later, same branch, uncommitted)
+
+Done since the status below (137 API tests pass; the stack was checked on real VictoriaMetrics):
+- **Real metrics adapter** `api/metrics/vm.py` (`METRICS_BACKEND=vm`). 5-minute series (heart rate, CO2) become one mean per complete mission day. Typed values are stored as `source="manual"`, so `"manual"` is now in the API `Source` type (OPEN 2 is still unanswered by the team).
+- **Docker:** `api` and `web` services in `deploy/docker-compose.yml`. Web on `localhost:8090`, API on `localhost:8000`. Offline start checked on an internal-only network. The first build needs the internet.
+- **Gaps from web/README.md closed:** #1 `GET /mission`, #2 timestamps end in `Z`, #3 `POST /astronaut/{id}/measurements`, #8 `GET /link`, #9 `module` and `role` in `CrewRow`. Still open: #4, #5, #6, #7, #12. A's `src/api/http.ts` can drop its workarounds for the closed ones.
+- **`POST /demo/advance`** (item 5): next mission day. Reloads the simulated series one day later and moves every SQLite record one day older, so alerts, check-ins and notes keep their order. It does not move the clock: VictoriaMetrics drops samples dated more than about 2 days ahead of real time. Stops with 409 at day 14. Typed values in the time series are cleared by the reload, the check-in records stay.
+  - Checked on the real stack: reset to day 10, check in each morning. Alert opens on day 11 and closes on day 13 (two normal days, `ALERT_CLOSE_DAYS`).
+  - **Story mismatch to settle with C:** the pipeline gives a1 a headache on days 10 and 11 only, and leaves a1's own today empty (live crew). One day-10 check-in therefore does NOT raise the hero alert, because the pattern needs 2 of the last 3 days. The fake store had headaches on days 9 to 11. USER-FLOW.md says one day-10 check-in raises it. Either C adds a day-9 headache for a1, or the demo script starts the story on day 11.
+- Still not done: Cabin Link and hazards data (item 4), DECISIONS section 7 questions (item 6).
+
+## Role B status (2026-11-14, branch `b/osd569-and-day-boundary`)
+
+**Next step: build the real metrics adapter (item 1 below).** Start a branch `b/vm-adapter` from `main`, after the two fixes on this branch are merged.
+
+What is done (all in `api/`, `make check` passes with 127 API tests):
+- Every endpoint in `docs/DECISIONS.md` section 9 exists and works, and `api/openapi.json` is up to date. The web app calls only endpoints that exist.
+- The whole demo path works against a real server: `cd api && uv run python scripts/demo_walk.py` (check-in, alert, brief, sync, surgeon reply and note, sync, astronaut sees both). It runs with no internet.
+- Merged in PR #5: baseline, drift, alerts, SQLite store, check-in, open-record views, consult brief and reply, ground link and sync log, surgeon notes, crew readiness.
+- Done on this branch, not yet merged: (1) days are now grouped by mission day (18:00 UTC to 18:00 UTC), which closes row 9 in DECISIONS section 10; (2) `GET /reference/osd569` serves C's real `data/processed/osd569.json`. It returned an error before, because the API model did not match the file.
+
+What is not done, in this order:
+1. **Real metrics adapter** (`METRICS_BACKEND=vm` still raises `NotImplementedError`, so the API runs on an in-memory fake and VictoriaMetrics is unused). Follow C's answers in DECISIONS section 10:
+   - map metric names (`heart_rate` to `hr_bpm`, and so on) and attach UTC to timestamps;
+   - pass `end + 1 microsecond`, because `series` excludes its end;
+   - use `daily()` for heart rate and CO2, and baseline through yesterday, because today is a partial day (`complete=False`);
+   - use `pipeline.crew.module_of`, and call `flush()` after a write;
+   - make `seed` call `pipeline.reset.demo_reset(day)`;
+   - turn `VMUnavailable` into `MetricsUnavailable`.
+2. **Docker:** add the `api` service to `deploy/docker-compose.yml` (C reviews), make `api/Dockerfile` copy `pipeline/`, then check `docker run --network none`.
+3. **Endpoints the web app asked for** (table in `web/README.md`, "Gaps for the backend"). Easiest first: timezone-aware timestamps (`...Z`), `module` and `role` in `CrewRow`, `GET /mission`, `GET /link`. Then `POST /astronaut/{id}/measurements`, a ground-side `as_of` for `/series`, `POST /replies/{id}/ack`, and closing a measurement request when its reading arrives.
+4. **Endpoints for C's data:** Cabin Link (`cabin_link()`) and the Environment Switcher (`data/processed/hazards.json`). Nothing serves them yet, so the web app cannot show real CO2 data.
+5. **Demo beat "alert closed" (U9)** cannot be shown live, because the clock cannot move to the next day. It needs a demo endpoint that advances the day (with C's live replay).
+6. **Needs a team answer** (DECISIONS section 7): which mission day is "today" (API assumes 10), allow `source="manual"`, daily readings for blood pressure, glucose and temperature, and the blood-count card wording.
+
+Traps for whoever builds the adapter: a daily CO2 maximum is a 5-minute peak, so compare against the limit with `hours_above_limit`, not the maximum. An unknown `crew_id` makes the pipeline fall back to `node1` silently, so keep the API check that returns 404 first.
+
 ## Gotchas
 
 - A first-write hook in this environment blocks the first creation of each file until facts are stated. Retry once with the facts.

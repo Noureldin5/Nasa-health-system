@@ -7,7 +7,16 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 
 from routes.deps import Svc
-from schemas import Alert, CheckinIn, IndicatorKey, Readout, RecordView, Series
+from schemas import (
+    Alert,
+    CheckinIn,
+    IndicatorKey,
+    MeasurementIn,
+    Mission,
+    Readout,
+    RecordView,
+    Series,
+)
 from services import record
 
 router = APIRouter(tags=["astronaut"])
@@ -33,6 +42,18 @@ def astronaut_series(
 @router.post("/astronaut/{crew_id}/checkin", response_model=Readout, status_code=201)
 def post_checkin(crew_id: str, body: CheckinIn, s: Svc) -> Readout:
     return record.submit_checkin(s, crew_id, body, s.clock.now())
+
+
+@router.post("/astronaut/{crew_id}/measurements", response_model=Readout, status_code=201)
+def post_measurements(crew_id: str, body: MeasurementIn, s: Svc) -> Readout:
+    """Readings taken on their own (blood pressure, glucose, temperature, heart rate)."""
+    return record.submit_measurements(s, crew_id, body, s.clock.now())
+
+
+@router.get("/mission", response_model=Mission)
+def get_mission(s: Svc) -> Mission:
+    """Mission start and which mission day it is now (18:00 UTC to 18:00 UTC days)."""
+    return record.mission(s)
 
 
 @router.post("/alerts/{alert_id}/close", response_model=Alert)

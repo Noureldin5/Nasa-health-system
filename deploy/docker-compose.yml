@@ -30,5 +30,37 @@ services:
       retries: 10
       start_period: 5s
 
+  api:
+    build:
+      context: .. # repo root: the image copies api/, pipeline/ and data/processed/
+      dockerfile: api/Dockerfile
+    environment:
+      VM_URL: http://victoriametrics:8428
+      METRICS_BACKEND: vm
+      SEED_DAY: "10" # reloads the simulated mission on every start. Set to "" to keep data.
+    depends_on:
+      victoriametrics:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - apidata:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 15s
+
+  web:
+    build:
+      context: ../web
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8090:80"
+
 volumes:
   vmdata:
+  apidata:

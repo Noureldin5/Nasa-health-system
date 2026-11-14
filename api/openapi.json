@@ -6,7 +6,6 @@
           "closed_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -47,7 +46,6 @@
             "type": "string"
           },
           "opened_at": {
-            "format": "date-time",
             "title": "Opened At",
             "type": "string"
           },
@@ -132,7 +130,6 @@
             "title": "Alert Id"
           },
           "created_at": {
-            "format": "date-time",
             "title": "Created At",
             "type": "string"
           },
@@ -158,7 +155,6 @@
           "sent_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -253,7 +249,6 @@
             "$ref": "#/components/schemas/CheckinIn"
           },
           "at": {
-            "format": "date-time",
             "title": "At",
             "type": "string"
           },
@@ -397,7 +392,6 @@
           "last_sync_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -406,6 +400,10 @@
             ],
             "title": "Last Sync At"
           },
+          "module": {
+            "title": "Module",
+            "type": "string"
+          },
           "name": {
             "title": "Name",
             "type": "string"
@@ -413,6 +411,11 @@
           "open_alerts": {
             "title": "Open Alerts",
             "type": "integer"
+          },
+          "role": {
+            "default": "Crew member",
+            "title": "Role",
+            "type": "string"
           },
           "simulated": {
             "default": true,
@@ -440,9 +443,97 @@
           "name",
           "status",
           "open_alerts",
-          "unanswered_briefs"
+          "unanswered_briefs",
+          "module"
         ],
         "title": "CrewRow",
+        "type": "object"
+      },
+      "CrewSample": {
+        "properties": {
+          "max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max"
+          },
+          "mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean"
+          },
+          "min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "n"
+        ],
+        "title": "CrewSample",
+        "type": "object"
+      },
+      "EarthRange": {
+        "description": "A lab reference range for healthy adults on Earth. Reference only, never an alarm.",
+        "properties": {
+          "max": {
+            "title": "Max",
+            "type": "number"
+          },
+          "min": {
+            "title": "Min",
+            "type": "number"
+          },
+          "rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          }
+        },
+        "required": [
+          "min",
+          "max"
+        ],
+        "title": "EarthRange",
         "type": "object"
       },
       "GroundNote": {
@@ -452,7 +543,6 @@
             "type": "string"
           },
           "created_at": {
-            "format": "date-time",
             "title": "Created At",
             "type": "string"
           },
@@ -463,7 +553,6 @@
           "delivered_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -626,7 +715,6 @@
             ]
           },
           "at": {
-            "format": "date-time",
             "title": "At",
             "type": "string"
           },
@@ -712,7 +800,8 @@
           "source": {
             "enum": [
               "sim",
-              "nasa"
+              "nasa",
+              "manual"
             ],
             "title": "Source",
             "type": "string"
@@ -790,11 +879,172 @@
         "title": "ItemRef",
         "type": "object"
       },
+      "LinkStatus": {
+        "description": "What waits for the next ground link, so the astronaut can see it before it leaves.",
+        "properties": {
+          "last_sync_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sync At"
+          },
+          "next_window_at": {
+            "title": "Next Window At",
+            "type": "string"
+          },
+          "pending_down": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Pending Down",
+            "type": "object"
+          },
+          "pending_up": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Pending Up",
+            "type": "object"
+          },
+          "window_is_demo_parameter": {
+            "default": true,
+            "title": "Window Is Demo Parameter",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "next_window_at",
+          "pending_up",
+          "pending_down"
+        ],
+        "title": "LinkStatus",
+        "type": "object"
+      },
+      "MeasurementIn": {
+        "description": "Readings taken on their own, without answering the check-in again.",
+        "properties": {
+          "body_temp": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 45.0,
+                "exclusiveMinimum": 25.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body Temp"
+          },
+          "bp_diastolic": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 200.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bp Diastolic"
+          },
+          "bp_systolic": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 300.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bp Systolic"
+          },
+          "glucose": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 800.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glucose"
+          },
+          "heart_rate": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 250.0,
+                "exclusiveMinimum": 20.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Heart Rate"
+          }
+        },
+        "title": "MeasurementIn",
+        "type": "object"
+      },
+      "Mission": {
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "integer"
+          },
+          "mission_start": {
+            "title": "Mission Start",
+            "type": "string"
+          },
+          "now": {
+            "title": "Now",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mission_start",
+          "day",
+          "now"
+        ],
+        "title": "Mission",
+        "type": "object"
+      },
       "Osd569Reference": {
         "properties": {
+          "dataset": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset"
+          },
           "dataset_id": {
             "title": "Dataset Id",
             "type": "string"
+          },
+          "featured": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Featured",
+            "type": "array"
           },
           "indicators": {
             "items": {
@@ -807,10 +1057,34 @@
             "title": "Label",
             "type": "string"
           },
+          "notes": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
           "placeholder": {
             "default": false,
             "title": "Placeholder",
             "type": "boolean"
+          },
+          "subjects": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/OsdSubject"
+            },
+            "title": "Subjects",
+            "type": "array"
+          },
+          "timepoints": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/OsdTimepoint"
+            },
+            "title": "Timepoints",
+            "type": "array"
           },
           "url": {
             "title": "Url",
@@ -826,17 +1100,98 @@
         "title": "Osd569Reference",
         "type": "object"
       },
+      "OsdSubject": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "OsdSubject",
+        "type": "object"
+      },
+      "OsdTimepoint": {
+        "properties": {
+          "day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Day"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phase"
+          },
+          "relative_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relative To"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "OsdTimepoint",
+        "type": "object"
+      },
       "Point": {
         "properties": {
           "at": {
-            "format": "date-time",
             "title": "At",
             "type": "string"
           },
           "source": {
             "enum": [
               "sim",
-              "nasa"
+              "nasa",
+              "manual"
             ],
             "title": "Source",
             "type": "string"
@@ -940,7 +1295,6 @@
             ]
           },
           "as_of": {
-            "format": "date-time",
             "title": "As Of",
             "type": "string"
           },
@@ -979,7 +1333,6 @@
           "last_sync_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -1041,10 +1394,40 @@
         "type": "object"
       },
       "ReferenceRange": {
+        "description": "One blood-count indicator. `indicator`, `value`, `range_min`, `range_max` and `unit` are the\nflat fields the web adapter reads: `value` is the crew sample mean and the range is the widest\nEarth range across sexes. The fields below them carry everything C's file has.",
         "properties": {
+          "crew_sample": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CrewSample"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "earth_reference_ranges": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EarthRange"
+            },
+            "title": "Earth Reference Ranges",
+            "type": "array"
+          },
           "indicator": {
             "title": "Indicator",
             "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
           },
           "range_max": {
             "anyOf": [
@@ -1082,6 +1465,14 @@
               }
             ],
             "title": "Value"
+          },
+          "values": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SampleValue"
+            },
+            "title": "Values",
+            "type": "array"
           }
         },
         "required": [
@@ -1102,14 +1493,12 @@
             "type": "string"
           },
           "created_at": {
-            "format": "date-time",
             "title": "Created At",
             "type": "string"
           },
           "delivered_at": {
             "anyOf": [
               {
-                "format": "date-time",
                 "type": "string"
               },
               {
@@ -1159,6 +1548,74 @@
         "title": "ReplyIn",
         "type": "object"
       },
+      "SampleValue": {
+        "description": "One Inspiration4 blood-count value. `quality` \"suspect\" values have no usable range.",
+        "properties": {
+          "quality": {
+            "title": "Quality",
+            "type": "string"
+          },
+          "range_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Max"
+          },
+          "range_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Min"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "timepoint": {
+            "title": "Timepoint",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "vs_range": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vs Range"
+          }
+        },
+        "required": [
+          "subject",
+          "timepoint",
+          "quality"
+        ],
+        "title": "SampleValue",
+        "type": "object"
+      },
       "Series": {
         "properties": {
           "crew_id": {
@@ -1199,7 +1656,6 @@
       "SyncRecord": {
         "properties": {
           "at": {
-            "format": "date-time",
             "title": "At",
             "type": "string"
           },
@@ -1478,6 +1934,59 @@
         ]
       }
     },
+    "/astronaut/{crew_id}/measurements": {
+      "post": {
+        "description": "Readings taken on their own (blood pressure, glucose, temperature, heart rate).",
+        "operationId": "post_measurements_astronaut__crew_id__measurements_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "crew_id",
+            "required": true,
+            "schema": {
+              "title": "Crew Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MeasurementIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readout"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Measurements",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
     "/astronaut/{crew_id}/readout": {
       "get": {
         "operationId": "astronaut_readout_astronaut__crew_id__readout_get",
@@ -1741,6 +2250,28 @@
         ]
       }
     },
+    "/demo/advance": {
+      "post": {
+        "description": "Next mission day. Open alerts that the new day's data clears are closed. Records stay.",
+        "operationId": "demo_advance_demo_advance_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mission"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Demo Advance",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
     "/demo/reset": {
       "post": {
         "description": "Real today becomes mission `day`. Day 10: one headache check-in raises the hero alert.",
@@ -1937,6 +2468,28 @@
         ]
       }
     },
+    "/link": {
+      "get": {
+        "description": "What waits for the next link and when the simulated window opens. Nothing is hidden: this is\nthe list of what ground will receive.",
+        "operationId": "link_status_link_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Link Status",
+        "tags": [
+          "link"
+        ]
+      }
+    },
     "/link/log": {
       "get": {
         "description": "Every sync, newest first, with what it carried.",
@@ -1985,9 +2538,55 @@
         ]
       }
     },
+    "/mission": {
+      "get": {
+        "description": "Mission start and which mission day it is now (18:00 UTC to 18:00 UTC days).",
+        "operationId": "get_mission_mission_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mission"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Mission",
+        "tags": [
+          "astronaut"
+        ]
+      }
+    },
+    "/reference/hazards": {
+      "get": {
+        "description": "The five NASA HRP hazards with checked quotes and links (C's data/processed/hazards.json),\nfor the Environment Switcher. Served as the file is, so the quotes stay verbatim.",
+        "operationId": "reference_hazards_reference_hazards_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Reference Hazards Reference Hazards Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Reference Hazards",
+        "tags": [
+          "reference"
+        ]
+      }
+    },
     "/reference/osd569": {
       "get": {
-        "description": "Serves data/processed/osd569.json (C's ETL). Until it exists, a labeled placeholder with\nno invented numbers.",
+        "description": "Serves data/processed/osd569.json (C's ETL). Until it exists, a labeled placeholder with\nno invented numbers. A file with the wrong shape is an error, not a silent placeholder.",
         "operationId": "reference_osd569_reference_osd569_get",
         "responses": {
           "200": {

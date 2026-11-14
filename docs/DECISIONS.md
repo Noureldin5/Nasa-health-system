@@ -240,7 +240,7 @@ POST /demo/reset?day=N
 
 `POST /demo/reset?day=N` makes real today mission day N: it reseeds, saves one check-in per past day so "Same as yesterday" works, logs an initial sync, and raises any alert the history already earns. On day 10 one headache check-in raises the headache and CO2 alert.
 
-`GET /reference/osd569` returns the shape `Osd569Reference` in `api/schemas.py` (`dataset_id`, `url`, `label`, `placeholder`, and `indicators` with `indicator`, `value`, `range_min`, `range_max`, `unit`). C4 writes `data/processed/osd569.json` in that shape. A file that does not match makes the endpoint fail, so run `cd api && uv run pytest` after changing it. Until the file exists the endpoint returns a labeled placeholder with no numbers.
+`GET /reference/osd569` serves C's `data/processed/osd569.json` as is (model `Osd569Reference` in `api/schemas.py`, transform in `api/domain/reference.py`). Flat fields kept for the web adapter: `dataset_id`, `url`, `label`, `placeholder`, and per indicator `indicator` (C's `id`), `value` (crew sample mean), `range_min`, `range_max` (widest Earth range across sexes) and `unit`. Added from C's file: per indicator `name`, `earth_reference_ranges` (one per sex, kept separate), `crew_sample` and `values` (every Inspiration4 sample with `quality` and `vs_range`, which can be null for suspect values); top level `dataset` (citation, DOI), `notes`, `featured`, `subjects`, `timepoints`. The ranges are Earth reference, never an alarm. A file with the wrong shape returns 500 naming the file, and `api/tests/routes/test_reference.py` runs the real file, so run `cd api && uv run pytest` after changing the ETL. Until the file exists the endpoint returns a labeled placeholder with no numbers.
 
 ## 10. How B's metrics adapter meets section 5 (B, for C to confirm)
 
@@ -274,7 +274,7 @@ The API reads and writes time series through one port (`api/metrics/port.py`) an
 
 | # | Topic | B's side today | C's side | Proposal |
 |---|---|---|---|---|
-| 9 | What a "day" is | The API groups by the UTC calendar date (`api/domain/views.py:65`, `now.date()`, `p.at.date()`) | A mission day runs from 18:00 UTC to 18:00 UTC (section 4), which is midnight to midnight in Bishkek (UTC+6) | **Not agreed.** Section 4 says never to derive the mission day from the calendar date |
+| 9 | What a "day" is | **Resolved by B, 2026-11-14.** Every place the API says "day" calls `domain.days.mission_date(ts)`, which is `(ts + 6h).date()`, so a mission day runs 18:00 UTC to 18:00 UTC like the pipeline. No raw `.date()` is left in `api/`. | Matches section 4 | Test: `tests/routes/test_checkin_views.py::test_evening_utc_belongs_to_the_next_mission_day` and `tests/domain/test_days.py` |
 
 Why it matters once the real adapter is on: the simulated sleep, blood pressure and check-in values are stamped 6 to 7.5 hours after the day starts, so 00:00 to 01:30 UTC on the next calendar date. The API would file "mission day 9" values under day 10. Heart rate and CO2 samples from 18:00 to 24:00 UTC would also fall on the wrong day.
 

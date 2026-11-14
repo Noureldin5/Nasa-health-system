@@ -18,6 +18,10 @@ The root `compose.yaml` includes `deploy/docker-compose.yml`, so plain `docker c
 | Service | From the host | From another service in compose |
 |---|---|---|
 | VictoriaMetrics | `http://localhost:8428` | `http://victoriametrics:8428` |
+| API (B) | `http://localhost:8000` | `http://api:8000` |
+| Web app (A) | `http://localhost:8090` | nginx; `/api/...` is proxied to the API |
+
+The `api` image copies `pipeline/` and `data/processed/` and runs on `METRICS_BACKEND=vm`. It reloads the simulated mission on every start (`SEED_DAY=10`). The `web` image is built once with network access (`npm ci`), then runs without it. Offline check, done 2026-11-14: start the stack on a compose network with `internal: true`; the API cannot reach the internet and still serves `/astronaut/a1/readout` through the web container.
 
 Code reads the address from `VM_URL`. A small built-in query page is at `http://localhost:8428/vmui`.
 
