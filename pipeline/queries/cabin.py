@@ -103,7 +103,7 @@ def cabin_link(
     crew_id: str,
     *,
     through_day: int,
-    days: int = 14,
+    days: int = 14,  # window length: the whole demo mission (Demo parameter)
     symptom: str = "headache",
     max_lag_days: int = 2,
     module: str | None = None,

@@ -110,7 +110,7 @@ def headache_by_day(points, crew_id):
 def test_co2_rises_in_node1_before_the_first_headache():
     points = generate(MISSION, MISSION_END)
     usual = daily_mean(points, "co2_ppm", "module", "node1", 8)
-    assert daily_mean(points, "co2_ppm", "module", "node1", 9) > usual + 1000  # the rise is on day 9
+    assert daily_mean(points, "co2_ppm", "module", "node1", 9) > usual + 600  # the rise is on day 9
     headaches = headache_by_day(points, "a1")
     assert [day for day, strength in headaches.items() if strength > 0] == [10, 11]  # the headache follows on day 10
     assert headaches[10] == 2 and headaches[11] == 1

@@ -50,7 +50,9 @@ DEFAULT_MODULES = crew_config.MODULES
 # Extra CO2 in ppm by mission time (in days since mission start; day 9 begins at 8.0).
 # Piecewise linear: rises over the first half of day 9, holds, falls from the evening of day 11.
 CO2_RISE_MODULE = "node1"
-CO2_RISE_PPM = 1900
+# Demo parameter. Chosen so no 1-hour mean passes the cited limit (about 3,947 ppm, pipeline/references.py)
+# while the rise stays well above the usual level: a pattern below the alarm, not an alarm.
+CO2_RISE_PPM = 1000
 CO2_RISE_SHAPE = ((8.0, 0.0), (8.5, 1.0), (10.75, 1.0), (11.25, 0.0))
 
 # symptom_strength for headache, by crew member and mission day (0 none ... 3 strong).
@@ -119,6 +121,8 @@ class CrewBaseline:
     mood: float
 
 
+# Demo parameters: plausible resting values for a healthy adult, drawn once per crew member. Not taken from
+# a source and never used as a threshold or reference range. Same for every noise width below.
 def crew_baseline(plan: MissionPlan, crew_id: str) -> CrewBaseline:
     rng = _rng(plan, crew_id, "baseline")
     return CrewBaseline(

@@ -4,7 +4,7 @@
   "label": "NASA Human Research Program hazards of human spaceflight",
   "hub_url": "https://www.nasa.gov/hrp/hazards/",
   "accessed": "2026-11-14",
-  "provenance_rule": "Fields named nasa_quotes are verbatim fragments from the cited page, trimmed with the ellipsis shown. Every other text field is our wording and is labeled as such. No numbers are stated here.",
+  "provenance_rule": "Fields named nasa_quotes are verbatim fragments of the cited page. A fragment can stop before the end of its sentence. Each one was checked against the page text on 2026-11-14 (curly quotes normalised). Every other text field is our wording and is labeled as such. No numbers are stated here.",
   "note": "Decision support, not diagnosis.",
   "hazards": [
     {
@@ -91,7 +91,7 @@
       "url": "https://www.nasa.gov/hrp/hazard-hostile-closed-environments/",
       "nasa_quotes": [
         "Maintaining a safe ecosystem inside a vehicle presents unique challenges,",
-        "Microbes can change characteristics in space."
+        "Microbes can change characteristics in space"
       ],
       "app_link": {
         "text": "Cabin Link compares your headaches with the CO2 of your module. The NASA hazard page does not discuss CO2; the CO2 limit comes from a separate source, see pipeline/references.py.",

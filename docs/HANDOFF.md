@@ -61,8 +61,8 @@ Fixed after the advisor review:
 - `daily()` marks an unfinished day `complete=False` and `baseline_window` leaves it out. **B: baseline through `today - 1`** (DECISIONS section 5).
 
 Open, needs the team (not decided by C):
-1. **Cabin Link shows no correlation on the planned demo day.** With today = day 10, a1 has one headache day and the guard (at least 2 symptom days) returns `r=None`. On the full 14 days lag 0 (r about 0.82) beats lag 1 (about 0.66), which contradicts "the rise comes first". Options: add an earlier mild-headache episode to the story, or lead the UI with the day overlay and `hours_above_limit` instead of `r`. Story changes touch `docs/USER-FLOW.md`.
-2. **Simulated CO2 in node1 sits above the cited limit for about 2.5 days** (3,947 ppm). A judge will ask why no cabin alarm fired. Lowering the peak below the limit but above the 2.5 mmHg study level (about 3,289 ppm) tells the pattern story better. A story change, see 1.
+1. **Cabin Link shows no correlation on the planned demo day. Not fixed: needs a story decision.** With today = day 10, a1's day-10 headache is the live check-in, so the simulated data has no symptom day and `lags[*].r` is `None` (the guard wants at least 2 symptom days; `pipeline/tests/test_demo_moment.py` pins this). On the full 14 days (run, not estimated) lag 0 gives r = 0.82, lag 1 r = 0.66 and lag 2 r = 0.02, so "lag 0 beats lag 1" even though the rise (day 9) comes before the first headache (day 10): CO2 stays high through day 11, so the daily series move together. Options: (a) the UI leads with the day overlay (CO2 above usual from day 9, `hours_above_limit`, the symptom on day 10) and shows `r` only after day 11; (b) add an earlier mild headache episode for a1 to the story, which changes `docs/USER-FLOW.md`; (c) lower `MIN_SYMPTOM_DAYS` to 1 (a single point is not a correlation, so not recommended).
+2. **Done:** simulated node1 CO2 no longer passes the cited limit. `CO2_RISE_PPM` went from 1,900 to 1,000 (Demo parameter): zero hours above 3,947 ppm over the 14 days, daily means up to about 3,700 ppm against a usual 2,700. The story in `docs/USER-FLOW.md` does not pin the peak.
 3. DECISIONS section 7, items 1 to 4 (which day is today, `source="manual"`, cadence of daily vitals, blood-count card wording). `source="manual"` is already implemented; `docs/TEAM.md` still lists only `sim` and `nasa`.
 4. B: SQLite reset command, and add it to `make demo-reset` (DECISIONS section 6).
 5. Read NASA-STD-3001 Vol 2 [V2 6004] and Law et al. 2014 first-hand. `pipeline/references.py` says they were taken from NASA's brief and the abstract.
@@ -70,6 +70,10 @@ Open, needs the team (not decided by C):
 7. Acknowledgement sentence for OSDR data: confirm the exact wording on the OSDR FAQ before submission.
 8. The female reference ranges in OSD-569 differ per row (hemoglobin has two): A cannot assume one min and max per indicator.
 9. `docs/CHALLENGE.md` still lacks judging criteria and submission rules.
+
+For B and A: `data/processed/osd569.json` gained `values[].quality` (`"ok"` or `"suspect"`) and `values[].vs_range` can now be `null` (for suspect values). `crew_sample` and `earth_reference_ranges` count `ok` values only. Show a suspect value, if at all, with a note.
+
+Edits C made outside C's folders (shared or A's notes): `Makefile` (targets `clear-manual`, `demo-reset`), `docs/DECISIONS.md`, `docs/DESIGN.md` (one line, the CO2 limit).
 
 ## Gotchas
 
