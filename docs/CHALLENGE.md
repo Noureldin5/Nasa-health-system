@@ -34,7 +34,7 @@ For data and resources related to this challenge, refer to the Resources tab at 
 
 ## TODO (teammate)
 
-- Paste the Resources tab links (datasets) here.
+- Datasets: the team's research is in `docs/research/nasa-datasets.md` (OSD-569 CBC is the recommended starting dataset). Still paste the official Resources tab links here to confirm.
 - Paste the judging criteria and submission requirements.
 - Date copied for those: 
 

@@ -18,8 +18,9 @@ Signature features: personal baseline and trends, 30-second check-in, drift aler
 3. Works offline. The demo must run with the network off.
 4. Low effort for the user. Passive data first, check-ins under 30 seconds, no long forms.
 5. No real patient data. Use NASA public datasets (OSDR, RadLab) and clearly labeled simulated data. Label simulated data in the UI.
-6. Cite sources for any medical threshold or reference range, in code comments or `docs/`.
-7. Do not write the official challenge text, dates or judging criteria from memory. They live in `docs/CHALLENGE.md`, copied from spaceappschallenge.org by a teammate.
+6. NASA data must be used (the team reports the organizers said so). Ingest at least OSDR OSD-569 (Inspiration4 complete blood count, value plus min and max per indicator) and drive the color coding from its ranges. Details, API and file names: `docs/research/nasa-datasets.md`. Blood pressure, heart rate and glucose have no open NASA data, so use synthetic values there and label them.
+7. Cite sources for any medical threshold or reference range, in code comments or `docs/`.
+8. Do not write the official challenge text, dates or judging criteria from memory. They live in `docs/CHALLENGE.md`, copied from spaceappschallenge.org by a teammate.
 
 ## Suggested stack (recommendation, not a decision)
 
@@ -38,8 +39,11 @@ PROMPT.md                 kickoff prompt for a fresh session
 docs/
   IDEAS.md                concepts and recommendation
   CHALLENGE.md            official challenge text (team fills in)
+  DESIGN.md               design links, tokens and frontend notes per idea
+  research/nasa-datasets.md  NASA dataset research (OSD-569 first)
   DECISIONS.md            stack and scope decisions (create when decided)
   research/               source notes
+design/                   reference sources of the 7 design canvases (see docs/DESIGN.md)
 src/                      app code (created when building starts)
 data/                     NASA datasets and simulated data (label which is which)
 .claude/
