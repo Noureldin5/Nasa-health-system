@@ -8,6 +8,7 @@ import { Icon } from "../components/icons";
 import { StatusPill } from "../components/status";
 import { DemoTag, ErrorNote, SourceTag } from "../components/ui";
 import { HAZARDS } from "../content/hazards";
+import { RISKS_FOR_METRIC, RISK_PAGES } from "../content/risks";
 import { INDICATORS } from "../content/indicators";
 import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
@@ -225,6 +226,19 @@ function Detail({ r, k, table, setTable, role, crewId }: {
                 </li>
               ))}
             </ul>
+          </section>
+          <section className="card card--pad stack" aria-label="NASA sources">
+            <span className="micro">Read more at NASA</span>
+            <ul className="stack" style={{ ["--gap" as string]: "6px", listStyle: "none" }}>
+              {RISKS_FOR_METRIC[k].map((r) => (
+                <li key={r} className="small">
+                  <a href={RISK_PAGES[r].url} target="_blank" rel="noreferrer">
+                    NASA HRP: {RISK_PAGES[r].title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="small muted">Which page goes with this measurement is our pairing, not NASA's. Opens online; the app works offline without it.</p>
           </section>
           <div className="contact-box">
             <span className="micro" style={{ display: "block", marginBottom: 4 }}>

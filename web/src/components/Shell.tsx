@@ -25,6 +25,7 @@ export function Shell({ children }: { children: ReactNode }) {
     { to: "/", label: "Today", icon: "today", end: true },
     { to: "/health", label: "Body & vitals", icon: "body" },
     { to: "/cabin", label: "Cabin Link", icon: "cabin" },
+    { to: "/environment", label: "Where you are", icon: "info" },
     { to: "/consult", label: "Consult", icon: "consult", count: unreadReplies + openRequests },
     { to: "/readiness", label: "Crew readiness", icon: "crew" },
   ];
