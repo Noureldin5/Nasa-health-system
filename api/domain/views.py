@@ -16,9 +16,11 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Literal
 
+from domain.alerts import build_readout
 from domain.baseline import DailyPoint, compute_baseline
 from domain.drift import status_for
 from domain.params import UNITS
+from domain.readiness import readiness_for
 from schemas import (
     Alert,
     Brief,
@@ -27,7 +29,6 @@ from schemas import (
     Indicator,
     IndicatorKey,
     Point,
-    Readiness,
     RecordView,
     Reply,
 )
@@ -57,7 +58,6 @@ class Record:
     notes: list[GroundNote]
     last_sync_at: datetime | None
     metrics_available: bool = True
-    readiness: Readiness | None = field(default=None)
     checkins: list[CheckinEntry] = field(default_factory=list)
 
 
@@ -112,18 +112,26 @@ def build_view(record: Record, side: Side, now: datetime) -> RecordView:
     else:
         indicators = [_indicator(record, key, cutoff, as_of) for key in INDICATOR_ORDER]
 
+    alert = open_alerts[0] if open_alerts else None
+    worth_checking = open_alerts[1:]
+    readiness = (
+        None
+        if (ground and cutoff is None)
+        else readiness_for(record.crew_id, build_readout(indicators, alert, worth_checking))
+    )
+
     return RecordView(
         crew_id=record.crew_id,
         side=side,
         as_of=as_of,
         indicators=indicators,
-        alert=open_alerts[0] if open_alerts else None,
-        worth_checking=open_alerts[1:],
+        alert=alert,
+        worth_checking=worth_checking,
         checkins=[c for c in record.checkins if astronaut_origin_visible(c.at)],
         briefs=briefs,
         replies=replies,
         notes=notes,
-        readiness=record.readiness,
+        readiness=readiness,
         last_sync_at=record.last_sync_at,
     )
 

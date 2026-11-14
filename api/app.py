@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from clock import Clock
 from metrics.fake import FakeMetrics
 from metrics.port import MetricsPort, MetricsUnavailable
-from routes import astronaut, briefs, crew, demo, ground, reference, stubs
+from routes import astronaut, briefs, crew, demo, ground, reference
 from routes import link as link_routes
 from services.record import Conflict, CrewNotFound, NotFound, Services, reset_demo
 from settings import Settings
@@ -76,7 +76,6 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
         link_routes.router,
     ):
         app.include_router(router)
-    app.include_router(stubs.router)
 
     if settings.seed_day is not None:
         reset_demo(services, settings.seed_day)

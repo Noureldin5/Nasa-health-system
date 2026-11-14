@@ -1717,6 +1717,7 @@
     },
     "/crew/readiness": {
       "get": {
+        "description": "One word per person for the commander, no raw values. The astronaut's own view carries the\nsame object.",
         "operationId": "crew_readiness_crew_readiness_get",
         "responses": {
           "200": {
