@@ -13,8 +13,8 @@ class Clock:
         self._fixed: datetime | None = None
 
     def now(self) -> datetime:
-        """Naive local station time, to the second."""
-        return self._fixed or datetime.now().replace(microsecond=0)
+        """Naive local station time. Keeps microseconds so a write right after a sync sorts after it."""
+        return self._fixed or datetime.now()
 
     def set(self, moment: datetime) -> None:
         self._fixed = moment
