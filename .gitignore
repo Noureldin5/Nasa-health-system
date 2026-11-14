@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+*.log
+.DS_Store
+__pycache__/
+.venv/
+
+# Local Claude Code settings (machine-specific proxy and hooks)
+.claude/settings.local.json
+.claude/.headroom_wrap_marker.json
