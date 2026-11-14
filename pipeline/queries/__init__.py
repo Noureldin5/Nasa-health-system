@@ -142,6 +142,9 @@ class DailyValue:
     max: float
     n: int  # samples that day
     sources: tuple[str, ...]  # for example ("sim",) or ("manual", "sim")
+    # False for a 5-minute metric whose day is not over yet (today). A partial day is biased:
+    # the simulated heart rate is lower at night, so a morning mean sits below a full-day mean.
+    complete: bool = True
 
 
 @dataclass(frozen=True)
@@ -165,6 +168,7 @@ def daily(
     crew_id: str | None = None,
     labels: dict[str, str] | None = None,
     mission_start: datetime | None = None,
+    now: datetime | None = None,
     base_url: str | None = None,
 ) -> list[DailyValue]:
     """One row per mission day from first_day to last_day (both included). Days without data are left out.
@@ -183,6 +187,8 @@ def daily(
     by_day: dict[int, list[Sample]] = {}
     for sample in samples:
         by_day.setdefault(mission.mission_day(sample.ts, mission_start), []).append(sample)
+    now = _aware("now", now) if now is not None else datetime.now(timezone.utc)
+    five_min = schema.get(metric).cadence == schema.FIVE_MIN
     rows = []
     for day in sorted(by_day):
         values = [sample.value for sample in by_day[day]]
@@ -194,6 +200,7 @@ def daily(
                 max=max(values),
                 n=len(values),
                 sources=tuple(sorted({sample.source for sample in by_day[day]})),
+                complete=not five_min or mission.day_window(day, mission_start)[1] <= now,
             )
         )
     return rows
@@ -221,11 +228,14 @@ def baseline_window(
     crew_id: str | None = None,
     labels: dict[str, str] | None = None,
     mission_start: datetime | None = None,
+    complete_only: bool = True,
+    now: datetime | None = None,
     base_url: str | None = None,
 ) -> WindowStats:
     """Mean and spread of the `days` mission days that end with `through_day` (included).
 
-    This only measures the window. What counts as drift is B's decision in api/domain/.
+    A day that is not over yet (today, for a 5-minute metric) is left out unless `complete_only=False`,
+    so `n_days` counts finished days only. This only measures the window. What counts as drift is B's decision in api/domain/.
     The default of 7 days matches the calibration period in docs/REQUIREMENTS.md U3 (Demo parameter).
     """
     if days < 1:
@@ -233,6 +243,8 @@ def baseline_window(
     first_day = through_day - days + 1
     rows = daily(
         metric, first_day=first_day, last_day=through_day, crew_id=crew_id, labels=labels,
-        mission_start=mission_start, base_url=base_url,
+        mission_start=mission_start, now=now, base_url=base_url,
     )
+    if complete_only:
+        rows = [row for row in rows if row.complete]
     return window_stats(rows, first_day, through_day)

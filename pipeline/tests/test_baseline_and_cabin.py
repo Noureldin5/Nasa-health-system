@@ -92,6 +92,24 @@ def test_daily_aggregates_a_five_minute_metric_per_mission_day(test_id):
 
 
 @pytest.mark.vm
+def test_a_day_that_is_not_over_is_marked_incomplete_and_left_out_of_the_baseline(test_id):
+    start = recent_start()
+    labels = {"crew_id": test_id, "source": "sim"}
+    write_points(
+        [Point("hr_bpm", 60, start + timedelta(hours=1), labels)]  # day 1, finished
+        + [Point("hr_bpm", 50, start + DAY + timedelta(hours=1), labels)]  # day 2, still running
+    )
+    flush()
+    now = start + DAY + timedelta(hours=8)
+
+    rows = daily("hr_bpm", crew_id=test_id, first_day=1, last_day=2, mission_start=start, now=now)
+    assert [(r.day, r.complete) for r in rows] == [(1, True), (2, False)]
+    kwargs = dict(crew_id=test_id, through_day=2, days=2, mission_start=start, now=now)
+    assert baseline_window("hr_bpm", **kwargs).n_days == 1
+    assert baseline_window("hr_bpm", complete_only=False, **kwargs).n_days == 2
+
+
+@pytest.mark.vm
 def test_baseline_window_over_seven_days_of_a_daily_metric(test_id):
     start = recent_start()
     labels = {"crew_id": test_id, "source": "sim"}

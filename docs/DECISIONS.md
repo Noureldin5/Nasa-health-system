@@ -140,6 +140,7 @@ baseline_window(metric, *, through_day: int, days: int = 7, crew_id=None, labels
 ```
 
 - Days are mission days, both ends included. Days without data are left out of `daily`.
+- `DailyValue.complete` is `False` for a 5-minute metric (heart rate) on a day that is not over yet. A partial day is biased (the simulated heart rate is lower at night, so a morning mean sits about 5 bpm below a full day). `baseline_window` leaves such days out by default (`complete_only=True`), so `n_days` counts finished days. **B: build the baseline from `through_day = today - 1`, and compare today's value to it; do not average today into the baseline.** Daily metrics (sleep, mood, blood pressure) are one value per day and always `complete`.
 - `baseline_window` only measures: mean and sample standard deviation of the daily means. What counts as drift is B's rule in `api/domain/`. `n_days` below `days` means the window is not full yet (calibration).
 
 Cabin Link (C6):
