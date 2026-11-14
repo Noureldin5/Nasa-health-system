@@ -54,7 +54,7 @@ Link: https://claude.ai/artifact/Fa8RRwgeqKbHrhRg6jf3CR . Source: `design/cabin-
 
 - 1280x760 page. Left: 14-day CO2 line chart with a shaded "above limit" band and triangle markers for headache days. Right: a "Pattern found" card and a "Things to try" card.
 - Draw the chart from one scale for x and y. Read the `dataviz` skill first. Label units (parts per million).
-- The 3,500 ppm line is a placeholder. Cite a NASA CO2 source (NASA NTRS 20150021777 and the OCHMO brief are in the research notes).
+- The CO2 limit line is 3 mmHg as a 1-hour average, about 3,947 ppm at 760 mmHg (cited in `pipeline/references.py`). The 3,500 ppm placeholder is gone.
 - Wording stays "a pattern to check, not a cause".
 
 ### 3. Crew Readiness
