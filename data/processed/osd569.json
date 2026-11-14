@@ -32,6 +32,7 @@
     "Real, public, de-identified NASA data from 4 Inspiration4 crew members. Not the user's own lab results.",
     "Samples were taken before launch and after return only. There are no in-flight samples.",
     "range_min and range_max are the laboratory reference range printed with each value: an Earth reference range. It is shown for context and never triggers an alert.",
+    "Sample C003 L-92 looks shifted in the NASA file. Its values carry quality=suspect and are left out of crew_sample and vs_range.",
     "For female subjects the file does not print the same range on every row; each value keeps its own.",
     "Decision support, not diagnosis."
   ],
@@ -119,7 +120,7 @@
           "sex": "F",
           "min": 3.8,
           "max": 10.8,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -131,14 +132,15 @@
       "crew_sample": {
         "min": 4.9,
         "max": 10.6,
-        "mean": 6.99,
-        "n": 28
+        "mean": 6.9,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 5.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -147,6 +149,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 5.5,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -155,6 +158,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 7,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -163,6 +167,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 5,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -171,6 +176,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 4.9,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -179,6 +185,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 4.9,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -187,6 +194,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 4.9,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -195,6 +203,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 6.5,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -203,6 +212,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 5.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -211,6 +221,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 7.2,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -219,6 +230,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 5.5,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -227,6 +239,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 6.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -235,6 +248,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 5.3,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -243,6 +257,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 6.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -251,14 +266,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 9.6,
+          "quality": "suspect",
           "range_min": 3.8,
           "range_max": 10.8,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 9.3,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -267,6 +284,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 9.8,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -275,6 +293,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 7,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -283,6 +302,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 7.8,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -291,6 +311,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 8.8,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -299,6 +320,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 7.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -307,6 +329,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 7.7,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -315,6 +338,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 6.4,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -323,6 +347,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 10.6,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -331,6 +356,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 8.1,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -339,6 +365,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 6.8,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -347,6 +374,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 7.9,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -355,6 +383,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 8.3,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 10.8,
           "vs_range": "inside"
@@ -376,7 +405,7 @@
           "sex": "F",
           "min": 4.2,
           "max": 5.8,
-          "rows": 3
+          "rows": 2
         },
         {
           "sex": "M",
@@ -388,14 +417,15 @@
       "crew_sample": {
         "min": 3.72,
         "max": 5.58,
-        "mean": 4.74,
-        "n": 28
+        "mean": 4.75,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 4.58,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -404,6 +434,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 4.85,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -412,6 +443,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 4.69,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -420,6 +452,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 4.84,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -428,6 +461,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 4.63,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -436,6 +470,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 5.02,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -444,6 +479,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 4.66,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -452,6 +488,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 4.36,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -460,6 +497,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 3.93,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -468,6 +506,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 3.72,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "below"
@@ -476,6 +515,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 4.02,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -484,6 +524,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 4.02,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -492,6 +533,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 3.84,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -500,6 +542,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 4.11,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -508,14 +551,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 4.46,
+          "quality": "suspect",
           "range_min": 4.2,
           "range_max": 5.8,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 4.62,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -524,6 +569,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 4.5,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -532,6 +578,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 4.67,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -540,6 +587,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 5.09,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -548,6 +596,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 4.89,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -556,6 +605,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 4.64,
+          "quality": "ok",
           "range_min": 3.8,
           "range_max": 5.1,
           "vs_range": "inside"
@@ -564,6 +614,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 5.48,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -572,6 +623,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 5.57,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -580,6 +632,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 5.4,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -588,6 +641,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 5.55,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -596,6 +650,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 5.54,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -604,6 +659,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 5.45,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -612,6 +668,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 5.58,
+          "quality": "ok",
           "range_min": 4.2,
           "range_max": 5.8,
           "vs_range": "inside"
@@ -633,7 +690,7 @@
           "sex": "F",
           "min": 13.2,
           "max": 17.1,
-          "rows": 3
+          "rows": 2
         },
         {
           "sex": "M",
@@ -645,14 +702,15 @@
       "crew_sample": {
         "min": 11.5,
         "max": 17,
-        "mean": 14.35,
-        "n": 28
+        "mean": 14.39,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 14.1,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -661,6 +719,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 14.9,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -669,6 +728,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 14.7,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -677,6 +737,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 14.7,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -685,6 +746,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 14.3,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -693,6 +755,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 15.7,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -701,6 +764,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 14.1,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -709,6 +773,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 13.2,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -717,6 +782,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 12.8,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -725,6 +791,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 11.5,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "below"
@@ -733,6 +800,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 12.1,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -741,6 +809,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 12.2,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -749,6 +818,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 11.5,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "below"
@@ -757,6 +827,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 12.7,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -765,14 +836,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 13.2,
+          "quality": "suspect",
           "range_min": 13.2,
           "range_max": 17.1,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 14.4,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -781,6 +854,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 13.3,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -789,6 +863,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 13.5,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -797,6 +872,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 14.6,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -805,6 +881,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 14.4,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -813,6 +890,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 13.3,
+          "quality": "ok",
           "range_min": 11.7,
           "range_max": 15.5,
           "vs_range": "inside"
@@ -821,6 +899,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 17,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -829,6 +908,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 16.6,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -837,6 +917,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 16.8,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -845,6 +926,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 16.5,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -853,6 +935,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 16.8,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -861,6 +944,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 16.4,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -869,6 +953,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 16.5,
+          "quality": "ok",
           "range_min": 13.2,
           "range_max": 17.1,
           "vs_range": "inside"
@@ -890,7 +975,7 @@
           "sex": "F",
           "min": 38.5,
           "max": 50,
-          "rows": 3
+          "rows": 2
         },
         {
           "sex": "M",
@@ -902,14 +987,15 @@
       "crew_sample": {
         "min": 34.7,
         "max": 50,
-        "mean": 43.01,
-        "n": 28
+        "mean": 43.1,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 42.5,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -918,6 +1004,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 45.1,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -926,6 +1013,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 44.5,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -934,6 +1022,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 43.6,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -942,6 +1031,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 43.3,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -950,6 +1040,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 46.1,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -958,6 +1049,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 41.8,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -966,6 +1058,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 40.8,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -974,6 +1067,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 37.8,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -982,6 +1076,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 35.9,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -990,6 +1085,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 36.4,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -998,6 +1094,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 37.1,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1006,6 +1103,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 34.7,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "below"
@@ -1014,6 +1112,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 38.3,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1022,14 +1121,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 40.7,
+          "quality": "suspect",
           "range_min": 38.5,
           "range_max": 50,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 42.6,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1038,6 +1139,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 41.6,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1046,6 +1148,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 41.4,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1054,6 +1157,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 44.3,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1062,6 +1166,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 44.6,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1070,6 +1175,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 40.4,
+          "quality": "ok",
           "range_min": 35,
           "range_max": 45,
           "vs_range": "inside"
@@ -1078,6 +1184,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 49.1,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1086,6 +1193,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 50,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1094,6 +1202,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 49,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1102,6 +1211,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 48.3,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1110,6 +1220,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 49,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1118,6 +1229,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 47.5,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1126,6 +1238,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 48,
+          "quality": "ok",
           "range_min": 38.5,
           "range_max": 50,
           "vs_range": "inside"
@@ -1141,7 +1254,7 @@
           "sex": "F",
           "min": 80,
           "max": 100,
-          "rows": 13
+          "rows": 12
         },
         {
           "sex": "M",
@@ -1153,14 +1266,15 @@
       "crew_sample": {
         "min": 86,
         "max": 96.5,
-        "mean": 90.89,
-        "n": 27
+        "mean": 90.87,
+        "n": 26
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 92.8,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1169,6 +1283,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 93,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1177,6 +1292,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 94.9,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1185,6 +1301,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 90.1,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1193,6 +1310,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 93.5,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1201,6 +1319,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 91.8,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1209,6 +1328,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 89.7,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1217,6 +1337,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 93.6,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1225,6 +1346,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 96.2,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1233,6 +1355,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 96.5,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1241,6 +1364,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 90.5,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1249,6 +1373,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 92.3,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1257,6 +1382,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 90.4,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1265,14 +1391,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 91.3,
+          "quality": "suspect",
           "range_min": 80,
           "range_max": 100,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 92.2,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1281,6 +1409,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 92.4,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1289,6 +1418,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 88.7,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1297,6 +1427,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 87,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1305,6 +1436,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 91.2,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1313,6 +1445,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 87.1,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1321,6 +1454,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 89.6,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1329,6 +1463,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 89.8,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1337,6 +1472,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 90.7,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1345,6 +1481,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 87,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1353,6 +1490,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 88.4,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1361,6 +1499,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 87.2,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1369,6 +1508,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 86,
+          "quality": "ok",
           "range_min": 80,
           "range_max": 100,
           "vs_range": "inside"
@@ -1404,6 +1544,7 @@
           "subject": "C001",
           "timepoint": "L-92",
           "value": 30.8,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1412,6 +1553,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 30.7,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1420,6 +1562,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 31.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1428,6 +1571,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 30.4,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1436,6 +1580,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 30.9,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1444,6 +1589,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 31.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1452,6 +1598,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 30.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1460,6 +1607,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 30.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1468,6 +1616,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 32.6,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1476,6 +1625,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 30.9,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1484,6 +1634,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 30.1,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1492,6 +1643,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 30.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1500,6 +1652,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 29.9,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1508,6 +1661,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 30.9,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1516,6 +1670,7 @@
           "subject": "C003",
           "timepoint": "L-44",
           "value": 31.2,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1524,6 +1679,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 29.6,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1532,6 +1688,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 28.9,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1540,6 +1697,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 28.7,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1548,6 +1706,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 29.4,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1556,6 +1715,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 28.7,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1564,6 +1724,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 29.8,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1572,6 +1733,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 31.1,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1580,6 +1742,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 29.7,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1588,6 +1751,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 30.3,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1596,6 +1760,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 30.1,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1604,6 +1769,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 29.6,
+          "quality": "ok",
           "range_min": 27,
           "range_max": 33,
           "vs_range": "inside"
@@ -1619,7 +1785,7 @@
           "sex": "F",
           "min": 32,
           "max": 36,
-          "rows": 10
+          "rows": 9
         },
         {
           "sex": "M",
@@ -1629,16 +1795,17 @@
         }
       ],
       "crew_sample": {
-        "min": 29.6,
+        "min": 32,
         "max": 34.6,
-        "mean": 33.27,
-        "n": 24
+        "mean": 33.43,
+        "n": 23
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 33.2,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1647,6 +1814,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 33,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1655,6 +1823,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 33,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1663,6 +1832,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 33.7,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1671,6 +1841,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 33,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1679,6 +1850,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 34.1,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1687,6 +1859,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 33.7,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1695,6 +1868,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 32.9,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1703,6 +1877,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 33.1,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1711,6 +1886,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 33.2,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1719,14 +1895,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 29.6,
+          "quality": "suspect",
           "range_min": 32,
           "range_max": 36,
-          "vs_range": "below"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 33.8,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1735,6 +1913,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 32,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1743,6 +1922,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 32.6,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1751,6 +1931,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 33,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1759,6 +1940,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 32.3,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1767,6 +1949,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 32.9,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1775,6 +1958,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 34.6,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1783,6 +1967,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 33.2,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1791,6 +1976,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 34.3,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1799,6 +1985,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 34.2,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1807,6 +1994,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 34.3,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1815,6 +2003,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 34.5,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1823,6 +2012,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 34.4,
+          "quality": "ok",
           "range_min": 32,
           "range_max": 36,
           "vs_range": "inside"
@@ -1838,7 +2028,7 @@
           "sex": "F",
           "min": 11,
           "max": 15,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -1849,15 +2039,16 @@
       ],
       "crew_sample": {
         "min": 11.8,
-        "max": 32.4,
-        "mean": 13.34,
-        "n": 28
+        "max": 13.3,
+        "mean": 12.63,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 13,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1866,6 +2057,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 12.6,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1874,6 +2066,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 12.6,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1882,6 +2075,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 12.5,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1890,6 +2084,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 12.8,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1898,6 +2093,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 12.3,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1906,6 +2102,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 12.8,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1914,6 +2111,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 12.7,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1922,6 +2120,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 12.6,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1930,6 +2129,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 12.1,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1938,6 +2138,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 11.8,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1946,6 +2147,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 12,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1954,6 +2156,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 11.9,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1962,6 +2165,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 12.1,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1970,14 +2174,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 32.4,
+          "quality": "suspect",
           "range_min": 11,
           "range_max": 15,
-          "vs_range": "above"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 13.2,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1986,6 +2192,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 12.5,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -1994,6 +2201,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 12.7,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2002,6 +2210,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 12.5,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2010,6 +2219,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 12.9,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2018,6 +2228,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 13.1,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2026,6 +2237,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 12.5,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2034,6 +2246,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 12.7,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2042,6 +2255,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 13.3,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2050,6 +2264,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 13.2,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2058,6 +2273,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 12.6,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2066,6 +2282,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 12.9,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2074,6 +2291,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 13.1,
+          "quality": "ok",
           "range_min": 11,
           "range_max": 15,
           "vs_range": "inside"
@@ -2089,7 +2307,7 @@
           "sex": "F",
           "min": 140,
           "max": 400,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -2099,16 +2317,17 @@
         }
       ],
       "crew_sample": {
-        "min": 12.9,
+        "min": 185,
         "max": 396,
-        "mean": 253.96,
-        "n": 28
+        "mean": 262.89,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 241,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2117,6 +2336,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 237,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2125,6 +2345,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 258,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2133,6 +2354,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 227,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2141,6 +2363,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 228,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2149,6 +2372,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 257,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2157,6 +2381,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 214,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2165,6 +2390,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 241,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2173,6 +2399,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 229,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2181,6 +2408,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 241,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2189,6 +2417,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 252,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2197,6 +2426,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 252,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2205,6 +2435,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 245,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2213,6 +2444,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 243,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2221,14 +2453,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 12.9,
+          "quality": "suspect",
           "range_min": 140,
           "range_max": 400,
-          "vs_range": "below"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 345,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2237,6 +2471,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 367,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2245,6 +2480,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 359,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2253,6 +2489,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 396,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2261,6 +2498,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 345,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2269,6 +2507,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 185,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2277,6 +2516,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 239,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2285,6 +2525,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 227,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2293,6 +2534,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 295,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2301,6 +2543,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 240,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2309,6 +2552,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 281,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2317,6 +2561,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 198,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2325,6 +2570,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 256,
+          "quality": "ok",
           "range_min": 140,
           "range_max": 400,
           "vs_range": "inside"
@@ -2340,7 +2586,7 @@
           "sex": "F",
           "min": 7.5,
           "max": 12.5,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -2351,15 +2597,16 @@
       ],
       "crew_sample": {
         "min": 9.5,
-        "max": 330,
-        "mean": 21.81,
-        "n": 28
+        "max": 11,
+        "mean": 10.4,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 10.3,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2368,6 +2615,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 10.6,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2376,6 +2624,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 10.9,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2384,6 +2633,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 10.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2392,6 +2642,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 10.5,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2400,6 +2651,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 10.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2408,6 +2660,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 10.5,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2416,6 +2669,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 10.1,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2424,6 +2678,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 10.9,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2432,6 +2687,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 10.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2440,6 +2696,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 10.2,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2448,6 +2705,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 11,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2456,6 +2714,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 10.5,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2464,6 +2723,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 10.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2472,14 +2732,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 330,
+          "quality": "suspect",
           "range_min": 7.5,
           "range_max": 12.5,
-          "vs_range": "above"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 10.3,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2488,6 +2750,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 10.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2496,6 +2759,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 10.5,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2504,6 +2768,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 10.4,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2512,6 +2777,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 10.2,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2520,6 +2786,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 10.2,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2528,6 +2795,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 9.5,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2536,6 +2804,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 9.9,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2544,6 +2813,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 10.1,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2552,6 +2822,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 10,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2560,6 +2831,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 9.9,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2568,6 +2840,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 10.4,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2576,6 +2849,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 9.8,
+          "quality": "ok",
           "range_min": 7.5,
           "range_max": 12.5,
           "vs_range": "inside"
@@ -2591,7 +2865,7 @@
           "sex": "F",
           "min": 1500,
           "max": 7800,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -2601,16 +2875,17 @@
         }
       ],
       "crew_sample": {
-        "min": 10.1,
+        "min": 1994,
         "max": 6408,
-        "mean": 3640.97,
-        "n": 28
+        "mean": 3775.44,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 2349,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2619,6 +2894,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 2998,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2627,6 +2903,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 3570,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2635,6 +2912,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 2685,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2643,6 +2921,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 2200,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2651,6 +2930,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 1994,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2659,6 +2939,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 2391,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2667,6 +2948,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 3705,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2675,6 +2957,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 2873,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2683,6 +2966,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 3701,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2691,6 +2975,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 3328,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2699,6 +2984,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 2765,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2707,6 +2993,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 3132,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2715,6 +3002,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 3123,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2723,14 +3011,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 10.1,
+          "quality": "suspect",
           "range_min": 1500,
           "range_max": 7800,
-          "vs_range": "below"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 6408,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2739,6 +3029,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 5792,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2747,6 +3038,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 4088,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2755,6 +3047,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 4618,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2763,6 +3056,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 4576,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2771,6 +3065,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 4151,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2779,6 +3074,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 4766,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2787,6 +3083,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 3699,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2795,6 +3092,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 6318,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2803,6 +3101,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 4528,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2811,6 +3110,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 3618,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2819,6 +3119,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 4361,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2827,6 +3128,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 4200,
+          "quality": "ok",
           "range_min": 1500,
           "range_max": 7800,
           "vs_range": "inside"
@@ -2842,7 +3144,7 @@
           "sex": "F",
           "min": 850,
           "max": 3900,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -2853,15 +3155,16 @@
       ],
       "crew_sample": {
         "min": 1540,
-        "max": 6826,
-        "mean": 2414.82,
-        "n": 28
+        "max": 3247,
+        "mean": 2251.44,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 2241,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2870,6 +3173,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 1859,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2878,6 +3182,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 2667,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2886,6 +3191,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 1640,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2894,6 +3200,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 2146,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2902,6 +3209,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 2171,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2910,6 +3218,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 1847,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2918,6 +3227,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 2119,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2926,6 +3236,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 1982,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2934,6 +3245,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 2873,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2942,6 +3254,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 1540,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2950,6 +3263,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 2874,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2958,6 +3272,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 1701,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2966,6 +3281,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 2573,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2974,14 +3290,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 6826,
+          "quality": "suspect",
           "range_min": 850,
           "range_max": 3900,
-          "vs_range": "above"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 2083,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2990,6 +3308,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 3156,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -2998,6 +3317,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 2086,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3006,6 +3326,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 2379,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3014,6 +3335,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 3247,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3022,6 +3344,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 2220,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3030,6 +3353,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 1786,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3038,6 +3362,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 1613,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3046,6 +3371,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 2947,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3054,6 +3380,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 2155,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3062,6 +3389,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 1938,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3070,6 +3398,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 2307,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3078,6 +3407,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 2639,
+          "quality": "ok",
           "range_min": 850,
           "range_max": 3900,
           "vs_range": "inside"
@@ -3093,7 +3423,7 @@
           "sex": "F",
           "min": 200,
           "max": 950,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -3104,15 +3434,16 @@
       ],
       "crew_sample": {
         "min": 302,
-        "max": 1997,
-        "mean": 666.07,
-        "n": 28
+        "max": 1029,
+        "mean": 616.78,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 481,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3121,6 +3452,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 391,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3129,6 +3461,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 553,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3137,6 +3470,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 455,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3145,6 +3479,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 368,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3153,6 +3488,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 485,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3161,6 +3497,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 392,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3169,6 +3506,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 364,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3177,6 +3515,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 302,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3185,6 +3524,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 446,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3193,6 +3533,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 435,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3201,6 +3542,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 499,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3209,6 +3551,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 345,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3217,6 +3560,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 518,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3225,14 +3569,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 1997,
+          "quality": "suspect",
           "range_min": 200,
           "range_max": 950,
-          "vs_range": "above"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 632,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3241,6 +3587,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 715,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3249,6 +3596,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 658,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3257,6 +3605,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 624,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3265,6 +3614,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 730,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3273,6 +3623,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 762,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3281,6 +3632,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 870,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3289,6 +3641,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 832,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3297,6 +3650,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 965,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "above"
@@ -3305,6 +3659,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 1029,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "above"
@@ -3313,6 +3668,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 898,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3321,6 +3677,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 916,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "inside"
@@ -3329,6 +3686,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 988,
+          "quality": "ok",
           "range_min": 200,
           "range_max": 950,
           "vs_range": "above"
@@ -3344,7 +3702,7 @@
           "sex": "F",
           "min": 15,
           "max": 500,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -3355,15 +3713,16 @@
       ],
       "crew_sample": {
         "min": 88,
-        "max": 614,
-        "mean": 211.21,
-        "n": 28
+        "max": 374,
+        "mean": 196.3,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 259,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3372,6 +3731,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 204,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3380,6 +3740,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 161,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3388,6 +3749,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 170,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3396,6 +3758,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 127,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3404,6 +3767,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 181,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3412,6 +3776,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 221,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3420,6 +3785,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 280,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3428,6 +3794,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 211,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3436,6 +3803,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 151,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3444,6 +3812,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 160,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3452,6 +3821,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 211,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3460,6 +3830,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 90,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3468,6 +3839,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 166,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3476,14 +3848,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 614,
+          "quality": "suspect",
           "range_min": 15,
           "range_max": 500,
-          "vs_range": "above"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 130,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3492,6 +3866,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 88,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3500,6 +3875,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 140,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3508,6 +3884,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 117,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3516,6 +3893,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 176,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3524,6 +3902,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 207,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3532,6 +3911,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 200,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3540,6 +3920,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 173,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3548,6 +3929,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 276,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3556,6 +3938,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 300,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3564,6 +3947,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 258,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3572,6 +3956,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 269,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3580,6 +3965,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 374,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 500,
           "vs_range": "inside"
@@ -3595,7 +3981,7 @@
           "sex": "F",
           "min": 0,
           "max": 200,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -3606,15 +3992,16 @@
       ],
       "crew_sample": {
         "min": 19,
-        "max": 125,
-        "mean": 58.93,
-        "n": 28
+        "max": 100,
+        "mean": 56.48,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 70,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3623,6 +4010,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 50,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3631,6 +4019,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 49,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3639,6 +4028,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 50,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3647,6 +4037,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 59,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3655,6 +4046,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 69,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3663,6 +4055,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 49,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3671,6 +4064,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 33,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3679,6 +4073,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 32,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3687,6 +4082,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 29,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3695,6 +4091,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 39,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3703,6 +4100,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 51,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3711,6 +4109,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 32,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3719,6 +4118,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 19,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3727,14 +4127,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 125,
+          "quality": "suspect",
           "range_min": 0,
           "range_max": 200,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 47,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3743,6 +4145,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 49,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3751,6 +4154,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 28,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3759,6 +4163,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 62,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3767,6 +4172,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 70,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3775,6 +4181,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 59,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3783,6 +4190,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 77,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3791,6 +4199,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 83,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3799,6 +4208,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 95,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3807,6 +4217,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 89,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3815,6 +4226,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 88,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3823,6 +4235,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 47,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3831,6 +4244,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 100,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 200,
           "vs_range": "inside"
@@ -3846,7 +4260,7 @@
           "sex": "F",
           "min": 38,
           "max": 80,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -3857,15 +4271,16 @@
       ],
       "crew_sample": {
         "min": 40.7,
-        "max": 71.1,
-        "mean": 54.62,
-        "n": 28
+        "max": 68.9,
+        "mean": 54.01,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 43.5,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3874,6 +4289,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 54.5,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3882,6 +4298,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 51,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3890,6 +4307,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 53.7,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3898,6 +4316,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 44.9,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3906,6 +4325,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 40.7,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3914,6 +4334,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 48.8,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3922,6 +4343,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 57,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3930,6 +4352,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 53.2,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3938,6 +4361,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 51.4,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3946,6 +4370,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 60.5,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3954,6 +4379,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 43.2,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3962,6 +4388,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 59.1,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3970,6 +4397,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 48.8,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3978,14 +4406,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 71.1,
+          "quality": "suspect",
           "range_min": 38,
           "range_max": 80,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 68.9,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -3994,6 +4424,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 59.1,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4002,6 +4433,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 58.4,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4010,6 +4442,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 59.2,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4018,6 +4451,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 52,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4026,6 +4460,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 56.1,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4034,6 +4469,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 61.9,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4042,6 +4478,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 57.8,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4050,6 +4487,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 59.6,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4058,6 +4496,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 55.9,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4066,6 +4505,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 53.2,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4074,6 +4514,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 55.2,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4082,6 +4523,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 50.6,
+          "quality": "ok",
           "range_min": 38,
           "range_max": 80,
           "vs_range": "inside"
@@ -4097,7 +4539,7 @@
           "sex": "F",
           "min": 15,
           "max": 49,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -4107,16 +4549,17 @@
         }
       ],
       "crew_sample": {
-        "min": 20.8,
+        "min": 22.4,
         "max": 44.9,
-        "mean": 32.9,
-        "n": 28
+        "mean": 33.35,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 41.5,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4125,6 +4568,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 33.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4133,6 +4577,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 38.1,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4141,6 +4586,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 32.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4149,6 +4595,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 43.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4157,6 +4604,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 44.3,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4165,6 +4613,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 37.7,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4173,6 +4622,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 32.6,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4181,6 +4631,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 36.7,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4189,6 +4640,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 39.9,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4197,6 +4649,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 28,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4205,6 +4658,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 44.9,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4213,6 +4667,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 32.1,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4221,6 +4676,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 40.2,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4229,14 +4685,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 20.8,
+          "quality": "suspect",
           "range_min": 15,
           "range_max": 49,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 22.4,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4245,6 +4703,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 32.2,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4253,6 +4712,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 29.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4261,6 +4721,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 30.5,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4269,6 +4730,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 36.9,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4277,6 +4739,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 30,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4285,6 +4748,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 23.2,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4293,6 +4757,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 25.2,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4301,6 +4766,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 27.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4309,6 +4775,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 26.6,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4317,6 +4784,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 28.5,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4325,6 +4793,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 29.2,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4333,6 +4802,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 31.8,
+          "quality": "ok",
           "range_min": 15,
           "range_max": 49,
           "vs_range": "inside"
@@ -4348,7 +4818,7 @@
           "sex": "F",
           "min": 0,
           "max": 13,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -4360,14 +4830,15 @@
       "crew_sample": {
         "min": 5.6,
         "max": 13.2,
-        "mean": 8.76,
-        "n": 28
+        "mean": 8.85,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 8.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4376,6 +4847,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 7.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4384,6 +4856,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 7.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4392,6 +4865,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 9.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4400,6 +4874,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 7.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4408,6 +4883,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 9.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4416,6 +4892,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4424,6 +4901,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 5.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4432,6 +4910,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 5.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4440,6 +4919,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 6.2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4448,6 +4928,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 7.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4456,6 +4937,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 7.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4464,6 +4946,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 6.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4472,6 +4955,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 8.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4480,14 +4964,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 6.4,
+          "quality": "suspect",
           "range_min": 0,
           "range_max": 13,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 6.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4496,6 +4982,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 7.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4504,6 +4991,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 9.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4512,6 +5000,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4520,6 +5009,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 8.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4528,6 +5018,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 10.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4536,6 +5027,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 11.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4544,6 +5036,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 13,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4552,6 +5045,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 9.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4560,6 +5054,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 12.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4568,6 +5063,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 13.2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "above"
@@ -4576,6 +5072,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 11.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4584,6 +5081,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 11.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 13,
           "vs_range": "inside"
@@ -4599,7 +5097,7 @@
           "sex": "F",
           "min": 0,
           "max": 8,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -4611,14 +5109,15 @@
       "crew_sample": {
         "min": 0.9,
         "max": 4.8,
-        "mean": 2.89,
-        "n": 28
+        "mean": 2.95,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 4.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4627,6 +5126,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 3.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4635,6 +5135,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 2.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4643,6 +5144,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 3.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4651,6 +5153,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 2.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4659,6 +5162,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 3.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4667,6 +5171,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 4.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4675,6 +5180,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 4.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4683,6 +5189,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 3.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4691,6 +5198,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 2.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4699,6 +5207,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 2.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4707,6 +5216,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 3.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4715,6 +5225,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 1.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4723,6 +5234,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 2.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4731,14 +5243,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 1.3,
+          "quality": "suspect",
           "range_min": 0,
           "range_max": 8,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 1.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4747,6 +5261,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 0.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4755,6 +5270,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4763,6 +5279,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 1.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4771,6 +5288,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4779,6 +5297,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 2.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4787,6 +5306,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 2.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4795,6 +5315,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 2.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4803,6 +5324,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 2.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4811,6 +5333,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 3.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4819,6 +5342,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 3.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4827,6 +5351,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 3.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4835,6 +5360,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 4.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 8,
           "vs_range": "inside"
@@ -4850,7 +5376,7 @@
           "sex": "F",
           "min": 0,
           "max": 2,
-          "rows": 14
+          "rows": 13
         },
         {
           "sex": "M",
@@ -4862,14 +5388,15 @@
       "crew_sample": {
         "min": 0.3,
         "max": 1.4,
-        "mean": 0.82,
-        "n": 28
+        "mean": 0.84,
+        "n": 27
       },
       "values": [
         {
           "subject": "C001",
           "timepoint": "L-92",
           "value": 1.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4878,6 +5405,7 @@
           "subject": "C001",
           "timepoint": "L-44",
           "value": 0.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4886,6 +5414,7 @@
           "subject": "C001",
           "timepoint": "L-3",
           "value": 0.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4894,6 +5423,7 @@
           "subject": "C001",
           "timepoint": "R+1",
           "value": 1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4902,6 +5432,7 @@
           "subject": "C001",
           "timepoint": "R+45",
           "value": 1.2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4910,6 +5441,7 @@
           "subject": "C001",
           "timepoint": "R+82",
           "value": 1.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4918,6 +5450,7 @@
           "subject": "C001",
           "timepoint": "R+194",
           "value": 1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4926,6 +5459,7 @@
           "subject": "C002",
           "timepoint": "L-92",
           "value": 0.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4934,6 +5468,7 @@
           "subject": "C002",
           "timepoint": "L-44",
           "value": 0.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4942,6 +5477,7 @@
           "subject": "C002",
           "timepoint": "L-3",
           "value": 0.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4950,6 +5486,7 @@
           "subject": "C002",
           "timepoint": "R+1",
           "value": 0.7,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4958,6 +5495,7 @@
           "subject": "C002",
           "timepoint": "R+45",
           "value": 0.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4966,6 +5504,7 @@
           "subject": "C002",
           "timepoint": "R+82",
           "value": 0.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4974,6 +5513,7 @@
           "subject": "C002",
           "timepoint": "R+194",
           "value": 0.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4982,14 +5522,16 @@
           "subject": "C003",
           "timepoint": "L-92",
           "value": 0.4,
+          "quality": "suspect",
           "range_min": 0,
           "range_max": 2,
-          "vs_range": "inside"
+          "vs_range": null
         },
         {
           "subject": "C003",
           "timepoint": "L-44",
           "value": 0.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -4998,6 +5540,7 @@
           "subject": "C003",
           "timepoint": "L-3",
           "value": 0.5,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5006,6 +5549,7 @@
           "subject": "C003",
           "timepoint": "R+1",
           "value": 0.4,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5014,6 +5558,7 @@
           "subject": "C003",
           "timepoint": "R+45",
           "value": 0.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5022,6 +5567,7 @@
           "subject": "C003",
           "timepoint": "R+82",
           "value": 0.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5030,6 +5576,7 @@
           "subject": "C003",
           "timepoint": "R+194",
           "value": 0.8,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5038,6 +5585,7 @@
           "subject": "C004",
           "timepoint": "L-92",
           "value": 1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5046,6 +5594,7 @@
           "subject": "C004",
           "timepoint": "L-44",
           "value": 1.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5054,6 +5603,7 @@
           "subject": "C004",
           "timepoint": "L-3",
           "value": 0.9,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5062,6 +5612,7 @@
           "subject": "C004",
           "timepoint": "R+1",
           "value": 1.1,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5070,6 +5621,7 @@
           "subject": "C004",
           "timepoint": "R+45",
           "value": 1.3,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5078,6 +5630,7 @@
           "subject": "C004",
           "timepoint": "R+82",
           "value": 0.6,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"
@@ -5086,6 +5639,7 @@
           "subject": "C004",
           "timepoint": "R+194",
           "value": 1.2,
+          "quality": "ok",
           "range_min": 0,
           "range_max": 2,
           "vs_range": "inside"

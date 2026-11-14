@@ -34,6 +34,15 @@ LABEL = "Inspiration4 crew sample, not your labs"  # docs/TEAM.md, rules for C
 ACRONYMS = {"MCV", "MCH", "MCHC", "RDW", "MPV"}
 # Shown first on the blood-count card (docs/REQUIREMENTS.md M2b: white cells, lymphocytes).
 FEATURED = ["white_blood_cell_count", "absolute_lymphocytes", "lymphocytes"]
+# Samples whose values look shifted in BOTH NASA files, so the agreement check cannot catch them.
+# C003 L-92: MCH is missing and the values after it sit in the wrong analyte (MPV 330 fL, platelets
+# 12.9, absolute neutrophils 10.1; absolute lymphocytes 6826 = 71.1% x 9.6, the neutrophil count).
+# Found by the advisor review on 2026-11-14. Not yet confirmed against the OSDR page. The raw files
+# stay untouched: the values are kept in the output but flagged and left out of every statistic.
+SUSPECT_SAMPLES = {
+    ("C003", "L-92"): "Values look shifted by one analyte in the NASA file (MCH missing, MPV 330 fL, "
+    "platelets 12.9). Kept as published, excluded from the crew sample statistics and range checks.",
+}
 PHASE_BY_PREFIX = {"L": "pre-flight", "R": "post-flight"}
 
 
@@ -157,16 +166,20 @@ def build(raw_dir: Path = RAW_DIR) -> dict:
         if (indicator_id, subject, test_date) in values:
             raise Osd569Error(f"duplicate value for {indicator_id} {subject} {test_date}")
         values[(indicator_id, subject, test_date)] = value
+        suspect = (subject, test_date) in SUSPECT_SAMPLES
         indicator["values"].append(
             {
                 "subject": subject,
                 "timepoint": test_date,
                 "value": value,
+                "quality": "suspect" if suspect else "ok",
                 # The range printed by the laboratory on this row. Kept per value because the
                 # file does not print the same range on every row for female subjects.
                 "range_min": low,
                 "range_max": high,
-                "vs_range": "below" if value < low else "above" if value > high else "inside",
+                "vs_range": None
+                if suspect
+                else "below" if value < low else "above" if value > high else "inside",
             }
         )
 
@@ -176,9 +189,10 @@ def build(raw_dir: Path = RAW_DIR) -> dict:
     order = {t["id"]: index for index, t in enumerate(ordered_timepoints)}
     for indicator in indicators.values():
         indicator["values"].sort(key=lambda v: (v["subject"], order[v["timepoint"]]))
-        numbers = [v["value"] for v in indicator["values"]]
+        good = [v for v in indicator["values"] if v["quality"] == "ok"]
+        numbers = [v["value"] for v in good]
         ranges: dict[tuple, int] = {}
-        for v in indicator["values"]:
+        for v in good:
             key = (subjects[v["subject"]], v["range_min"], v["range_max"])
             ranges[key] = ranges.get(key, 0) + 1
         indicator["earth_reference_ranges"] = [
@@ -217,6 +231,8 @@ def build(raw_dir: Path = RAW_DIR) -> dict:
             "Samples were taken before launch and after return only. There are no in-flight samples.",
             "range_min and range_max are the laboratory reference range printed with each value: an Earth "
             "reference range. It is shown for context and never triggers an alert.",
+            "Sample C003 L-92 looks shifted in the NASA file. Its values carry quality=suspect and are "
+            "left out of crew_sample and vs_range.",
             "For female subjects the file does not print the same range on every row; each value keeps its own.",
             "Decision support, not diagnosis.",
         ],

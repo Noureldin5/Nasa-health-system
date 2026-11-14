@@ -34,6 +34,9 @@ def test_every_indicator_has_value_min_and_max(document):
         assert indicator["earth_reference_ranges"]
         for value in indicator["values"]:
             assert value["range_min"] <= value["range_max"]
+            if value["quality"] == "suspect":
+                assert value["vs_range"] is None
+                continue
             expected = "below" if value["value"] < value["range_min"] else "above" if value["value"] > value["range_max"] else "inside"
             assert value["vs_range"] == expected
 
@@ -41,7 +44,7 @@ def test_every_indicator_has_value_min_and_max(document):
 def test_known_values_from_the_raw_file(document):
     # First rows of the submitted CSV: WHITE BLOOD CELL COUNT,5.4,3.8,10.8,Thousand/uL,CBC,C001,M,L-92
     first = by_id(document, "white_blood_cell_count")["values"][0]
-    assert first == {"subject": "C001", "timepoint": "L-92", "value": 5.4, "range_min": 3.8, "range_max": 10.8, "vs_range": "inside"}
+    assert first == {"subject": "C001", "timepoint": "L-92", "value": 5.4, "quality": "ok", "range_min": 3.8, "range_max": 10.8, "vs_range": "inside"}
     assert by_id(document, "white_blood_cell_count")["unit"] == "Thousand/uL"
 
 
@@ -66,7 +69,7 @@ def test_missing_values_stay_missing(document):
 def test_ranges_are_kept_as_printed_not_chosen(document):
     ranges = by_id(document, "hemoglobin")["earth_reference_ranges"]
     assert {(r["sex"], r["min"], r["max"]) for r in ranges} == {("F", 11.7, 15.5), ("F", 13.2, 17.1), ("M", 13.2, 17.1)}
-    assert sum(r["rows"] for r in ranges) == 28
+    assert sum(r["rows"] for r in ranges) == 27  # 28 values, one suspect sample left out
 
 
 def test_citation_and_labels(document):
@@ -93,3 +96,16 @@ def test_an_edited_raw_file_is_refused(tmp_path):
         handle.write("HEMOGLOBIN,99,13.2,17.1,g/dL,CBC,C001,M,L-92\n")
     with pytest.raises(Osd569Error, match="must not be edited"):
         build(copy)
+
+
+def test_suspect_sample_is_flagged_and_left_out_of_the_statistics(document):
+    # C003 L-92 looks shifted in both NASA files (MPV 330 fL, platelets 12.9). Kept, flagged, not counted.
+    mpv = by_id(document, "mpv")
+    suspect = [v for v in mpv["values"] if v["quality"] == "suspect"]
+    assert [(v["subject"], v["timepoint"], v["value"]) for v in suspect] == [("C003", "L-92", 330)]
+    assert mpv["crew_sample"]["max"] < 20 and mpv["crew_sample"]["n"] == 27
+    # Nothing on the card the app features may be implausible.
+    for indicator_id in document["featured"]:
+        sample = by_id(document, indicator_id)["crew_sample"]
+        top = max(r["max"] for r in by_id(document, indicator_id)["earth_reference_ranges"])
+        assert sample["max"] <= top * 1.5
