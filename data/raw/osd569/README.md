@@ -29,6 +29,15 @@ What was checked on 2026-11-14:
 - The transformed file labels hemoglobin as "percent". The submitted file says g/dL, which is the correct unit.
 - In the submitted file, sample C003 R+1 names three analytes with a "(FEMALE)" suffix, and the printed reference range for female subjects is not the same on every row. Keep the range printed on each row; do not pick one.
 
-Open: the OSDR license and data-use terms have not been read yet (`docs/HANDOFF.md`, open item 5). Read them before submission.
+## Terms of use (read 2026-11-14)
+
+Source: OSDR terms and conditions, https://science.nasa.gov/reference/osdr-help-terms-and-conditions (read on 2026-11-14).
+
+- **Access:** the site is public: "anyone may view or download public content". OSD-569 is public, so no data use agreement applies to it.
+- **License:** the page names no license. It says the data "are provided under NASA's open access policy" and distributed under NASA's Science Information Policy. We do not claim a license (such as CC0) for OSDR data. Our wording is "NASA open access policy, per OSDR terms".
+- **Citation:** use the dataset citation from the "Citation" panel of the OSD-569 page (BibTeX or RIS export). The app and `data/processed/osd569.json` carry the citation with the DOI `10.26030/e0rx-sh52`.
+- **Acknowledgement:** the page asks for a general acknowledgement before the reference list. For OSDR data we use: "Data are courtesy of the NASA Open Science Data Repository." The example on the page is worded for GeneLab; the OSDR FAQ gives the OSDR form (search result, not read on the page itself: verify before submission). Put it in the pitch deck and the app footer.
+- **No warranty:** the U.S. Government "does not warrant or assume any legal liability or responsibility for the accuracy, completeness, or usefulness" of the information. This matches our decision-support framing.
+- **Not read:** the full terms text beyond what is summarized above. Questions about citing: the contact on the terms page.
 
 In the app these values are labeled "Inspiration4 crew sample, not your labs".
