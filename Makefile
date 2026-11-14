@@ -1,5 +1,5 @@
 # Shared file (docs/GIT-WORKFLOW.md). Each person adds a check-<area> target and lists it under `check`.
-.PHONY: up down smoke sample mission follow snapshot osd569 check check-pipeline
+.PHONY: up down smoke sample mission follow snapshot osd569 clear-manual demo-reset check check-pipeline
 
 # The demo mission. DAY is which mission day "today" is (OPEN 1 in docs/DECISIONS.md).
 MISSION = --days 14 --crew a1,a2,a3 --seed 42
@@ -29,6 +29,14 @@ snapshot:        ## rewrite data/simulated/ (the mission as a small CSV)
 
 osd569:          ## rebuild data/processed/osd569.json from the raw NASA files
 	python3 -m pipeline.osd569
+
+clear-manual:    ## delete every value typed in the app (source="manual"). Simulated data stays
+	python3 -m pipeline.reset
+
+demo-reset:      ## full reset before the demo: clear typed values, reload the mission (C part; B resets SQLite, see docs/DECISIONS.md section 6)
+	python3 -m pipeline.reset
+	$(MAKE) mission DAY=$(DAY) LIVE=$(LIVE)
+	@echo "Time series reset. B: also reset the SQLite records (check-ins, briefs, notes, sync log)."
 
 check: check-pipeline   ## everything that must pass before a merge
 

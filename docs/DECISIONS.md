@@ -174,7 +174,11 @@ Checked against the VictoriaMetrics docs on 2026-11-14.
 | Two samples with the same timestamp on one series: the larger value is kept, not the later write | Do not rely on overwriting. Section 3 is the rule |
 | Deleting works on whole series only, there is no time range | See "Reset" below |
 
-Reset: reloading the mission deletes every `source="sim"` series and writes them again. B's SQLite records (check-ins, briefs, notes) are a separate store, so a full demo reset is one command that C and B build together (C9, B8). Values typed in the demo sit in `source="manual"` series (OPEN 2) and can be cleared without reloading the mission.
+Reset (C9). Two stores, so a full reset is two steps, and the demo needs both:
+
+- **C, done:** `make demo-reset` (defaults `DAY=10 LIVE=a1`) deletes every `source="manual"` series (`python3 -m pipeline.reset`, also `make clear-manual` on its own) and then reloads the simulated mission (`make mission`). Clear first, reload second: the reload moves the mission start, so a leftover manual value would land on a different mission day and override the simulated one (section 3). `python3 -m pipeline.reset --dry-run` only counts them.
+- **B, to do (`api/`):** reset the SQLite records: check-ins, alerts, consult briefs, ground replies, surgeon notes, flags and the sync log, back to the seeded demo state (the seed content is B's to choose). Expose it as one command (for example `python3 -m api.reset` or `make api-reset`) and, once it exists, add it to the `demo-reset` target in the `Makefile` (a shared file: one-line change in the same `shared/` PR). Until then `make demo-reset` prints a reminder. B should not touch VictoriaMetrics for this: call `pipeline.reset.clear_manual()` if the API needs to clear typed values itself.
+- Which store holds a typed value matters: the check-in endpoint writes numbers to VictoriaMetrics (`source="manual"`) and the text to SQLite. If only one store is reset, the chart and the record disagree on the demo screen.
 
 ## 7. Open, needs a team answer
 
