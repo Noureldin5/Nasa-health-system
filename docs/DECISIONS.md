@@ -2,7 +2,7 @@
 
 Stack and data contracts every person and every Claude session follows. This is a shared file: change it only through a small `shared/<topic>` PR with one approval (`docs/GIT-WORKFLOW.md`).
 
-Status: **draft by C, 2026-11-14.** Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 and 9 are B's to write. Items marked **OPEN** need a team answer before they are final (list in section 7).
+Status: **draft by C, 2026-11-14.** Sections 2 to 6 are implemented in `pipeline/` (ingest, `series`, `latest`, mission clock, 3-day sample). Sections 1 to 7 are C's proposal for the contract between B and C. Sections 8 and 9 are B's to write. Items marked **OPEN** need a team answer before they are final (list in section 7).
 
 ## 1. Stack
 
@@ -62,6 +62,8 @@ For every metric with cadence "1 per mission day": **one value per mission day, 
 - A second check-in on the same day writes a second sample. Nothing is overwritten in the store.
 - C's query functions apply the rule, so B and A always get one value per day.
 - This also covers a manual reading entered on top of a simulated one for the same day: the later one is shown, and its `source` comes back with it.
+- If two samples have exactly the same timestamp, the typed one wins: `manual` over `nasa` over `sim`.
+- "Latest" is not "today's". The simulated data ends when the mission was loaded, while the mission clock keeps running. Treat a daily value as today's only if `mission_day(sample.ts) == mission_day(now)`.
 
 ## 4. Mission clock
 
@@ -69,7 +71,9 @@ For every metric with cadence "1 per mission day": **one value per mission day, 
 - `mission_start` is the instant mission day 1 begins. It is set when the simulated mission is loaded.
 - A mission day is a 24-hour window counted from `mission_start`: `mission_day(ts) = floor((ts - mission_start) / 24h) + 1`.
 - **Never derive the mission day from the calendar date.** Always call `pipeline.mission.mission_day(ts)`. `pipeline.mission.mission_start()` returns the start. Where it is stored is C's detail.
-- Which mission day "today" is at demo time is OPEN 1. The simulator takes it as a parameter and never writes points later than "now".
+- Which mission day "today" is at demo time is OPEN 1. The simulator takes it as a parameter (`--today-is-day`) and never writes points later than "now".
+- The simulator starts mission days at 18:00 UTC (midnight in Bishkek). Demo parameter: this way "today" already has its morning sleep and check-in values when the demo runs during the local day.
+- The start is stored in VictoriaMetrics as the internal series `mission_start_seconds{source="sim"}`, so it is replaced together with the simulated mission. If no mission is loaded, `mission_start()` raises `MissionNotLoaded`: run `make sample`.
 
 Why this matters to B: calibration ("Learning your baseline: day N of 7") and the one-alert-per-day rule both need the mission day.
 
@@ -98,14 +102,30 @@ from pipeline.queries import Sample, series, latest
 Sample(ts: datetime, value: float, source: str)        # ts is UTC, timezone-aware
 
 series(metric: str, *, start: datetime, end: datetime,
-       crew_id: str | None = None, labels: dict[str, str] | None = None) -> list[Sample]
+       crew_id: str | None = None, labels: dict[str, str] | None = None,
+       mission_start: datetime | None = None) -> list[Sample]
 latest(metric: str, *, crew_id: str | None = None,
        labels: dict[str, str] | None = None, at: datetime | None = None) -> Sample | None
 ```
 
-- `series` returns samples sorted by time, `start <= ts < end`, merged across `source`. Daily metrics come back as one sample per mission day (section 3). 5-minute metrics come back raw.
+- `series` returns samples sorted by time, `start <= ts < end`, merged across `source`. `end` is exclusive: to include a point written at `now`, pass `end = now + 1 second`. Timestamps are stored in whole milliseconds, rounded down. Daily metrics come back as one sample per mission day (section 3). 5-minute metrics come back raw.
 - `latest` returns the newest sample at or before `at` (default: now), or `None`.
 - `labels` is for the extra labels: `{"symptom": "headache"}`, `{"module": "node1"}`.
+- A call must name exactly one series: `crew_id` for crew metrics, plus `symptom` or `module` where the metric has it. Anything else raises `ValueError`. Do not pass `source`: each `Sample` says its own.
+- `mission_start` is optional and only matters for daily metrics. Without it the stored start is read. Pass it in tests.
+- All datetimes must be timezone-aware.
+- Label values (`crew_id`, `symptom`, `module`) may contain only letters, digits, `_`, `-` and `.`; anything else raises `ValueError` on read and `IngestError` on write. They are **not** checked against the lists in section 2, so a typo in a `crew_id` silently creates or reads a new, empty series.
+- Errors: `ValueError` for a bad call, `pipeline.vm.VMUnavailable` when VictoriaMetrics is down (the same class as `IngestUnavailable`), `pipeline.vm.VMError` when it answers with an error, and `MissionNotLoaded` from `series` on a daily metric when data exists but no mission is loaded and no `mission_start` was passed.
+
+Mission clock:
+
+```python
+from pipeline.mission import mission_day, mission_start, day_window, MissionNotLoaded
+
+mission_start() -> datetime                                   # raises MissionNotLoaded
+mission_day(ts: datetime, start: datetime | None = None) -> int   # 1 on the first day
+day_window(day: int, start: datetime) -> tuple[datetime, datetime]   # begin (inclusive), end (exclusive)
+```
 - Time is always passed in or defaulted at the edge. `api/domain/` never calls these, the adapter in `api/metrics/` does.
 
 Coming later in `c/queries` (C5, C6), same style: baseline window stats, daily aggregates for the 5-minute metrics, CO2 versus headache with lag. **B never writes raw MetricsQL.** If a query is missing, ask C.
@@ -117,6 +137,7 @@ Checked against the VictoriaMetrics docs on 2026-11-14.
 | Behaviour | What we do |
 |---|---|
 | Queries hide the last 30 s of data by default | Compose sets `-search.latencyOffset=1s` |
+| Reading raw samples (`/api/v1/export`) without `start` and `end` does not return a point written this instant | C's query functions always send both. Found with the smoke test on 2026-11-14 |
 | Freshly written samples stay in memory and are invisible for up to a few seconds, whatever the offset | `flush()` after a live check-in. It calls `/internal/force_flush`, which the docs describe as a debug and test endpoint. **Demo shortcut**, not for production |
 | A plain instant query looks back only 5 minutes, so daily metrics look empty | C's query functions read raw samples. This is why B does not write MetricsQL |
 | Default retention is 1 month | Compose sets `-retentionPeriod=90d`. Demo parameter |
