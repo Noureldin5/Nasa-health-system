@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astronaut Health HUD</title>
+<!--
+  DESIGN PROTOTYPE ONLY. Not the app.
+  - All values are simulated. Thresholds and ranges are placeholders and need
+    NASA sources before the demo (see docs/research/nasa-datasets.md, OSD-569).
+  - Loads Three.js and fonts from CDN, so it needs the network. The real app must
+    self-host them to work offline (CLAUDE.md rule 3).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B1220; --card: #121B2E; --line: #23304A; --text: #E6ECF5; --muted: #9AA8BF;
+    --accent: #3DD6C3; --ok: #5FE0B5; --watch: #F5BF55; --crit: #FF8A7E;
+    --glass: rgba(14, 22, 40, 0.62); --glass-line: rgba(61, 214, 195, 0.22);
+    --sans: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(120% 90% at 50% 40%, #12203a 0%, #0B1220 55%, #060a14 100%);
+    color: var(--text); font-family: var(--sans); overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; color: inherit; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+
+  #scene { position: fixed; inset: 0; }
+  #scene canvas { display: block; outline: none; }
+
+  /* subtle scanlines + vignette for the instrument feel */
+  .fx { position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
+
+  /* ---------- top bar ---------- */
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; gap: 24px;
+    padding: 18px 28px; background: linear-gradient(to bottom, rgba(6,10,20,.85), transparent); }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--accent); display: grid; place-items: center;
+    box-shadow: 0 0 18px rgba(61,214,195,.35), inset 0 0 10px rgba(61,214,195,.25); }
+  .brand-mark::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .brand b { display: block; font-family: var(--mono); font-weight: 600; letter-spacing: .14em; font-size: 13px; }
+  .brand span { font-size: 12px; color: var(--muted); }
+  .top-stats { display: flex; gap: 28px; margin-left: auto; align-items: center; }
+  .top-stat .eyebrow { font-size: 10px; }
+  .top-stat .num { font-size: 15px; margin-top: 2px; }
+  .link-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--glass-line); background: rgba(61,214,195,.06); font-size: 12px; }
+  .link-pill svg { color: var(--accent); }
+  .btn-primary { min-height: 48px; padding: 0 20px; border-radius: 12px; border: 0; cursor: pointer; font-weight: 600;
+    background: var(--accent); color: #04221E; box-shadow: 0 0 24px rgba(61,214,195,.35); }
+  .btn-primary:hover { filter: brightness(1.08); }
+
+  /* ---------- left rail ---------- */
+  .rail { position: fixed; z-index: 4; left: 28px; top: 96px; bottom: 76px; width: 288px; display: flex; flex-direction: column; gap: 14px; }
+  .glass { background: var(--glass); border: 1px solid var(--glass-line); border-radius: 18px;
+    backdrop-filter: blur(14px) saturate(130%); -webkit-backdrop-filter: blur(14px) saturate(130%);
+    box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04); }
+  .crew { padding: 18px; display: flex; gap: 16px; align-items: center; }
+  .ring { position: relative; width: 92px; height: 92px; flex: none; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .val { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring .val b { font-family: var(--mono); font-size: 26px; font-weight: 500; display: block; line-height: 1; }
+  .ring .val small { font-size: 10px; color: var(--muted); letter-spacing: .12em; }
+  .crew h2 { margin: 4px 0 2px; font-size: 17px; font-weight: 500; }
+  .crew p { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+
+  .systems { padding: 10px; flex: 1; overflow: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  .panel-body { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  .systems .eyebrow { padding: 8px 10px 10px; display: block; }
+  .sys-btn { width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 12px; margin-bottom: 4px;
+    background: transparent; border: 1px solid transparent; border-radius: 12px; cursor: pointer; text-align: left; transition: background .2s, border-color .2s; }
+  .sys-btn:hover { background: rgba(61,214,195,.06); }
+  .sys-btn[aria-pressed="true"] { background: rgba(61,214,195,.1); border-color: var(--glass-line); }
+  .sys-btn .sys-name { font-size: 14px; font-weight: 500; }
+  .sys-btn .sys-sub { font-size: 11.5px; color: var(--muted); }
+  .sys-btn .grow { flex: 1; min-width: 0; }
+  .sys-idx { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 22px; }
+
+  /* status pill: shape + word + color, never color alone */
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid currentColor; }
+  .pill.ok { color: var(--ok); background: rgba(95,224,181,.08); }
+  .pill.watch { color: var(--watch); background: rgba(245,191,85,.08); }
+  .pill.crit { color: var(--crit); background: rgba(255,138,126,.08); }
+  .pill svg { flex: none; }
+
+  /* ---------- ECG strip ---------- */
+  .ecg { padding: 14px 16px 10px; }
+  .ecg-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .ecg-head .num { font-size: 22px; }
+  .ecg-head .num small { font-size: 12px; color: var(--muted); margin-left: 4px; }
+  #ecg { width: 100%; height: 54px; display: block; margin-top: 6px; }
+
+  /* ---------- 3D hotspot labels ---------- */
+  #labels { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+  .hs { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; align-items: center; gap: 0;
+    background: none; border: 0; padding: 0; cursor: pointer; transition: opacity .25s; will-change: transform; }
+  .hs .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; background: rgba(6,10,20,.6); position: relative; flex: none; }
+  .hs .dot::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 1px solid currentColor; opacity: .6; animation: ping 2.2s ease-out infinite; }
+  .hs .stem { width: 26px; height: 1px; background: linear-gradient(90deg, currentColor, transparent 140%); opacity: .8; }
+  .hs .tag { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 10px; border-radius: 10px; min-height: 44px;
+    background: rgba(8,14,28,.72); border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--text); }
+  .hs .tag b { font-size: 13px; font-weight: 500; display: block; }
+  .hs .tag small { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
+  .hs.flip { flex-direction: row-reverse; }
+  .hs.flip .stem { background: linear-gradient(270deg, currentColor, transparent 140%); }
+  .hs.ok { color: var(--ok); } .hs.watch { color: var(--watch); } .hs.crit { color: var(--crit); }
+  .hs:hover .tag, .hs.active .tag { border-color: currentColor; box-shadow: 0 0 20px -4px currentColor; }
+  .hs.hidden { opacity: .0; pointer-events: none; }
+  @keyframes ping { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(1.6); opacity: 0; } }
+
+  /* ---------- detail panel ---------- */
+  .panel { position: fixed; z-index: 6; top: 96px; right: 28px; bottom: 76px; width: 440px; display: flex; flex-direction: column;
+    transform: translateX(calc(100% + 40px)); opacity: 0; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .4s; }
+  .panel.open { transform: none; opacity: 1; }
+  .panel-head { padding: 20px 22px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 14px; align-items: flex-start; }
+  .panel-head h3 { margin: 6px 0 4px; font-size: 22px; font-weight: 500; }
+  .panel-head p { margin: 0; color: var(--muted); font-size: 13px; }
+  .close { margin-left: auto; width: 44px; height: 44px; flex: none; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03); cursor: pointer; display: grid; place-items: center; }
+  .close:hover { border-color: var(--accent); }
+  .panel-body { padding: 16px 22px 18px; overflow: auto; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .metric { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: rgba(18,27,46,.7);
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center;
+    animation: rise .5s both; }
+  .metric .m-top { display: flex; align-items: center; gap: 10px; grid-column: 1 / -1; }
+  .metric .m-name { font-size: 13.5px; font-weight: 500; }
+  .metric .m-src { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-left: auto; letter-spacing: .06em; }
+  .metric .m-val { font-family: var(--mono); font-size: 30px; font-weight: 500; line-height: 1.05; }
+  .metric .m-val small { font-size: 13px; color: var(--muted); margin-left: 4px; font-weight: 400; }
+  .metric .m-base { font-size: 11.5px; color: var(--muted); }
+  .metric .m-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .share { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; background: none; border: 0; cursor: pointer; font-size: 12.5px; color: var(--muted); padding: 0; }
+  .share .sw { width: 38px; height: 22px; border-radius: 999px; background: #1b263d; border: 1px solid var(--line); position: relative; transition: background .2s; }
+  .share .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform .2s, background .2s; }
+  .share[aria-checked="true"] { color: var(--accent); }
+  .share[aria-checked="true"] .sw { background: rgba(61,214,195,.25); border-color: var(--accent); }
+  .share[aria-checked="true"] .sw::after { transform: translateX(16px); background: var(--accent); }
+  .insight { border-radius: 14px; padding: 16px; border: 1px solid rgba(245,191,85,.35); background: linear-gradient(160deg, rgba(245,191,85,.08), rgba(18,27,46,.6)); animation: rise .5s both; }
+  .insight.ok { border-color: rgba(95,224,181,.3); background: linear-gradient(160deg, rgba(95,224,181,.07), rgba(18,27,46,.6)); }
+  .insight dl { margin: 10px 0 0; display: grid; gap: 10px; }
+  .insight dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .insight dd { margin: 3px 0 0; font-size: 13.5px; line-height: 1.5; }
+  .panel-foot { padding: 12px 22px 16px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- bottom bar ---------- */
+  .bottombar { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; padding: 14px 28px 18px; display: flex; align-items: center; gap: 18px;
+    background: linear-gradient(to top, rgba(6,10,20,.9), transparent); font-size: 12px; color: var(--muted); }
+  .sim-tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; padding: 5px 10px; border-radius: 6px; border: 1px dashed var(--watch); color: var(--watch); }
+  .modes { margin-left: auto; display: flex; gap: 4px; padding: 4px; border-radius: 12px; border: 1px solid var(--line); background: rgba(8,14,28,.7); }
+  .modes button { min-height: 40px; padding: 0 14px; border-radius: 9px; border: 0; background: none; cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--muted); }
+  .modes button[aria-pressed="true"] { background: rgba(61,214,195,.14); color: var(--accent); }
+  .hint { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 1100px) {
+    .rail { width: 250px; }
+    .panel { width: 380px; }
+    .top-stats .top-stat:nth-child(-n+2) { display: none; }
+  }
+  @media (max-width: 760px) {
+    .topbar { padding: 12px 16px; }
+    .top-stats .top-stat, .link-pill span { display: none; }
+    .rail { left: 16px; right: 16px; top: auto; bottom: 64px; width: auto; flex-direction: row; }
+    .rail .crew, .rail .ecg { display: none; }
+    .systems { overflow-x: auto; display: flex; padding: 6px; gap: 4px; }
+    .systems .eyebrow { display: none; }
+    .sys-btn { width: auto; flex: none; margin: 0; }
+    .sys-btn .sys-sub, .sys-btn .sys-idx { display: none; }
+    .panel { left: 16px; right: 16px; width: auto; top: 30vh; bottom: 0; border-radius: 18px 18px 0 0; transform: translateY(105%); }
+    .hs .tag small { display: none; }
+    .bottombar { padding: 10px 16px; }
+    .bottombar .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+<div class="fx"></div>
+<div id="labels"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true"></div>
+    <div><b>OWN YOUR BASELINE</b><span>Personal health HUD</span></div>
+  </div>
+  <div class="top-stats">
+    <div class="top-stat"><div class="eyebrow">Mission day</div><div class="num">047 / 180</div></div>
+    <div class="top-stat"><div class="eyebrow">Mission elapsed</div><div class="num" id="met">046:07:12:09</div></div>
+    <div class="top-stat"><div class="eyebrow">Cabin CO₂</div><div class="num" style="color:var(--watch)">2,900 ppm</div></div>
+    <div class="link-pill" title="All data stays on this device until you share it">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span>On-device · ground link in 02:14</span>
+    </div>
+    <button class="btn-primary" type="button">30-s check-in</button>
+  </div>
+</header>
+
+<aside class="rail">
+  <section class="glass crew">
+    <div class="ring" role="img" aria-label="Readiness 82 of 100">
+      <svg width="92" height="92" viewBox="0 0 92 92">
+        <circle cx="46" cy="46" r="40" fill="none" stroke="#1b263d" stroke-width="7"/>
+        <circle id="ringArc" cx="46" cy="46" r="40" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3" style="transition: stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)"/>
+        <defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#3DD6C3"/><stop offset="1" stop-color="#5FE0B5"/></linearGradient></defs>
+      </svg>
+      <div class="val"><div><b class="num">82</b><small>READY</small></div></div>
+    </div>
+    <div>
+      <div class="eyebrow">Crew 02 · Specialist</div>
+      <h2>Good to go</h2>
+      <p>2 systems worth checking. Tap the suit or a system below.</p>
+    </div>
+  </section>
+
+  <nav class="glass systems" aria-label="Body systems">
+    <span class="eyebrow">Systems</span>
+    <div id="sysList"></div>
+  </nav>
+
+  <section class="glass ecg">
+    <div class="ecg-head">
+      <span class="eyebrow">Heart · live</span>
+      <span class="num"><span id="bpm">64</span><small>bpm</small></span>
+    </div>
+    <canvas id="ecg"></canvas>
+  </section>
+</aside>
+
+<aside class="panel glass" id="panel" aria-live="polite" aria-hidden="true">
+  <div class="panel-head">
+    <div>
+      <div class="eyebrow" id="pIdx">System 01</div>
+      <h3 id="pTitle">—</h3>
+      <p id="pSub">—</p>
+    </div>
+    <button class="close" id="pClose" type="button" aria-label="Close panel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="panel-body" id="pBody"></div>
+  <div class="panel-foot"><span>Decision support, not a diagnosis.</span><span>Simulated data</span></div>
+</aside>
+
+<footer class="bottombar">
+  <span class="sim-tag">SIMULATED DATA</span>
+  <span>Decision support, not a diagnosis. Nothing leaves this device unless you share it.</span>
+  <span class="hint">DRAG TO ROTATE · CLICK A ZONE</span>
+  <div class="modes" role="group" aria-label="View mode">
+    <button type="button" data-mode="suit" aria-pressed="true">SUIT</button>
+    <button type="button" data-mode="holo" aria-pressed="false">HOLOGRAM</button>
+  </div>
+</footer>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* =====================================================================
+   DATA — all simulated. Ranges/thresholds are placeholders to be replaced
+   with sourced values (OSD-569 for blood counts; NASA CO2 refs in docs/).
+   ===================================================================== */
+const REGIONS = [
+  { id: 'neuro', name: 'Neuro & Sleep', sub: 'Brain · eyes · mood', status: 'watch',
+    anchor: [0, 3.15, 0.5], normal: [0, 0.2, 1], side: 1,
+    metrics: [
+      { label: 'Sleep', value: '6.1', unit: 'h', status: 'watch', src: 'WEARABLE', spark: [7.3, 7.1, 7.4, 6.9, 6.6, 6.3, 6.1], base: [6.8, 7.6], baseText: 'Your baseline 6.8–7.6 h' },
+      { label: 'Mood', value: '3', unit: '/ 5', status: 'ok', src: 'CHECK-IN', spark: [4, 4, 3, 4, 4, 3, 3], base: [3, 5], baseText: 'Your baseline 3–5' },
+      { label: 'Headache', value: 'Mild', unit: '', status: 'watch', src: 'CHECK-IN', spark: [0, 0, 0, 1, 0, 1, 1], base: [0, 0.2], baseText: 'Usually none' },
+    ],
+    insight: { changed: 'Sleep dropped three nights in a row, and a mild headache was logged twice while cabin CO₂ ran above your usual level.',
+      next: 'Ask the crew for a CO₂ scrubber check and start lights-down 30 minutes earlier tonight.',
+      call: 'vision changes, a severe or worsening headache, or confusion.' } },
+
+  { id: 'cardio', name: 'Cardiovascular', sub: 'Heart · blood pressure', status: 'watch',
+    anchor: [0.24, 2.2, 0.55], normal: [0.3, 0, 1], side: 1,
+    metrics: [
+      { label: 'Heart rate (rest)', value: '64', unit: 'bpm', status: 'ok', src: 'WEARABLE', spark: [62, 61, 63, 62, 65, 63, 64], base: [58, 68], baseText: 'Your baseline 58–68 bpm' },
+      { label: 'Blood pressure', value: '128/84', unit: 'mmHg', status: 'watch', src: 'CUFF', spark: [116, 118, 117, 121, 124, 126, 128], base: [112, 122], baseText: 'Your baseline 112–122 systolic' },
+      { label: 'HRV (RMSSD)', value: '48', unit: 'ms', status: 'ok', src: 'WEARABLE', spark: [52, 50, 51, 49, 47, 49, 48], base: [44, 58], baseText: 'Your baseline 44–58 ms' },
+    ],
+    insight: { changed: 'Systolic pressure has crept up 12 mmHg over a week. Heart rate is steady.',
+      next: 'Re-measure after 5 minutes of quiet rest, same arm, before breakfast.',
+      call: 'chest pain, fainting, or a reading above the limit your flight surgeon set.' } },
+
+  { id: 'blood', name: 'Blood & Metabolism', sub: 'Glucose · blood count', status: 'ok',
+    anchor: [0, 1.5, 0.5], normal: [0, 0, 1], side: -1,
+    metrics: [
+      { label: 'Blood glucose', value: '96', unit: 'mg/dL', status: 'ok', src: 'FINGERSTICK', spark: [92, 98, 95, 101, 94, 97, 96], base: [82, 104], baseText: 'Your baseline 82–104 mg/dL' },
+      { label: 'White blood cells', value: '5.8', unit: '×10³/µL', status: 'ok', src: 'CBC · OSD-569 RANGE', spark: [6.2, 6.0, 5.9, 6.1, 5.7, 5.9, 5.8], base: [4.0, 10.5], baseText: 'Lab range from OSD-569 (placeholder)' },
+      { label: 'Lymphocytes', value: '1.3', unit: '×10³/µL', status: 'ok', src: 'CBC · OSD-569 RANGE', spark: [1.8, 1.7, 1.6, 1.5, 1.4, 1.4, 1.3], base: [1.0, 3.2], baseText: 'Lab range from OSD-569 (placeholder)' },
+    ],
+    insight: { tone: 'ok', changed: 'Everything is inside your range. Lymphocytes are trending down slowly, which is common in flight.',
+      next: 'No action. Keep the next scheduled blood draw on day 60.',
+      call: 'fever, unusual bruising, or infections that do not clear.' } },
+
+  { id: 'thermal', name: 'Thermal', sub: 'Body temperature · skin', status: 'ok',
+    anchor: [0.98, 1.55, 0.25], normal: [1, 0, 0.4], side: 1,
+    metrics: [
+      { label: 'Body temperature', value: '36.9', unit: '°C', status: 'ok', src: 'PATCH', spark: [36.7, 36.8, 36.9, 36.8, 36.9, 37.0, 36.9], base: [36.5, 37.2], baseText: 'Your baseline 36.5–37.2 °C' },
+      { label: 'Skin temperature', value: '33.4', unit: '°C', status: 'ok', src: 'PATCH', spark: [33.1, 33.3, 33.2, 33.6, 33.4, 33.3, 33.4], base: [32.6, 34.2], baseText: 'Your baseline 32.6–34.2 °C' },
+    ],
+    insight: { tone: 'ok', changed: 'Stable. Body temperature runs slightly higher in flight than on Earth, and yours matches your in-flight baseline.',
+      next: 'Drink to plan during exercise blocks.',
+      call: 'temperature above 38 °C with chills or a new rash.' } },
+
+  { id: 'musculo', name: 'Bones & Muscles', sub: 'Exercise · spine · legs', status: 'ok',
+    anchor: [-0.3, 0.32, 0.25], normal: [-0.2, 0, 1], side: -1,
+    metrics: [
+      { label: 'Resistive exercise', value: '82', unit: 'min', status: 'ok', src: 'ARED LOG', spark: [90, 88, 60, 92, 85, 90, 82], base: [75, 95], baseText: 'Plan 75–95 min / day' },
+      { label: 'Back discomfort', value: '2', unit: '/ 5', status: 'ok', src: 'CHECK-IN', spark: [1, 2, 2, 1, 2, 2, 2], base: [0, 2], baseText: 'Your baseline 0–2' },
+    ],
+    insight: { tone: 'ok', changed: 'Exercise is on plan. Back discomfort is steady at a low level.',
+      next: 'Add the 5-minute spine stretch after sleep.',
+      call: 'numbness or weakness in the legs, or sharp back pain.' } },
+
+  { id: 'suit', name: 'Suit & Cabin', sub: 'CO₂ · O₂ · radiation', status: 'watch',
+    anchor: [0, 2.35, -0.9], normal: [0, 0, -1], side: 1,
+    metrics: [
+      { label: 'Cabin CO₂', value: '2,900', unit: 'ppm', status: 'watch', src: 'CABIN SENSOR', spark: [2100, 2300, 2200, 2600, 2750, 2800, 2900], base: [1800, 2500], baseText: 'Usual cabin level 1,800–2,500 (placeholder)' },
+      { label: 'Radiation today', value: '0.48', unit: 'mSv', status: 'ok', src: 'DOSIMETER', spark: [0.45, 0.47, 0.46, 0.5, 0.47, 0.49, 0.48], base: [0.4, 0.6], baseText: 'Mission budget on track (placeholder)' },
+      { label: 'Oxygen', value: '21.1', unit: '%', status: 'ok', src: 'CABIN SENSOR', spark: [21.0, 21.2, 21.1, 21.0, 21.1, 21.2, 21.1], base: [20.5, 21.5], baseText: 'Nominal band (placeholder)' },
+    ],
+    insight: { changed: 'Cabin CO₂ has risen for four days. The pattern matches your headache days, which is worth checking, not a proven cause.',
+      next: 'Log headaches in the check-in so the pattern stays visible.',
+      call: 'shortness of breath or headache that does not ease.' } },
+];
+
+const STATUS = {
+  ok: { word: 'In range', color: '#5FE0B5', icon: '<svg width="11" height="11" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg>' },
+  watch: { word: 'Watch', color: '#F5BF55', icon: '<svg width="12" height="11" viewBox="0 0 12 11"><path d="M6 0.5 11.5 10.5H0.5Z" fill="currentColor"/></svg>' },
+  crit: { word: 'Act now', color: '#FF8A7E', icon: '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 0.5 11.5 6 6 11.5 0.5 6Z" fill="currentColor"/></svg>' },
+};
+const pill = s => `<span class="pill ${s}">${STATUS[s].icon}${STATUS[s].word}</span>`;
+
+/* ---------------- sparkline (SVG) ---------------- */
+function spark(m) {
+  const W = 132, H = 44, p = 4;
+  const lo = Math.min(...m.spark, m.base[0]), hi = Math.max(...m.spark, m.base[1]);
+  const pad = (hi - lo) * 0.15 || 1, y0 = lo - pad, y1 = hi + pad;
+  const x = i => p + (i / (m.spark.length - 1)) * (W - p * 2);
+  const y = v => H - p - ((v - y0) / (y1 - y0)) * (H - p * 2);
+  const pts = m.spark.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const c = STATUS[m.status].color, last = m.spark.length - 1;
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${m.label}, last 7 days">
+    <rect x="${p}" y="${y(m.base[1]).toFixed(1)}" width="${W - p * 2}" height="${Math.max(2, y(m.base[0]) - y(m.base[1])).toFixed(1)}" rx="3" fill="rgba(61,214,195,.10)" stroke="rgba(61,214,195,.25)" stroke-dasharray="2 3"/>
+    <polyline points="${pts}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
+    <circle cx="${x(last)}" cy="${y(m.spark[last])}" r="4" fill="${c}" stroke="#0B1220" stroke-width="2"/>
+  </svg>`;
+}
+
+/* ---------------- left list ---------------- */
+const sysList = document.getElementById('sysList');
+sysList.innerHTML = REGIONS.map((r, i) => `
+  <button class="sys-btn" type="button" data-region="${r.id}" aria-pressed="false">
+    <span class="sys-idx">0${i + 1}</span>
+    <span class="grow"><span class="sys-name">${r.name}</span><br><span class="sys-sub">${r.sub}</span></span>
+    ${pill(r.status)}
+  </button>`).join('');
+sysList.addEventListener('click', e => { const b = e.target.closest('[data-region]'); if (b) select(b.dataset.region); });
+
+/* ---------------- panel ---------------- */
+const panel = document.getElementById('panel');
+const shared = new Set();
+function renderPanel(r) {
+  const i = REGIONS.indexOf(r);
+  document.getElementById('pIdx').innerHTML = `System 0${i + 1} &nbsp;·&nbsp; ${pill(r.status)}`;
+  document.getElementById('pTitle').textContent = r.name;
+  document.getElementById('pSub').textContent = r.sub;
+  const body = r.metrics.map((m, k) => {
+    const key = r.id + ':' + m.label, on = shared.has(key);
+    return `<article class="metric" style="animation-delay:${80 + k * 70}ms">
+      <div class="m-top"><span class="m-name">${m.label}</span>${pill(m.status)}<span class="m-src">${m.src}</span></div>
+      <div><div class="m-val">${m.value}<small>${m.unit}</small></div><div class="m-base">${m.baseText}</div></div>
+      ${spark(m)}
+      <div class="m-foot"><span class="m-base">7-day trend · band = your baseline</span>
+        <button class="share" type="button" role="switch" aria-checked="${on}" data-key="${key}"><span>${on ? 'Shared with ground' : 'Private'}</span><span class="sw"></span></button>
+      </div>
+    </article>`;
+  }).join('');
+  const ins = r.insight;
+  document.getElementById('pBody').innerHTML = body + `
+    <section class="insight ${ins.tone || ''}" style="animation-delay:${80 + r.metrics.length * 70}ms">
+      <div class="eyebrow">${ins.tone === 'ok' ? 'Looking steady' : 'Worth checking'}</div>
+      <dl><div><dt>What changed</dt><dd>${ins.changed}</dd></div>
+      <div><dt>One next step</dt><dd>${ins.next}</dd></div>
+      <div><dt>Contact the flight surgeon if</dt><dd>${ins.call}</dd></div></dl>
+    </section>`;
+}
+document.getElementById('pBody').addEventListener('click', e => {
+  const b = e.target.closest('.share'); if (!b) return;
+  const k = b.dataset.key, on = !shared.has(k);
+  on ? shared.add(k) : shared.delete(k);
+  b.setAttribute('aria-checked', on); b.firstElementChild.textContent = on ? 'Shared with ground' : 'Private';
+});
+document.getElementById('pClose').addEventListener('click', () => select(null));
+addEventListener('keydown', e => { if (e.key === 'Escape') select(null); });
+
+/* =====================================================================
+   3D SCENE
+   ===================================================================== */
+const host = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+host.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0B1220, 0.028);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, 0.1, 200);
+const HOME = { pos: new THREE.Vector3(0.6, 2.6, 11), target: new THREE.Vector3(0, 2.05, 0) };
+camera.position.copy(HOME.pos);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping = true; controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minDistance = 5; controls.maxDistance = 16;
+controls.minPolarAngle = 0.6; controls.maxPolarAngle = 1.95;
+controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+controls.autoRotateSpeed = 0.45;
+
+// lights
+scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x0b1220, 0.6));
+const key = new THREE.DirectionalLight(0xfff1e0, 1.6); key.position.set(4, 7, 6); scene.add(key);
+const rim = new THREE.DirectionalLight(0x3DD6C3, 2.2); rim.position.set(-5, 3, -6); scene.add(rim);
+const rim2 = new THREE.DirectionalLight(0x6f8cff, 1.0); rim2.position.set(6, 1, -4); scene.add(rim2);
+
+// stars
+{
+  const n = 2200, g = new THREE.BufferGeometry(), a = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const r = 40 + Math.random() * 60, t = Math.random() * Math.PI * 2, p = Math.acos(2 * Math.random() - 1);
+    a.set([r * Math.sin(p) * Math.cos(t), r * Math.cos(p), r * Math.sin(p) * Math.sin(t)], i * 3);
+  }
+  g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xcfe0ff, size: 0.12, sizeAttenuation: true, transparent: true, opacity: 0.8, fog: false })));
+}
+
+// holographic platform
+const platform = new THREE.Group(); scene.add(platform);
+{
+  const add = (inner, outer, op, seg = 128, start = 0, len = Math.PI * 2) => {
+    const m = new THREE.Mesh(new THREE.RingGeometry(inner, outer, seg, 1, start, len),
+      new THREE.MeshBasicMaterial({ color: 0x3DD6C3, transparent: true, opacity: op, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; platform.add(m); return m;
+  };
+  add(2.2, 2.23, 0.55); add(2.55, 2.57, 0.25); add(1.4, 1.42, 0.3); add(3.2, 3.21, 0.15);
+  for (let i = 0; i < 4; i++) add(2.32, 2.42, 0.5, 32, i * Math.PI / 2 + 0.2, 0.9);
+  for (let i = 0; i < 60; i++) { const t = add(2.62, i % 5 ? 2.68 : 2.78, 0.35, 2, i * Math.PI / 30, 0.012); }
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(2.2, 64), new THREE.MeshBasicMaterial({ color: 0x3DD6C3, transparent: true, opacity: 0.05, depthWrite: false }));
+  disc.rotation.x = -Math.PI / 2; platform.add(disc);
+  // light beam
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.2, 5.2, 64, 1, true),
+    new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+      uniforms: { c: { value: new THREE.Color(0x3DD6C3) } },
+      vertexShader: 'varying float vY; void main(){ vY = uv.y; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }',
+      fragmentShader: 'uniform vec3 c; varying float vY; void main(){ gl_FragColor = vec4(c, pow(1.-vY, 2.5)*0.10); }' }));
+  beam.position.y = 2.6; platform.add(beam);
+}
+const outerTicks = platform.children.slice(8, 68);
+
+/* ---------- astronaut, built from primitives ---------- */
+const astro = new THREE.Group(); scene.add(astro);
+const body = new THREE.Group(); body.position.y = 0.78; astro.add(body);
+const pickables = [];
+const suitMat = () => new THREE.MeshPhysicalMaterial({ color: 0xe9edf3, roughness: 0.62, metalness: 0.0, clearcoat: 0.3, clearcoatRoughness: 0.6, envMapIntensity: 0.7 });
+const greyMat = () => new THREE.MeshStandardMaterial({ color: 0x8a93a3, roughness: 0.45, metalness: 0.6, envMapIntensity: 0.9 });
+const darkMat = () => new THREE.MeshStandardMaterial({ color: 0x2a3142, roughness: 0.5, metalness: 0.5 });
+
+function part(geo, region, mat, parent = body, pos = [0, 0, 0], rot = [0, 0, 0], scl = [1, 1, 1]) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(...pos); m.rotation.set(...rot); m.scale.set(...scl);
+  m.userData.region = region; parent.add(m); pickables.push(m);
+  return m;
+}
+const cap = (r, l) => new THREE.CapsuleGeometry(r, l, 10, 28);
+const sph = r => new THREE.SphereGeometry(r, 40, 28);
+
+// head
+part(sph(0.52), 'neuro', suitMat(), body, [0, 2.32, 0]);
+const visor = part(new THREE.SphereGeometry(0.527, 48, 32, Math.PI / 2 - 0.95, 1.9, 0.62, 1.25), 'neuro',
+  new THREE.MeshPhysicalMaterial({ color: 0xd4a043, metalness: 1, roughness: 0.08, clearcoat: 1, envMapIntensity: 1.6, iridescence: 0.4 }), body, [0, 2.32, 0]);
+part(new THREE.TorusGeometry(0.36, 0.075, 16, 48), 'neuro', greyMat(), body, [0, 1.86, 0], [Math.PI / 2, 0, 0]);
+// visor frame ring
+part(new THREE.TorusGeometry(0.43, 0.035, 12, 48, Math.PI * 1.15), 'neuro', greyMat(), body, [0, 2.36, 0.21], [0, 0, -0.29], [1, 0.95, 1]);
+// helmet lights
+for (const sx of [-1, 1]) {
+  part(new RoundedBoxGeometry(0.14, 0.1, 0.14, 2, 0.03), 'neuro', darkMat(), body, [sx * 0.46, 2.55, 0.12]);
+  const l = new THREE.Mesh(new THREE.CircleGeometry(0.035, 16), new THREE.MeshBasicMaterial({ color: 0xcff8ff }));
+  l.position.set(sx * 0.46, 2.55, 0.195); body.add(l);
+}
+
+// torso
+part(cap(0.58, 0.3), 'cardio', suitMat(), body, [0, 1.38, 0], [0, 0, 0], [1.18, 1, 0.82]);
+part(cap(0.48, 0.18), 'blood', suitMat(), body, [0, 0.78, 0], [0, 0, 0], [1.12, 1, 0.84]);
+part(new THREE.TorusGeometry(0.47, 0.05, 12, 48), 'blood', greyMat(), body, [0, 0.98, 0], [Math.PI / 2, 0, 0], [1.14, 0.86, 1]);
+part(new THREE.TorusGeometry(0.47, 0.05, 12, 48), 'musculo', greyMat(), body, [0, 0.42, 0], [Math.PI / 2, 0, 0], [1.1, 0.86, 1]);
+// chest display & control module
+const dcm = part(new RoundedBoxGeometry(0.62, 0.34, 0.2, 3, 0.05), 'cardio', darkMat(), body, [0, 1.25, 0.5], [-0.12, 0, 0]);
+const leds = [];
+[[0x3DD6C3, -0.18], [0x5FE0B5, -0.06], [0xF5BF55, 0.06], [0x3DD6C3, 0.18]].forEach(([c, x]) => {
+  const l = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.05, 0.01), new THREE.MeshBasicMaterial({ color: c }));
+  l.position.set(x, 0.07, 0.101); dcm.add(l); leds.push(l);
+});
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.1), new THREE.MeshBasicMaterial({ color: 0x3DD6C3, transparent: true, opacity: 0.55 }));
+screen.position.set(0, -0.06, 0.101); dcm.add(screen);
+// flag patch + badge
+part(new THREE.CylinderGeometry(0.11, 0.11, 0.02, 32), 'cardio', new THREE.MeshStandardMaterial({ color: 0x1d3c78, roughness: .6 }), body, [0.36, 1.6, 0.42], [Math.PI / 2 - 0.35, 0, 0.25]);
+
+// backpack (PLSS)
+const pack = part(new RoundedBoxGeometry(1.1, 1.25, 0.5, 4, 0.12), 'suit', suitMat(), body, [0, 1.35, -0.64]);
+part(new RoundedBoxGeometry(0.9, 0.3, 0.12, 3, 0.04), 'suit', greyMat(), body, [0, 1.75, -0.92]);
+for (const sx of [-1, 1]) part(new THREE.CylinderGeometry(0.07, 0.07, 0.9, 20), 'suit', greyMat(), body, [sx * 0.42, 1.25, -0.92]);
+const packGlow = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.06), new THREE.MeshBasicMaterial({ color: 0x3DD6C3 }));
+packGlow.position.set(0, 1.0, -0.895); packGlow.rotation.y = Math.PI; body.add(packGlow);
+
+// arms
+const arms = [];
+for (const sx of [-1, 1]) {
+  const reg = sx > 0 ? 'thermal' : 'thermal';
+  part(sph(0.27), reg, suitMat(), body, [sx * 0.74, 1.6, 0]);
+  const sh = new THREE.Group(); sh.position.set(sx * 0.76, 1.58, 0); sh.rotation.z = sx * 0.28; body.add(sh); arms.push(sh);
+  part(cap(0.2, 0.42), reg, suitMat(), sh, [0, -0.38, 0]);
+  part(new THREE.TorusGeometry(0.2, 0.035, 10, 32), reg, greyMat(), sh, [0, -0.62, 0], [Math.PI / 2, 0, 0]);
+  const el = new THREE.Group(); el.position.set(0, -0.68, 0); el.rotation.x = -0.35; el.rotation.z = -sx * 0.1; sh.add(el);
+  part(cap(0.18, 0.38), reg, suitMat(), el, [0, -0.3, 0]);
+  part(new THREE.TorusGeometry(0.17, 0.04, 10, 32), reg, greyMat(), el, [0, -0.56, 0], [Math.PI / 2, 0, 0]);
+  part(new RoundedBoxGeometry(0.26, 0.32, 0.2, 3, 0.08), reg, new THREE.MeshStandardMaterial({ color: 0xd8dde6, roughness: .7 }), el, [0, -0.76, 0.02]);
+  if (sx > 0) { // wrist display
+    const w = part(new RoundedBoxGeometry(0.16, 0.12, 0.1, 2, 0.03), reg, darkMat(), el, [0, -0.38, 0.17]);
+    const s = new THREE.Mesh(new THREE.PlaneGeometry(0.11, 0.07), new THREE.MeshBasicMaterial({ color: 0x5FE0B5 })); s.position.z = 0.051; w.add(s);
+  }
+}
+
+// legs
+for (const sx of [-1, 1]) {
+  const hip = new THREE.Group(); hip.position.set(sx * 0.27, 0.36, 0); hip.rotation.z = sx * 0.04; body.add(hip);
+  part(cap(0.25, 0.42), 'musculo', suitMat(), hip, [0, -0.38, 0]);
+  part(sph(0.22), 'musculo', suitMat(), hip, [0, -0.72, 0.03], [0, 0, 0], [1, 0.9, 1.05]);
+  part(cap(0.21, 0.42), 'musculo', suitMat(), hip, [0, -1.05, 0]);
+  part(new THREE.TorusGeometry(0.21, 0.04, 10, 32), 'musculo', greyMat(), hip, [0, -1.33, 0], [Math.PI / 2, 0, 0]);
+  part(new RoundedBoxGeometry(0.38, 0.28, 0.6, 3, 0.1), 'musculo', new THREE.MeshStandardMaterial({ color: 0xc9ced8, roughness: .65 }), hip, [0, -1.48, 0.08]);
+  part(new RoundedBoxGeometry(0.4, 0.07, 0.62, 2, 0.03), 'musculo', darkMat(), hip, [0, -1.6, 0.08]);
+}
+
+// hologram overlays (wireframe twin) + internal glow organ
+const holoParts = [];
+const holoMat = new THREE.MeshBasicMaterial({ color: 0x3DD6C3, wireframe: true, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false });
+for (const m of pickables) {
+  const w = new THREE.Mesh(m.geometry, holoMat); w.visible = false; w.raycast = () => {}; m.add(w); holoParts.push(w);
+}
+const heart = new THREE.Mesh(sph(0.12), new THREE.MeshBasicMaterial({ color: 0xFF8A7E, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending }));
+heart.position.set(0.12, 1.42, 0.12); heart.visible = false; body.add(heart);
+const brain = new THREE.Mesh(sph(0.22), new THREE.MeshBasicMaterial({ color: 0x8fb3ff, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending }));
+brain.position.set(0, 2.38, 0); brain.scale.set(1, 0.85, 1.1); brain.visible = false; body.add(brain);
+
+// scanning ring
+const scan = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.008, 6, 128), new THREE.MeshBasicMaterial({ color: 0x3DD6C3, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending }));
+scan.rotation.x = Math.PI / 2; astro.add(scan);
+
+/* ---------- hotspots ---------- */
+const labels = document.getElementById('labels');
+const hotspots = REGIONS.map(r => {
+  const el = document.createElement('button');
+  el.type = 'button'; el.className = `hs ${r.status}` + (r.side < 0 ? ' flip' : '');
+  el.setAttribute('aria-label', `${r.name}: ${STATUS[r.status].word}`);
+  el.innerHTML = `<span class="dot"></span><span class="stem"></span><span class="tag">${STATUS[r.status].icon}<span><b>${r.name}</b><small>${r.metrics[0].label.toUpperCase()} ${r.metrics[0].value} ${r.metrics[0].unit}</small></span></span>`;
+  el.addEventListener('click', () => select(r.id));
+  labels.appendChild(el);
+  return { r, el, local: new THREE.Vector3(...r.anchor), normal: new THREE.Vector3(...r.normal).normalize() };
+});
+
+/* ---------- selection / hover ---------- */
+let selected = null, hovered = null;
+const camGoal = { pos: HOME.pos.clone(), target: HOME.target.clone() };
+let flying = false;
+
+function select(id) {
+  selected = id;
+  const r = REGIONS.find(x => x.id === id);
+  document.querySelectorAll('.sys-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.region === id));
+  hotspots.forEach(h => h.el.classList.toggle('active', h.r.id === id));
+  if (r) {
+    renderPanel(r); panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false');
+    controls.autoRotate = false;
+    // fly: look at the anchor from its outward normal, shifted so the suit sits left of the panel
+    const h = hotspots.find(h => h.r.id === id);
+    const wp = h.local.clone(); body.localToWorld(wp);
+    const n = h.normal.clone().applyQuaternion(astro.quaternion);
+    const dist = innerWidth < 760 ? 10 : 9;
+    camGoal.target.copy(wp).lerp(new THREE.Vector3(0, wp.y, 0), 0.6);
+    camGoal.target.y = THREE.MathUtils.lerp(camGoal.target.y, 1.9, 0.5);
+    const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), n).normalize();
+    camGoal.target.addScaledVector(right, innerWidth < 760 ? 0 : 1.15);
+    if (innerWidth < 760) camGoal.target.y -= 1.0;
+    camGoal.pos.copy(camGoal.target).addScaledVector(n.setY(n.y * 0.3).normalize(), dist).add(new THREE.Vector3(0, 0.6, 0));
+    flying = true;
+  } else {
+    panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true');
+    camGoal.pos.copy(camera.position).sub(controls.target).setLength(11).add(HOME.target); camGoal.pos.y = HOME.pos.y;
+    camGoal.target.copy(HOME.target); flying = true;
+    controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+}
+controls.addEventListener('start', () => { flying = false; controls.autoRotate = false; });
+
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let downAt = null;
+function pick(e) {
+  const b = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObjects(pickables, false)[0];
+  return hit ? hit.object.userData.region : null;
+}
+renderer.domElement.addEventListener('pointermove', e => { hovered = pick(e); renderer.domElement.style.cursor = hovered ? 'pointer' : 'grab'; });
+renderer.domElement.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
+  const id = pick(e); if (id) select(id); else if (selected) select(null);
+});
+
+// view mode
+let holo = false;
+document.querySelector('.modes').addEventListener('click', e => {
+  const b = e.target.closest('[data-mode]'); if (!b) return;
+  holo = b.dataset.mode === 'holo';
+  document.querySelectorAll('.modes button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  holoParts.forEach(w => w.visible = holo);
+  heart.visible = brain.visible = holo;
+  pickables.forEach(m => { m.material.transparent = holo; m.material.opacity = holo ? 0.12 : 1; m.material.depthWrite = !holo; m.material.needsUpdate = true; });
+});
+
+/* ---------- ECG canvas ---------- */
+const ecg = document.getElementById('ecg'), ectx = ecg.getContext('2d');
+function sizeEcg() { const r = ecg.getBoundingClientRect(); ecg.width = r.width * devicePixelRatio; ecg.height = r.height * devicePixelRatio; }
+sizeEcg();
+const BPM = 64, beat = 60 / BPM;
+function ecgWave(t) { // stylised PQRST, t in [0,1)
+  const g = (c, w, a) => a * Math.exp(-((t - c) ** 2) / (2 * w * w));
+  return g(.18, .025, .12) - g(.30, .008, .15) + g(.33, .01, 1) - g(.36, .01, .28) + g(.58, .045, .25);
+}
+let ecgX = 0; const ecgTrail = [];
+function drawEcg(time) {
+  const W = ecg.width, H = ecg.height, speed = W / 3.2; // 3.2 s across the strip
+  const x = (time * speed) % W;
+  ecgTrail.push([x, H * 0.62 - ecgWave((time % beat) / beat) * H * 0.5]);
+  while (ecgTrail.length > 500) ecgTrail.shift();
+  ectx.clearRect(0, 0, W, H);
+  ectx.strokeStyle = 'rgba(35,48,74,.6)'; ectx.lineWidth = 1;
+  for (let gx = 0; gx < W; gx += 16 * devicePixelRatio) { ectx.beginPath(); ectx.moveTo(gx, 0); ectx.lineTo(gx, H); ectx.stroke(); }
+  ectx.lineWidth = 1.8 * devicePixelRatio; ectx.lineJoin = 'round';
+  for (let i = 1; i < ecgTrail.length; i++) {
+    const [x0, y0] = ecgTrail[i - 1], [x1, y1] = ecgTrail[i];
+    if (x1 < x0) continue;
+    ectx.strokeStyle = `rgba(61,214,195,${(i / ecgTrail.length) ** 1.5})`;
+    ectx.beginPath(); ectx.moveTo(x0, y0); ectx.lineTo(x1, y1); ectx.stroke();
+  }
+  const [hx, hy] = ecgTrail[ecgTrail.length - 1];
+  ectx.fillStyle = '#3DD6C3'; ectx.shadowColor = '#3DD6C3'; ectx.shadowBlur = 10;
+  ectx.beginPath(); ectx.arc(hx, hy, 2.6 * devicePixelRatio, 0, 7); ectx.fill(); ectx.shadowBlur = 0;
+}
+
+/* ---------- mission clock ---------- */
+const met = document.getElementById('met'); let metS = 46 * 86400 + 7 * 3600 + 12 * 60 + 9;
+setInterval(() => { metS++; const d = Math.floor(metS / 86400), h = Math.floor(metS % 86400 / 3600), m = Math.floor(metS % 3600 / 60), s = metS % 60;
+  met.textContent = `${String(d).padStart(3, '0')}:${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }, 1000);
+requestAnimationFrame(() => document.getElementById('ringArc').style.strokeDashoffset = 251.3 * (1 - 0.82));
+
+/* ---------- loop ---------- */
+const accent = new THREE.Color(0x3DD6C3), black = new THREE.Color(0x000000);
+const tmp = new THREE.Vector3(), camDir = new THREE.Vector3();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clock = new THREE.Clock();
+function frame() {
+  const t = clock.getElapsedTime();
+  if (!reduce) {
+    body.position.y = 0.78 + Math.sin(t * 0.9) * 0.06;
+    body.rotation.z = Math.sin(t * 0.5) * 0.015;
+    arms[0].rotation.x = Math.sin(t * 0.7) * 0.05; arms[1].rotation.x = -Math.sin(t * 0.7 + 1) * 0.05;
+    platform.rotation.y = t * 0.08;
+    outerTicks.forEach((m, i) => m.material.opacity = 0.15 + 0.35 * Math.max(0, Math.sin(t * 2 - i * 0.2)));
+    scan.position.y = 0.6 + (Math.sin(t * 0.8) * 0.5 + 0.5) * 3.6;
+    scan.scale.setScalar(1 - Math.abs(scan.position.y - 2.3) * 0.12);
+    leds.forEach((l, i) => l.visible = Math.sin(t * 3 + i * 1.7) > -0.6);
+  }
+  const ph = (t % beat) / beat, pulse = Math.exp(-((ph - .33) ** 2) / .003) + 0.5 * Math.exp(-((ph - .45) ** 2) / .004);
+  heart.scale.setScalar(1 + pulse * 0.35);
+  screen.material.opacity = 0.35 + pulse * 0.4;
+
+  // region highlight
+  for (const m of pickables) {
+    const r = m.userData.region, on = r === selected ? 1 : r === hovered ? 0.5 : 0;
+    const target = on ? accent : black;
+    m.material.emissive.lerp(target, 0.12);
+    m.material.emissiveIntensity = on ? 0.18 + 0.12 * on + Math.sin(t * 4) * 0.05 * on : m.material.emissiveIntensity * 0.9;
+  }
+
+  // camera fly-to
+  if (flying) {
+    camera.position.lerp(camGoal.pos, 0.06); controls.target.lerp(camGoal.target, 0.06);
+    if (camera.position.distanceTo(camGoal.pos) < 0.02) flying = false;
+  }
+  controls.update();
+
+  // project hotspot labels
+  camera.getWorldDirection(camDir);
+  for (const h of hotspots) {
+    tmp.copy(h.local); body.localToWorld(tmp);
+    const n = h.normal.clone().applyQuaternion(body.getWorldQuaternion(new THREE.Quaternion()));
+    const toCam = camera.position.clone().sub(tmp).normalize();
+    const facing = n.dot(toCam) > 0.05;
+    tmp.project(camera);
+    const x = (tmp.x * 0.5 + 0.5) * innerWidth, y = (-tmp.y * 0.5 + 0.5) * innerHeight;
+    const flip = h.el.classList.contains('flip');
+    h.el.style.transform = `translate(${flip ? `calc(${x}px - 100% + 7px)` : `${x - 7}px`}, ${y}px) translateY(-50%)`;
+    h.el.classList.toggle('hidden', !facing || (selected && selected !== h.r.id));
+  }
+
+  renderer.render(scene, camera);
+  drawEcg(t);
+  requestAnimationFrame(frame);
+}
+frame();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); sizeEcg();
+});
+</script>
+</body>
+</html>
