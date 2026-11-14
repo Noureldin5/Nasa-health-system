@@ -51,7 +51,28 @@ docker load -i victoriametrics-v1.156.0.tar
 docker compose up -d --wait && python3 deploy/smoke_test.py
 ```
 
-Do not commit the `.tar` file. The full offline rehearsal with all three services is C8.
+Use `--pull never` when you want proof that nothing is downloaded: compose then fails at once if the image is missing instead of reaching for the network. Do not commit the `.tar` file.
+
+### Offline check (C8): what was verified on 2026-11-14, and what was not
+
+Verified on the development machine (native Docker engine, VictoriaMetrics only):
+
+- `docker save` wrote a 19 MB archive. Image ID `sha256:da8a90ac...3b66970` is the digest noted in the compose file.
+- With the image removed, `docker compose up --pull never` fails with "No such image" and downloads nothing.
+- After `docker load -i`, `docker compose up -d --wait --pull never` starts the stack, healthy in a few seconds, with the earlier time-series data still in the `vmdata` volume. `deploy/smoke_test.py` prints PASS and `make check` passes (102 tests).
+- The compose file has no `build:` section, no `latest` tag and no other image, so VictoriaMetrics is the only thing to pre-load today.
+
+**Not verified. Do this on the demo laptop with Wi-Fi off** (`docs/TEAM.md`, C8 "Done when"):
+
+1. Turn Wi-Fi off and unplug the network cable. Open a browser tab to any website to confirm it is really offline.
+2. `docker load -i victoriametrics-v1.156.0.tar` (from the USB stick), then `docker compose up -d --wait --pull never`.
+3. `make mission` and `python3 deploy/smoke_test.py`. Open `http://localhost:8428/vmui`.
+4. Reboot the laptop and start again from step 2, to check the volume and Docker's own startup do not need the network.
+5. Confirm the architecture matches: an `amd64` image will not run on an `arm64` laptop (`docker image inspect --format '{{.Architecture}}' victoriametrics/victoria-metrics:v1.156.0` on both machines).
+6. The `api` and `web` images do not exist yet. When B and A add them, each needs: pinned base image, dependencies installed at build time (no `pip install` or `npm install` at start), fonts and icons bundled in the app (no CDN link), and its own `docker save`. Re-run this whole list with all three services before the demo. A web page that loads a font or script from the internet will look broken offline.
+7. Python on the laptop must run `pipeline/` (3.12, standard library only). `make mission` needs `make` and `python3` on the host.
+
+The offline claim for the whole stack stays unproven until step 6 passes.
 
 ## If something is wrong
 
