@@ -60,6 +60,7 @@ def test_cabin_rise_precedes_the_headache_and_stays_under_the_cited_limit():
     assert co2[9] > usual * 1.15  # day 9: the rise, before any symptom
     assert not [p for p in values("symptom_strength", "crew_id", "a1") if mission_day(p.ts, PLAN.mission_start) <= 9 and p.value > 0]
     limit = references.CO2_LIMIT["value_ppm"]
+    assert max(p.value for p in node1) < limit  # not even a 5-minute peak crosses the chart's limit line
     for day in range(1, TODAY + 1):
         day_start = PLAN.mission_start + (day - 1) * DAY
         samples = [Sample(p.ts, p.value, "sim") for p in node1 if day_start <= p.ts < day_start + DAY]

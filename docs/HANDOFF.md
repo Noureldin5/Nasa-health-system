@@ -28,7 +28,7 @@ NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts
 | `docs/README.md` | Start-here page: quick answers, file map, folder structure |
 | `docs/REQUIREMENTS.md` | Must, should and could features with acceptance checks |
 
-`docs/DECISIONS.md` exists (draft by C, sections 1 to 7). Role C's pipeline is built on branch `c/data-pipeline`; `web/` and `api/` are not started. See "Role C status" below.
+`docs/DECISIONS.md` exists: sections 1 to 7 by C, 8 to 10 by B. Role C's pipeline is built on branch `c/data-pipeline` (merged with `origin/main`, not pushed). B's API is in `main` (`api/`, runs on in-memory fake metrics); `web/` is not started. See "Role C status" below.
 
 ## Decisions made
 
@@ -48,13 +48,13 @@ NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts
 5. **Dataset research paste was partly cut off.** Re-check the Python download sketch. Done by C on 2026-11-14: the five HRP hazards (`data/processed/hazards.json`) and the OSDR terms (`data/raw/osd569/README.md`).
 6. **Ask the organizers:** do labeled synthetic values count where no open NASA data exists?
 7. **Placeholders to replace with cited NASA sources:** flight-surgeon thresholds and radiation budget (still open). Done: CO2 limit (3 mmHg, about 3,947 ppm) and environment hazard text.
-8. `docs/DECISIONS.md`: sections 8 and 9 (record shapes, first endpoints) are B's to write.
+8. `docs/DECISIONS.md`: sections 8 to 10 are written by B. C answered section 10 on 2026-11-14; row 9 (what a day is) is new and open.
 9. **Ask the submission deadline.** Competitor repos were pushed up to today, so the event may be running now. The deadline decides how much of the consult layer to build.
 10. **Verify the competitor claims** in `docs/research/competitors.md` (they come from each repo's README, from a sample of about a dozen). Re-check before submission whether anyone added a consult feature.
 
 ## Role C status (2026-11-14, branch `c/data-pipeline`, not pushed)
 
-Done, with tests (`make check`, 102 tests): C1 VictoriaMetrics in compose, C2 ingest and queries, C3 simulator (14 days, live replay), C4 OSD-569 ETL, C5 `daily` and `baseline_window`, C6 `cabin_link`, C7 citations audit and `data/processed/hazards.json`, C9 `make clear-manual` and `make demo-reset`, C8 offline check as far as one machine allows (`deploy/README.md`). OSDR terms of use are in `data/raw/osd569/README.md`.
+Done, with tests (`make check`: 110 pipeline tests, 117 api tests): C1 VictoriaMetrics in compose, C2 ingest and queries, C3 simulator (14 days, live replay), C4 OSD-569 ETL, C5 `daily` and `baseline_window`, C6 `cabin_link`, C7 citations audit and `data/processed/hazards.json`, C9 `make clear-manual` and `make demo-reset`, C8 offline check as far as one machine allows (`deploy/README.md`). OSDR terms of use are in `data/raw/osd569/README.md`.
 
 Fixed after the advisor review:
 - OSD-569 sample C003 L-92 looks shifted in both NASA files (MPV 330 fL, platelets 12.9). It is kept as published, flagged `quality: "suspect"` and left out of `crew_sample` and `vs_range`. **Confirm against the OSDR page before the pitch.** The raw files are untouched.
@@ -62,18 +62,19 @@ Fixed after the advisor review:
 
 Open, needs the team (not decided by C):
 1. **Done 2026-11-14 (team chose option a): Cabin Link leads with the day overlay.** `CabinLink` now carries `first_high_day`, `first_symptom_day`, `lead_days` and `correlation_ready`; on demo day 10 `r` stays `None` and A shows the overlay and the sentence, with `lags` only once `correlation_ready` (DECISIONS section 5). The full-mission lags (lag 0 r = 0.82, lag 1 r = 0.66, lag 2 r = 0.02, run on 2026-11-14) are a reason not to headline `r`. A still needs to build it.
-2. **Done:** simulated node1 CO2 no longer passes the cited limit. `CO2_RISE_PPM` went from 1,900 to 1,000 (Demo parameter): zero hours above 3,947 ppm over the 14 days, daily means up to about 3,700 ppm against a usual 2,700. The story in `docs/USER-FLOW.md` does not pin the peak.
-3. DECISIONS section 7, items 1 to 4 (which day is today, `source="manual"`, cadence of daily vitals, blood-count card wording). `source="manual"` is already implemented; `docs/TEAM.md` still lists only `sim` and `nasa`.
-4. B: SQLite reset command, and add it to `make demo-reset` (DECISIONS section 6).
-5. Read NASA-STD-3001 Vol 2 [V2 6004] and Law et al. 2014 first-hand. `pipeline/references.py` says they were taken from NASA's brief and the abstract.
-6. Offline check on the demo laptop with all three services (`deploy/README.md`).
-7. Acknowledgement sentence for OSDR data: confirm the exact wording on the OSDR FAQ before submission.
-8. The female reference ranges in OSD-569 differ per row (hemoglobin has two): A cannot assume one min and max per indicator.
-9. `docs/CHALLENGE.md` still lacks judging criteria and submission rules.
+2. **Done:** simulated node1 CO2 no longer passes the cited limit. `CO2_RISE_PPM` went from 1,900 to 850 (Demo parameter): no 5-minute reading passes 3,947 ppm either (peak about 3,800), daily means up to about 3,500 against a usual 2,700, so a chart with the limit line shows no point above it. The story in `docs/USER-FLOW.md` does not pin the peak.
+3. **New, found when confirming section 10: the day boundary.** B groups by the UTC calendar date, the pipeline's mission day starts at 18:00 UTC. Smallest fix: B groups by the Bishkek date `(at + 6 h).date()`. DECISIONS section 10, row 9. Must be settled before the real adapter goes in.
+4. DECISIONS section 7, items 1 to 4 (which day is today, `source="manual"`, cadence of daily vitals, blood-count card wording). `source="manual"` is already implemented; `docs/TEAM.md` still lists only `sim` and `nasa`.
+5. B: wire the real metrics adapter. Its `seed` calls `pipeline.reset.demo_reset(day)`, so `POST /demo/reset` resets both stores (DECISIONS sections 6 and 10, row 7). Until then `make demo-reset` resets the time series only.
+6. Read NASA-STD-3001 Vol 2 [V2 6004] and Law et al. 2014 first-hand. `pipeline/references.py` says they were taken from NASA's brief and the abstract.
+7. Offline check on the demo laptop with all services (`deploy/README.md`). The `api` image exists but is not in compose, and its base image is a tag, not a digest.
+8. Acknowledgement sentence for OSDR data: confirm the exact wording on the OSDR FAQ before submission.
+9. The female reference ranges in OSD-569 differ per row (hemoglobin has two): A cannot assume one min and max per indicator.
+10. `docs/CHALLENGE.md` still lacks judging criteria and submission rules.
 
 For B and A: `data/processed/osd569.json` gained `values[].quality` (`"ok"` or `"suspect"`) and `values[].vs_range` can now be `null` (for suspect values). `crew_sample` and `earth_reference_ranges` count `ok` values only. Show a suspect value, if at all, with a note.
 
-Edits C made outside C's folders (shared or A's notes): `Makefile` (targets `clear-manual`, `demo-reset`), `docs/DECISIONS.md`, `docs/DESIGN.md` (one line, the CO2 limit).
+Edits C made outside C's folders (shared or A's notes): `Makefile` (targets `clear-manual`, `demo-reset`; `check` now runs the API checks too after the merge), `docs/DECISIONS.md`, `docs/DESIGN.md` (one line, the CO2 limit).
 
 ## Gotchas
 
@@ -85,4 +86,6 @@ Edits C made outside C's folders (shared or A's notes): `Makefile` (targets `cle
 
 ## Next step
 
-Merge `c/data-pipeline` into `main` (a pull request, `docs/GIT-WORKFLOW.md`) so B and A can import `pipeline/`. Then answer the open items above, starting with 1 and 2 (they change the demo story), and B writes DECISIONS sections 8 and 9.
+1. Merge `c/data-pipeline` into `main` through a pull request (`docs/GIT-WORKFLOW.md`; the branch already contains `origin/main`). It was merged, not rebased, because `Makefile` conflicted on most commits.
+2. Settle the day boundary (open item 3 above) and the Cabin Link overlay with B and A, then B wires the adapter.
+3. Rehearse the demo with all three services, Wi-Fi off, on the demo laptop (`deploy/README.md`).
