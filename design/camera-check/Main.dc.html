@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Camera Check</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.muted{color:#9AA8BF}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 28px 20px 24px; display: flex; flex-direction: column; gap: 18px">
+<div>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">CAMERA CHECK</div>
+<h1 style="margin: 4px 0 0; font-size: 26px; font-weight: 600; text-wrap: balance">Compare your eye with last week</h1>
+</div>
+
+<div style="position: relative; height: 300px; border-radius: 12px; background: #121B2E; border: 1px solid #23304A; display: flex; align-items: center; justify-content: center; overflow: hidden">
+<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="Camera guide: place your eye inside the outline">
+<ellipse cx="150" cy="150" rx="110" ry="62" fill="none" stroke="#3DD6C3" stroke-width="3" stroke-dasharray="8 6"/>
+<circle cx="150" cy="150" r="34" fill="#16213A" stroke="#3A4B6B" stroke-width="2"/>
+<circle cx="150" cy="150" r="14" fill="#0B1220"/>
+<path d="M30 40 V20 H50 M270 40 V20 H250 M30 260 V280 H50 M270 260 V280 H250" fill="none" stroke="#9AA8BF" stroke-width="3" stroke-linecap="round"/>
+</svg>
+<div class="mono" style="position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: #F5BF55">Example image, not a real photo</div>
+</div>
+
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; background: #121B2E; border: 1px solid #23304A; border-radius: 10px; padding: 12px">
+<div class="muted" style="font-size: 12px">Last week</div>
+<div class="mono" style="font-size: 22px; font-weight: 500; margin-top: 4px">Clear</div>
+</div>
+<div style="flex: 1; background: #121B2E; border: 1px solid #5B4B22; border-radius: 10px; padding: 12px">
+<div class="muted" style="font-size: 12px">Today</div>
+<div class="mono" style="font-size: 22px; font-weight: 500; margin-top: 4px; color: #F5BF55">Slightly changed</div>
+</div>
+</div>
+
+<div style="background: #121B2E; border: 1px solid #23304A; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 13px; font-weight: 600; color: #F5BF55">Worth checking</div>
+<div style="font-size: 14px; line-height: 1.5">More redness near the edge than last week. This tool cannot tell the cause.</div>
+<div style="font-size: 13px; font-weight: 600; color: #FF8A7E; margin-top: 4px">Contact the flight surgeon if</div>
+<div style="font-size: 14px; line-height: 1.5" class="muted">Vision blurs, pain increases, or the change spreads.</div>
+</div>
+
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+<button style="min-height: 56px; border: 0; border-radius: 10px; background: #3DD6C3; color: #06201D; font: 600 17px 'IBM Plex Sans', system-ui, sans-serif; cursor: pointer">Take photo</button>
+<div class="muted" style="text-align: center; font-size: 12px; line-height: 1.5">Photos stay on this device and are compared on it. Decision support, not a diagnosis. Roadmap idea.</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Environments</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.card{background:#121B2E;border:1px solid #23304A;border-radius:10px;padding:20px;min-width:0}
+.muted{color:#9AA8BF}
+.tab{min-height:48px;padding:0 20px;border-radius:10px;border:1.5px solid #34466A;background:#121B2E;color:#E6ECF5;font:500 15px 'IBM Plex Sans',system-ui,sans-serif;cursor:pointer}
+.on{border-color:#3DD6C3;background:#0F2A2E;color:#3DD6C3}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1280px; height: 720px; box-sizing: border-box; padding: 32px 40px; display: flex; flex-direction: column; gap: 22px">
+<header>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">ENVIRONMENT</div>
+<h1 style="margin: 4px 0 0; font-size: 30px; font-weight: 600">Where are you? The advice changes with the place.</h1>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button class="{{t.cls}}" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.name}}</button>
+</sc-for>
+</div>
+
+<div style="display: flex; gap: 16px; flex: 1; min-height: 0">
+<section class="card" style="flex: 1.2; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 600">{{env.name}}</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.55" class="muted">{{env.blurb}}</p>
+<div style="font-size: 13px; font-weight: 600; color: #F5BF55">Main hazards here</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5">
+<sc-for list="{{env.hazards}}" as="h" hint-placeholder-count="3"><li>{{h}}</li></sc-for>
+</ul>
+</section>
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 13px; font-weight: 600; color: #3DD6C3">Checks that matter most</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5">
+<sc-for list="{{env.checks}}" as="c" hint-placeholder-count="3"><li>{{c}}</li></sc-for>
+</ul>
+<div style="font-size: 13px; font-weight: 600; color: #FF8A7E; margin-top: 4px">Ground contact</div>
+<div style="font-size: 15px; line-height: 1.5">{{env.delay}}</div>
+</section>
+</div>
+<footer class="muted" style="font-size: 12px">Descriptions are plain summaries for the prototype. Each hazard needs a NASA Human Research Program citation before the demo. Decision support, not a diagnosis.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":720}}'>
+class Component extends DCLogic {
+  state = { pick: 0 };
+  renderVals() {
+    const envs = [
+      { name: 'Space station', blurb: 'Low Earth orbit with a live link to ground most of the day and a closed air supply.', hazards: ['Fluid shift toward the head, with headaches and vision changes', 'Bone and muscle loss in low gravity', 'Higher CO2 in a closed cabin'], checks: ['Eye and head symptoms', 'Exercise minutes', 'Cabin CO2'], delay: 'Seconds. Ground can talk to you in real time.' },
+      { name: 'Spacecraft in transit', blurb: 'A small crew cabin on the way to the Moon or Mars, with limited room and a long trip.', hazards: ['Deep-space radiation outside the magnetic field', 'Confinement and crew friction', 'Little room to exercise'], checks: ['Radiation dose', 'Mood and sleep', 'Exercise minutes'], delay: 'Seconds to minutes, growing with distance.' },
+      { name: 'Rover', blurb: 'Short trips on a planetary surface in a pressurized rover with a small crew.', hazards: ['Dust in the cabin air', 'Long hours of vibration and sitting', 'Surface radiation'], checks: ['Breathing and cough', 'Hydration', 'Back and joint strain'], delay: 'Depends on the planet. May be minutes on Mars.' },
+      { name: 'Surface base', blurb: 'A long stay on the Moon or Mars with a habitat, a routine and a larger crew.', hazards: ['Reduced gravity and bone loss', 'Isolation over months', 'Dust and radiation exposure'], checks: ['Bone and muscle care', 'Mood and sleep', 'Radiation dose'], delay: 'Mars: many minutes each way, so plan to act alone first.' },
+    ];
+    const pick = this.state.pick;
+    return {
+      env: envs[pick],
+      tabs: envs.map((e, i) => ({ name: e.name, cls: i === pick ? 'tab on' : 'tab', pressed: i === pick ? 'true' : 'false', pick: () => this.setState({ pick: i }) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

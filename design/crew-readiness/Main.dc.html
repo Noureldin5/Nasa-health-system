@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crew View</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.card{background:#121B2E;border:1px solid #23304A;border-radius:10px;padding:18px;min-width:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.muted{color:#9AA8BF}
+.track{height:10px;border-radius:5px;background:#1D2A44;overflow:hidden}
+</style>
+</helmet>
+<div style="width: 1280px; height: 720px; box-sizing: border-box; padding: 32px 40px; display: flex; flex-direction: column; gap: 22px">
+<header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">CREW READINESS</div>
+<h1 style="margin: 4px 0 0; font-size: 30px; font-weight: 600">Plan the week with what the crew chose to share</h1>
+</div>
+<div class="muted" style="font-size: 13px; text-align: right">3 of 4 members share sleep.<br>Private data is never shown.</div>
+</header>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{crew}}" as="c" hint-placeholder-count="4">
+<div class="card" style="display: flex; flex-direction: column; gap: 14px; border-style: {{c.border}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 50%; background: #1D2A44; display: flex; align-items: center; justify-content: center; font-weight: 600">{{c.initials}}</div>
+<div><div style="font-size: 16px; font-weight: 600">{{c.role}}</div><div class="muted" style="font-size: 12px">{{c.shares}}</div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 13px"><span class="muted">Sleep last night</span><span class="mono">{{c.sleep}}</span></div>
+<div class="track"><div style="height: 100%; width: {{c.sleepPct}}; background: {{c.color}}"></div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 13px"><span class="muted">Workload</span><span class="mono">{{c.load}}</span></div>
+<div class="track"><div style="height: 100%; width: {{c.loadPct}}; background: #7FA6E8"></div></div>
+</div>
+<div style="font-size: 13px; color: {{c.noteColor}}">{{c.note}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; gap: 16px; flex: 1; min-height: 0">
+<div class="card" style="flex: 2; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 500">Suggestion for the commander</h2>
+<p style="margin: 0; font-size: 22px; line-height: 1.35; font-weight: 600; text-wrap: balance; max-width: 40ch">Move tomorrow&#39;s spacewalk prep to the afternoon so two crew members can catch up on sleep.</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.55" class="muted">Sleep averages 5.9 hours across those who shared, against a usual 6.8. Workload is highest for the flight engineer.</p>
+</div>
+<div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 500">How sharing works</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.55" class="muted">Each person picks what to share. A hidden item shows as Not shared, never as zero. Mission Control sees this same view, not more.</p>
+</div>
+</div>
+<footer class="muted" style="font-size: 12px">Simulated crew and data. Decision support, not a diagnosis.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      crew: [
+        { initials: 'AO', role: 'Commander', shares: 'Shares sleep and workload', sleep: '5.1 h', sleepPct: '64%', load: 'High', loadPct: '80%', color: '#F5BF55', border: 'solid', note: 'Sleep below usual', noteColor: '#F5BF55' },
+        { initials: 'MK', role: 'Flight engineer', shares: 'Shares sleep and workload', sleep: '6.4 h', sleepPct: '80%', load: 'Very high', loadPct: '95%', color: '#5FE0B5', border: 'solid', note: 'Heavy workload', noteColor: '#F5BF55' },
+        { initials: 'JS', role: 'Mission specialist', shares: 'Shares sleep only', sleep: '6.1 h', sleepPct: '76%', load: 'Not shared', loadPct: '0%', color: '#5FE0B5', border: 'solid', note: 'In usual range', noteColor: '#5FE0B5' },
+        { initials: 'LR', role: 'Medical officer', shares: 'Shares nothing', sleep: 'Not shared', sleepPct: '0%', load: 'Not shared', loadPct: '0%', color: '#5FE0B5', border: 'dashed', note: 'Private by choice', noteColor: '#9AA8BF' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

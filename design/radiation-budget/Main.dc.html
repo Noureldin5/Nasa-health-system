@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Radiation Budget</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.card{background:#121B2E;border:1px solid #23304A;border-radius:10px;padding:20px;min-width:0}
+.muted{color:#9AA8BF}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 1280px; height: 720px; box-sizing: border-box; padding: 32px 40px; display: flex; flex-direction: column; gap: 22px">
+<header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">RADIATION BUDGET</div>
+<h1 style="margin: 4px 0 0; font-size: 30px; font-weight: 600">You have used 38% of your mission dose budget</h1>
+</div>
+<div class="muted" style="font-size: 13px; text-align: right">Mission day 142 of 180<br>Simulated dose data</div>
+</header>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 500">Cumulative dose against budget</h2>
+<span class="mono" style="font-size: 14px">[BUDGET] mSv total, limit to be cited from NASA</span>
+</div>
+<svg viewBox="0 0 1160 90" role="img" aria-label="Bar showing 38 percent of the radiation budget used, with a projected 54 percent by mission end" style="width: 100%; height: 90px">
+<rect x="0" y="24" width="1160" height="30" rx="6" fill="#1D2A44"/>
+<rect x="0" y="24" width="441" height="30" rx="6" fill="#3DD6C3"/>
+<rect x="441" y="24" width="186" height="30" fill="#3DD6C3" opacity="0.35"/>
+<line x1="627" y1="14" x2="627" y2="64" stroke="#F5BF55" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="441" y="80" text-anchor="middle" fill="#E6ECF5" font-size="13" font-family="IBM Plex Sans, system-ui, sans-serif">Used so far 38%</text>
+<text x="627" y="10" text-anchor="middle" fill="#F5BF55" font-size="13" font-family="IBM Plex Sans, system-ui, sans-serif">Projected at mission end 54%</text>
+<text x="1160" y="80" text-anchor="end" fill="#9AA8BF" font-size="13" font-family="IBM Plex Sans, system-ui, sans-serif">Budget 100%</text>
+</svg>
+</section>
+
+<div style="display: flex; gap: 16px; flex: 1; min-height: 0">
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 600; color: #F5BF55">Spike on day 118</div>
+<p style="margin: 0; font-size: 20px; line-height: 1.35; font-weight: 600; text-wrap: balance">A solar particle event added about 6% in one day</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.55" class="muted">Time in the storm shelter module cut the dose. The coach will remind you to move there when an alert arrives.</p>
+</section>
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 600; color: #3DD6C3">What you can do</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.5">
+<li>Sleep in the best shielded crew quarters.</li>
+<li>Plan outside work for quiet space weather windows.</li>
+<li>Log skin or eye symptoms in the check-in.</li>
+</ul>
+</section>
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 600; color: #FF8A7E">Contact the flight surgeon if</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.5">Your dose budget passes 80%, or you have nausea or vomiting after a radiation alert.</p>
+<p style="margin: 0; font-size: 13px; line-height: 1.5" class="muted">Thresholds are placeholders until a NASA Human Research Program source is cited.</p>
+</section>
+</div>
+<footer class="muted" style="font-size: 12px">Decision support, not a diagnosis. Dose values simulated until RadLab data is connected.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

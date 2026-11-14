@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CO2 and Symptoms</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.card{background:#121B2E;border:1px solid #23304A;border-radius:10px;padding:20px;min-width:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.muted{color:#9AA8BF}
+</style>
+</helmet>
+<div style="width: 1280px; height: 760px; box-sizing: border-box; padding: 32px 40px; display: flex; flex-direction: column; gap: 20px">
+<header style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">CABIN LINK</div>
+<h1 style="margin: 4px 0 0; font-size: 30px; font-weight: 600">Your headaches follow the cabin air</h1>
+</div>
+<div class="muted" style="font-size: 13px">Last 14 days, simulated data</div>
+</header>
+
+<div style="display: flex; gap: 20px; flex: 1; min-height: 0">
+<section class="card" style="flex: 2; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 16px; font-weight: 500">Cabin CO2 (parts per million) and your headache days</h2>
+<div class="muted" style="font-size: 12px; display: flex; gap: 14px; align-items: center">
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="22" height="8" aria-hidden="true"><line x1="0" y1="4" x2="22" y2="4" stroke="#3DD6C3" stroke-width="2"/></svg>CO2</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><svg width="12" height="12" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1 9 9H1z" fill="#F5BF55"/></svg>Headache logged</span>
+</div>
+</div>
+<svg viewBox="0 0 740 330" role="img" aria-label="Line chart of cabin CO2 over 14 days with headache markers on days 6, 10 and 11" style="width: 100%; flex: 1; min-height: 0">
+<rect x="60" y="20" width="660" height="60" fill="#3A2A1C" opacity="0.6"/>
+<text x="66" y="38" fill="#F5BF55" font-size="11" font-family="IBM Plex Sans, system-ui, sans-serif">Above 3,500 ppm (placeholder limit, unverified)</text>
+<sc-for list="{{ticks}}" as="t" hint-placeholder-count="4">
+<line x1="60" y1="{{t.y}}" x2="720" y2="{{t.y}}" stroke="#23304A"/>
+<text x="52" y="{{t.ty}}" text-anchor="end" fill="#9AA8BF" font-size="11" font-family="IBM Plex Mono, monospace">{{t.label}}</text>
+</sc-for>
+<sc-for list="{{days}}" as="d" hint-placeholder-count="14">
+<text x="{{d.x}}" y="286" text-anchor="middle" fill="#9AA8BF" font-size="11" font-family="IBM Plex Mono, monospace">{{d.label}}</text>
+</sc-for>
+<text x="390" y="318" text-anchor="middle" fill="#9AA8BF" font-size="11" font-family="IBM Plex Sans, system-ui, sans-serif">Mission day</text>
+<polyline points="{{line}}" fill="none" stroke="#3DD6C3" stroke-width="2.5" stroke-linejoin="round"/>
+<sc-for list="{{marks}}" as="m" hint-placeholder-count="3">
+<line x1="{{m.x}}" y1="{{m.top}}" x2="{{m.x}}" y2="{{m.y}}" stroke="#F5BF55" stroke-dasharray="3 3"/>
+<path d="{{m.d}}" fill="#F5BF55" stroke="#0B1220" stroke-width="1.5"/>
+</sc-for>
+</svg>
+</section>
+
+<section style="flex: 1; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div class="card" style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 600; color: #F5BF55">Pattern found</div>
+<p style="margin: 0; font-size: 20px; line-height: 1.35; font-weight: 600; text-wrap: balance">All 3 headaches came within a day of CO2 passing 3,500 ppm</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.55" class="muted">On days with CO2 under 3,000 ppm you logged none. Small sample, simulated data. It is a pattern to check, not a cause.</p>
+</div>
+<div class="card" style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 600; color: #3DD6C3">Things to try</div>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5">
+<li>Check airflow near your sleep station and clear any blocked vent.</li>
+<li>Do demanding tasks in the module with the lowest CO2 reading.</li>
+<li>Tell the crew when CO2 is high, since everyone is breathing it.</li>
+</ul>
+<div style="font-size: 13px; font-weight: 600; color: #FF8A7E; margin-top: 4px">Contact the flight surgeon if</div>
+<div style="font-size: 14px; line-height: 1.5" class="muted">The headache is severe, sudden, or comes with vision changes.</div>
+</div>
+</section>
+</div>
+<footer class="muted" style="font-size: 12px">Decision support, not a diagnosis. CO2 limit shown is a placeholder until a NASA source is cited.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const co2 = [2400, 2500, 2300, 2600, 3400, 3800, 3200, 2700, 3500, 3900, 3600, 2800, 2500, 2400];
+    const X = (d) => 60 + ((d - 1) * 660) / 13;
+    const Y = (v) => 260 - ((v - 1000) / 3000) * 240;
+    const ticks = [1000, 2000, 3000, 4000].map((v) => ({ y: Y(v), ty: Y(v) + 4, label: v.toLocaleString('en-US') }));
+    const days = co2.map((_, i) => ({ x: X(i + 1), label: String(i + 1) }));
+    const marks = [6, 10, 11].map((d) => {
+      const x = X(d), top = Y(co2[d - 1]), y = top - 14;
+      return { x, top, y, d: 'M' + x + ' ' + (y - 9) + ' L' + (x + 9) + ' ' + (y + 7) + ' L' + (x - 9) + ' ' + (y + 7) + ' Z' };
+    });
+    return { ticks, days, marks, line: co2.map((v, i) => X(i + 1) + ',' + Y(v)).join(' ') };
+  }
+}
+</script>
+</body>
+</html>
