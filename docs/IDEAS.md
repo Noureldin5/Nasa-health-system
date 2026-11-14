@@ -23,6 +23,21 @@ The official objective asks for a visual tool with guidance on treatments and he
 
 Privacy, offline and the baseline stay as the differentiator on top of this required core. The research notes' claim that the section above is still partial remains true.
 
+## Update after competitor research (read this first)
+
+Details: `docs/research/competitors.md`. More than 40 public repos target this same challenge. The strongest, AURORA, already has an offline app, personal baselines, cited alerts, radiation data and per-audience consent. Personal baseline, offline use and per-item consent are therefore not new.
+
+Recommended angle, one story: **astronauts hide symptoms for fear of being grounded, and conflict with Mission Control is the hardest problem. Build the tool that makes honest reporting safe.**
+
+- Own Your Baseline stays the product and the required core (body map, indicators, trends, guidance).
+- The difference is a **consult layer**: a "what I see / what ground sees" preview that updates as share switches flip, and an astronaut-led **consult brief** (the astronaut picks the data, writes the question, previews it, sends it at the next ground link). Ground consults; it does not direct.
+- Cabin Link stays as the signature insight screen. Crew Readiness is optional.
+- Demo beat: flip a switch, watch ground's view change, send the brief, turn the network off.
+
+Risks: another team may add a similar consult feature, and the claim that nobody covers it comes from a sample of about a dozen repos. Mitigation: tell the story through the research (National Academies, "Safe Passage", ch. 8) and make the demo beat fast and visual.
+
+Requirements: `docs/REQUIREMENTS.md`.
+
 ## Why differentiate
 
 Many teams will build a vitals dashboard with charts and an alert. Judges will see dozens. The team's own research (`docs/research/astronaut-health-problems.md`) gives a better angle: the real problems are hidden symptoms, no Earth link, no time, and loss of autonomy. A tool that ignores those will not be used on a real mission.

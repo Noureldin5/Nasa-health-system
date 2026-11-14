@@ -4,7 +4,7 @@ Team: Kernel Panic Squad, 3 people. One frontend (A), two backend and monitoring
 
 ## Decision
 
-Build **Own Your Baseline** (docs/IDEAS.md concept 1) with **Cabin Link** inside it. Add Environment Switcher (cheap) and Crew Readiness if time allows. Mission Quest is optional. Radiation Budget Coach and Camera Check are roadmap items to mention in the pitch.
+Build **Own Your Baseline** (docs/IDEAS.md concept 1) with a **consult layer** (preview of what ground sees, plus an astronaut-led consult brief) and **Cabin Link** inside it. Why: `docs/research/competitors.md`. Requirements: `docs/REQUIREMENTS.md`. Add Environment Switcher (cheap) and Crew Readiness if time allows. Mission Quest is optional. Radiation Budget Coach and Camera Check are roadmap items to mention in the pitch.
 
 Designs: `docs/DESIGN.md` (links, tokens, frontend notes) and `design/`.
 
@@ -16,13 +16,13 @@ Agree the data shapes and write them in `docs/DECISIONS.md`: check-in record, se
 
 1. Design tokens and the status pill (icon, word and color, never color alone).
 2. Indicator cards with sparklines, then the dashboard and the clickable body map with explainers.
-3. 30-second check-in, then the share panel.
+3. 30-second check-in, then the share panel and the "what I see / what ground sees" preview, then the consult brief screen.
 4. Environment Switcher and the Cabin Link chart, using fake JSON until B and C deliver.
 5. Crew Readiness and Mission Quest only if time is left.
 
 ## Person B: backend and logic
 
-1. Local storage layer (IndexedDB) and the share and export rules: only exported items leave the device.
+1. Local storage layer (IndexedDB) and the share and export rules: only exported items leave the device. Also the consent filter that builds the "what ground sees" view and the consult brief, the record of what was sent, and tests that nothing unshared ever appears in a brief.
 2. Baseline and drift detection as pure functions, tests first.
 3. Alerts: a plain next step plus a "contact the flight surgeon if" rule for each.
 4. Crew Readiness view built only from exported records.

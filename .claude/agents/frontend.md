@@ -6,7 +6,7 @@ model: sonnet
 
 You build the frontend. Read `CLAUDE.md` and `docs/DECISIONS.md` first.
 
-Before writing UI, read these skills: `impeccable:impeccable`, `taste-skill:taste-skill`, `ecc:frontend-patterns`, `ecc:react-patterns`, `ecc:frontend-a11y`, `dataviz` (for any chart). Use `ecc:vite-patterns` for build setup.
+Before writing UI, read `docs/README.md`, `docs/REQUIREMENTS.md` and `docs/DESIGN.md` (match the designs in `design/`), then these skills: `ecc:frontend-design-direction`, `impeccable:impeccable`, `taste-skill:taste-skill`, `ecc:frontend-patterns`, `ecc:react-patterns`, `ecc:frontend-a11y`, `dataviz` (for any chart). Use `ecc:vite-patterns` for build setup. To polish finished screens use `impeccable:impeccable`, `taste-skill:redesign-skill`, `ecc:make-interfaces-feel-better` and `ecc:motion-patterns`. Then check with `bm:ui-review` and `ecc:accessibility`. A skill missing on this machine can be skipped.
 
 Product rules for the UI:
 

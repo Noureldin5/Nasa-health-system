@@ -21,12 +21,15 @@ NASA Space Apps 2026 challenge "Create Health Monitoring Software for Astronauts
 | `docs/TEAM.md` | Split of work across 3 people |
 | `docs/research/astronaut-health-problems.md` | Team research (partial) |
 | `docs/research/nasa-datasets.md` | Dataset research, OSD-569 first (partly garbled paste) |
+| `docs/research/competitors.md` | Other teams' projects, what is crowded, what is open |
+| `docs/README.md` | Start-here page: quick answers, file map, folder structure |
+| `docs/REQUIREMENTS.md` | Must, should and could features with acceptance checks |
 
 No application code exists yet. `docs/DECISIONS.md` does not exist yet.
 
 ## Decisions made
 
-- Build concept 1 plus Cabin Link. Roadmap: Radiation Budget Coach, Camera Check.
+- Build concept 1 plus the consult layer plus Cabin Link. Roadmap: Radiation Budget Coach, Camera Check. Reason: personal baseline, offline and per-item consent already exist in other teams' projects (see `docs/research/competitors.md`). Start with `docs/README.md` and `docs/REQUIREMENTS.md`.
 - NASA data must be used (the team reports organizers said so). Ingest OSD-569 CBC and drive status colors from its min and max. Blood pressure, heart rate and glucose are synthetic and labeled.
 - Decision support, not diagnosis. Private by default. Offline. Per-item sharing.
 - Stack is a recommendation only: React, TypeScript, Vite, IndexedDB, service worker. Not final until recorded in `docs/DECISIONS.md`.
@@ -41,6 +44,8 @@ No application code exists yet. `docs/DECISIONS.md` does not exist yet.
 6. **Ask the organizers:** do labeled synthetic values count where no open NASA data exists?
 7. **Placeholders to replace with cited NASA sources:** CO2 limit (3,500 ppm), flight-surgeon thresholds, radiation budget, environment hazard text.
 8. Write `docs/DECISIONS.md` (data shapes and stack) in the first hour of building.
+9. **Ask the submission deadline.** Competitor repos were pushed up to today, so the event may be running now. The deadline decides how much of the consult layer to build.
+10. **Verify the competitor claims** in `docs/research/competitors.md` (they come from each repo's README, from a sample of about a dozen). Re-check before submission whether anyone added a consult feature.
 
 ## Gotchas
 

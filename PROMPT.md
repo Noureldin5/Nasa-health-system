@@ -14,7 +14,7 @@ You are helping Kernel Panic Squad (Bishkek, Kyrgyzstan) build a prototype for t
 
 ## Product
 
-"Own Your Baseline": a private-first, offline-first health companion the astronaut owns. It learns a personal baseline from passive data and a 30-second check-in, flags drift, correlates symptoms with CO2 and cabin data, and gives plain next steps. Nothing leaves the device unless the astronaut shares it item by item. A crew readiness screen uses shared items only. It is decision support, never diagnosis.
+"Own Your Baseline": a private-first, offline-first health companion the astronaut owns. It learns a personal baseline from passive data and a 30-second check-in, flags drift, correlates symptoms with CO2 and cabin data, and gives plain next steps. Nothing leaves the device unless the astronaut shares it item by item. Our difference from the 40+ other teams (read `docs/research/competitors.md`) is a consult layer: a "what I see / what ground sees" preview and an astronaut-led consult brief, built around astronauts hiding symptoms for fear of being grounded. Personal baseline and offline use are not new, so do not lead with them. Requirements are in `docs/REQUIREMENTS.md`; start with `docs/README.md`. A crew readiness screen uses shared items only. It is decision support, never diagnosis.
 
 ## How to work
 

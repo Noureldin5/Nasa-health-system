@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What Ground Sees</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220;color:#E6ECF5;font-family:'IBM Plex Sans',system-ui,sans-serif}
+.card{background:#121B2E;border:1px solid #23304A;border-radius:10px;padding:18px;min-width:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.muted{color:#9AA8BF}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 14px;border-radius:10px;border:1px solid #23304A;background:#0F1829}
+.sw{flex:none;width:52px;height:30px;border-radius:15px;border:1.5px solid #4A5C80;background:#0B1220;position:relative;cursor:pointer;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#9AA8BF}
+.sw[aria-pressed="true"]{background:#0F2A2E;border-color:#3DD6C3}
+.sw[aria-pressed="true"]::after{left:25px;background:#3DD6C3}
+.send{min-height:56px;padding:0 24px;border:0;border-radius:10px;background:#3DD6C3;color:#06201D;font:600 16px 'IBM Plex Sans',system-ui,sans-serif;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 1360px; height: 760px; box-sizing: border-box; padding: 28px 40px; display: flex; flex-direction: column; gap: 18px">
+<header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #3DD6C3; font-weight: 600; letter-spacing: 0.04em">CONSULT BRIEF</div>
+<h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600">You choose. Ground sees only this.</h1>
+</div>
+<div class="muted" style="font-size: 13px; text-align: right">Simulated data. Ground answers your question.<br>It does not direct your schedule.</div>
+</header>
+
+<div style="display: flex; gap: 18px; flex: 1; min-height: 0">
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 500">What I see</h2>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="5">
+<div class="row">
+<div style="min-width: 0"><div style="font-size: 15px; font-weight: 500">{{it.name}}</div><div class="muted mono" style="font-size: 13px">{{it.value}}</div></div>
+<button class="sw" aria-pressed="{{it.pressed}}" aria-label="{{it.label}}" onClick="{{it.toggle}}"></button>
+</div>
+</sc-for>
+<div class="muted" style="font-size: 12px; margin-top: auto">Switch on to include in the brief. Everything starts private.</div>
+</section>
+
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 10px; border-color: #3DD6C3">
+<h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 500; color: #3DD6C3">What ground sees</h2>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="5">
+<div class="row" style="border-style: {{it.border}}">
+<div style="font-size: 15px; font-weight: 500">{{it.name}}</div>
+<div class="mono" style="font-size: 14px; color: {{it.groundColor}}">{{it.ground}}</div>
+</div>
+</sc-for>
+<div class="muted" style="font-size: 12px; margin-top: auto">A hidden item reads Not shared, never zero.</div>
+</section>
+
+<section class="card" style="flex: 1; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 500">Your question</h2>
+<div style="border: 1px solid #34466A; border-radius: 10px; padding: 14px; font-size: 15px; line-height: 1.5; background: #0F1829">Sleep has been about 5 hours for 3 nights and I have a mild headache. What would you check first, and when should I worry?</div>
+<div style="font-size: 14px; line-height: 1.6"><span class="muted">Included:</span> <span class="mono">{{count}}</span> of 5 items<br><span class="muted">Not included:</span> <span class="mono">{{hiddenCount}}</span></div>
+<div class="muted" style="font-size: 13px; line-height: 1.5">Sends at the next ground link. Ground replies with advice. Nothing is sent until you press the button.</div>
+<button class="send" style="margin-top: auto">Send at next ground link</button>
+</section>
+</div>
+<footer class="muted" style="font-size: 12px">Decision support, not a diagnosis. Share record is kept on this device so you can see what was sent and when.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":760}}'>
+class Component extends DCLogic {
+  state = { on: { sleep: true, hr: false, head: false, mood: false, bp: false } };
+  renderVals() {
+    const defs = [
+      { id: 'sleep', name: 'Sleep hours', value: '5.1 h, baseline 6.4 to 7.2' },
+      { id: 'hr', name: 'Heart rate', value: '74 bpm, baseline 56 to 66' },
+      { id: 'head', name: 'Headache log', value: 'Mild, day 3' },
+      { id: 'mood', name: 'Mood', value: '3 of 5' },
+      { id: 'bp', name: 'Blood pressure', value: '118/76 mmHg' },
+    ];
+    const on = this.state.on;
+    const items = defs.map((d) => ({
+      name: d.name,
+      value: d.value,
+      pressed: on[d.id] ? 'true' : 'false',
+      label: 'Share ' + d.name,
+      ground: on[d.id] ? d.value : 'Not shared',
+      groundColor: on[d.id] ? '#E6ECF5' : '#9AA8BF',
+      border: on[d.id] ? 'solid' : 'dashed',
+      toggle: () => this.setState({ on: { ...on, [d.id]: !on[d.id] } }),
+    }));
+    const count = defs.filter((d) => on[d.id]).length;
+    return { items, count, hiddenCount: 5 - count };
+  }
+}
+</script>
+</body>
+</html>
