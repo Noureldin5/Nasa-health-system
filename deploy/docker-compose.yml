@@ -1,0 +1,34 @@
+# Station server stack. In the story this runs on board, with no internet.
+# Start it from the repo root with `docker compose up -d` (root compose.yaml includes this file).
+# Owner: C. Shared file: B and A add their services (api, web) through a PR.
+
+services:
+  victoriametrics:
+    # Pinned tag, never "latest". No free LTS line exists, so this is the latest community release.
+    # Index digest on 2026-11-14 (for checking a pre-pulled image):
+    #   sha256:da8a90ac0912f16589be2b96a6441a2fca4bca415c83783d972d92e3b5b66970
+    # The digest is a comment, not part of the reference, so an image restored with
+    # `docker load` on the offline laptop is still found.
+    image: victoriametrics/victoria-metrics:v1.156.0
+    command:
+      - -storageDataPath=/victoria-metrics-data
+      # Demo parameter. The default (1 month) already covers the 14-day mission;
+      # 90 days leaves room for data loaded days before the demo.
+      - -retentionPeriod=90d
+      # Default is 30s, which would hide a live check-in from the chart for half a minute.
+      # Demo parameter. See docs/DECISIONS.md section 6.
+      - -search.latencyOffset=1s
+    ports:
+      # Local machine only. Inside compose other services use http://victoriametrics:8428.
+      - "127.0.0.1:8428:8428"
+    volumes:
+      - vmdata:/victoria-metrics-data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8428/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  vmdata:

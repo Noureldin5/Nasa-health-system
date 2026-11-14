@@ -1,0 +1,6 @@
+# Entry point so `docker compose up` works from the repo root.
+# The services live in deploy/docker-compose.yml (owner: C). Edit that file, not this one.
+name: own-your-baseline
+
+include:
+  - deploy/docker-compose.yml
