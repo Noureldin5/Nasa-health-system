@@ -1332,6 +1332,7 @@
     },
     "/astronaut/{crew_id}/briefs": {
       "post": {
+        "description": "Queue a brief. It goes up at the next ground link.",
         "operationId": "post_brief_astronaut__crew_id__briefs_post",
         "parameters": [
           {
@@ -1384,6 +1385,7 @@
     },
     "/astronaut/{crew_id}/briefs/draft": {
       "get": {
+        "description": "A suggested question with the current alert's items pinned. The astronaut can edit it.",
         "operationId": "brief_draft_astronaut__crew_id__briefs_draft_get",
         "parameters": [
           {
@@ -1636,6 +1638,7 @@
     },
     "/briefs/{brief_id}/reply": {
       "post": {
+        "description": "Advice to a colleague, not an order. Reaches the astronaut at the next sync.",
         "operationId": "post_reply_briefs__brief_id__reply_post",
         "parameters": [
           {
@@ -1789,6 +1792,7 @@
     },
     "/ground/inbox": {
       "get": {
+        "description": "Briefs first, then alerts that arrived with the latest sync. Empty on a normal day.",
         "operationId": "ground_inbox_ground_inbox_get",
         "responses": {
           "200": {
@@ -1814,6 +1818,7 @@
     },
     "/ground/{crew_id}/notes": {
       "post": {
+        "description": "A note, watch flag or measurement request. The astronaut sees it, word for word, after the next sync.",
         "operationId": "post_note_ground__crew_id__notes_post",
         "parameters": [
           {

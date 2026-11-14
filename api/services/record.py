@@ -45,6 +45,14 @@ class CrewNotFound(Exception):
     pass
 
 
+class NotFound(Exception):
+    pass
+
+
+class Conflict(Exception):
+    pass
+
+
 @dataclass
 class Services:
     repo: Repo

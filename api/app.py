@@ -9,9 +9,9 @@ from fastapi.responses import JSONResponse
 from clock import Clock
 from metrics.fake import FakeMetrics
 from metrics.port import MetricsPort, MetricsUnavailable
-from routes import astronaut, crew, demo, ground, reference, stubs
+from routes import astronaut, briefs, crew, demo, ground, reference, stubs
 from routes import link as link_routes
-from services.record import CrewNotFound, Services, reset_demo
+from services.record import Conflict, CrewNotFound, NotFound, Services, reset_demo
 from settings import Settings
 from store.db import connect
 from store.repo import Repo
@@ -50,6 +50,14 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
     def crew_not_found(_: Request, exc: CrewNotFound) -> JSONResponse:
         return JSONResponse(status_code=404, content={"detail": f"Crew member {exc} not found"})
 
+    @app.exception_handler(NotFound)
+    def not_found(_: Request, exc: NotFound) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+    @app.exception_handler(Conflict)
+    def conflict(_: Request, exc: Conflict) -> JSONResponse:
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
     @app.exception_handler(MetricsUnavailable)
     def metrics_unavailable(_: Request, exc: MetricsUnavailable) -> JSONResponse:
         return JSONResponse(status_code=503, content={"detail": "Time series store unavailable"})
@@ -60,6 +68,7 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
 
     for router in (
         astronaut.router,
+        briefs.router,
         ground.router,
         crew.router,
         reference.router,

@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 DISCLAIMER = "Decision support, not a diagnosis."
 
@@ -130,6 +130,13 @@ class GroundNoteIn(BaseModel):
     text: str = Field(min_length=1, max_length=2000)
     reason: str | None = Field(default=None, max_length=500)
     author: str = Field(min_length=1, max_length=80)
+
+    @model_validator(mode="after")
+    def _flags_and_requests_need_target_and_reason(self) -> GroundNoteIn:
+        needs_both = self.kind in ("watch_flag", "measurement_request")
+        if needs_both and (self.target is None or not (self.reason and self.reason.strip())):
+            raise ValueError("a watch flag or measurement request needs a target and a reason")
+        return self
 
 
 class GroundNote(BaseModel):
