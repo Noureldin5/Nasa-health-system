@@ -1933,6 +1933,7 @@
     },
     "/link/log": {
       "get": {
+        "description": "Every sync, newest first, with what it carried.",
         "operationId": "link_log_link_log_get",
         "responses": {
           "200": {
@@ -1958,6 +1959,7 @@
     },
     "/link/sync": {
       "post": {
+        "description": "Simulated ground link, triggered by the demo. Sends the record up, brings ground notes down.",
         "operationId": "link_sync_link_sync_post",
         "responses": {
           "200": {

@@ -10,6 +10,7 @@ from clock import Clock
 from metrics.fake import FakeMetrics
 from metrics.port import MetricsPort, MetricsUnavailable
 from routes import astronaut, crew, demo, ground, reference, stubs
+from routes import link as link_routes
 from services.record import CrewNotFound, Services, reset_demo
 from settings import Settings
 from store.db import connect
@@ -57,7 +58,14 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    for router in (astronaut.router, ground.router, crew.router, reference.router, demo.router):
+    for router in (
+        astronaut.router,
+        ground.router,
+        crew.router,
+        reference.router,
+        demo.router,
+        link_routes.router,
+    ):
         app.include_router(router)
     app.include_router(stubs.router)
 

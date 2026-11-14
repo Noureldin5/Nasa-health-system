@@ -16,7 +16,6 @@ from schemas import (
     Readiness,
     Reply,
     ReplyIn,
-    SyncRecord,
 )
 
 router = APIRouter()
@@ -53,14 +52,4 @@ def ground_inbox() -> list[InboxItem]:
 
 @router.post("/ground/{crew_id}/notes", response_model=GroundNote, status_code=201, tags=["ground"])
 def post_note(crew_id: str, body: GroundNoteIn) -> GroundNote:
-    _todo()
-
-
-@router.post("/link/sync", response_model=SyncRecord, tags=["link"])
-def link_sync() -> SyncRecord:
-    _todo()
-
-
-@router.get("/link/log", response_model=list[SyncRecord], tags=["link"])
-def link_log() -> list[SyncRecord]:
     _todo()
