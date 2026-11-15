@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { MetricKey, RecordView } from "../api/types";
 import { PointTable, TrendChart } from "../components/charts";
@@ -12,7 +12,7 @@ import { RISKS_FOR_METRIC, RISK_PAGES } from "../content/risks";
 import { INDICATORS } from "../content/indicators";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtDayTime, fmtNum, fmtPoint, fmtUsual, sourceLabel } from "../lib/format";
-import { missionWindow } from "../lib/mission";
+import { daySpan, missionWindow } from "../lib/mission";
 
 export function IndicatorDetail() {
   const { metric, id } = useParams();
@@ -59,6 +59,9 @@ function Detail({ r, k, table, setTable, role, crewId }: {
   const flags = r.flags.filter((f) => f.metric === k && f.active);
   const pts = ind.series.map((p) => ({ t: Date.parse(p.t), v: p.v, v2: p.v2, source: p.source }));
   const canMeasure = role === "astronaut" && (c.cadence === "weekly" || k === "hr");
+  // Days the record assistant cited (?hl=12,13) are lit as columns on the chart.
+  const [params, setParams] = useSearchParams();
+  const hl = (params.get("hl") ?? "").split(",").map(Number).filter((d) => Number.isInteger(d) && d >= 1 && d <= r.mission.day);
 
   return (
     <>
@@ -133,7 +136,18 @@ function Detail({ r, k, table, setTable, role, crewId }: {
                   formatTime={(t) => `${win.fmt(t)} GMT`}
                   yFloor={k === "mood" ? 0.5 : undefined}
                   yCeil={k === "mood" ? 5.5 : undefined}
+                  highlightSpans={hl.map((d) => daySpan(r.mission, d))}
                 />
+              )}
+              {hl.length > 0 && (
+                <p className="hl-note">
+                  <span>
+                    Lit columns: day {hl.join(", ")}, the days the record assistant referred to.
+                  </span>
+                  <button type="button" className="btn btn--ghost" onClick={() => setParams({}, { replace: true })}>
+                    Clear
+                  </button>
+                </p>
               )}
               <div className="legend">
                 <span className="legend__item">

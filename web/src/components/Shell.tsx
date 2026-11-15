@@ -27,6 +27,7 @@ export function Shell({ children }: { children: ReactNode }) {
     { to: "/", label: "Today", icon: "today", end: true },
     { to: "/health", label: "Body & vitals", icon: "body" },
     { to: "/replay", label: "Mission replay", icon: "replay", railOnly: true },
+    { to: "/ask", label: "Ask my record", icon: "ask", railOnly: true },
     { to: "/cabin", label: "Cabin Link", icon: "cabin" },
     { to: "/environment", label: "Where you are", icon: "info" },
     { to: "/consult", label: "Consult", icon: "consult", count: unreadReplies + openRequests },
