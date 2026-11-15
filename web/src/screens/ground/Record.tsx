@@ -41,9 +41,14 @@ export function GroundRecord() {
                 </div>
               </div>
             </div>
-            <Link to={`/ground/crew/${id}/cabin`} className="btn btn--secondary">
-              <Icon name="cabin" size={18} /> Cabin Link
-            </Link>
+            <div className="row">
+              <Link to={`/ground/crew/${id}/replay`} className="btn btn--secondary">
+                <Icon name="replay" size={18} /> Mission replay
+              </Link>
+              <Link to={`/ground/crew/${id}/cabin`} className="btn btn--secondary">
+                <Icon name="cabin" size={18} /> Cabin Link
+              </Link>
+            </div>
           </div>
           <div className="banner">
             <Icon name="antenna" size={18} />

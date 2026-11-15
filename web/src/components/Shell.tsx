@@ -12,6 +12,8 @@ interface NavItem {
   icon: IconName;
   end?: boolean;
   count?: number;
+  /** Left rail only: the phone tab bar keeps its six places. */
+  railOnly?: boolean;
 }
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -24,6 +26,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const astronautNav: NavItem[] = [
     { to: "/", label: "Today", icon: "today", end: true },
     { to: "/health", label: "Body & vitals", icon: "body" },
+    { to: "/replay", label: "Mission replay", icon: "replay", railOnly: true },
     { to: "/cabin", label: "Cabin Link", icon: "cabin" },
     { to: "/environment", label: "Where you are", icon: "info" },
     { to: "/consult", label: "Consult", icon: "consult", count: unreadReplies + openRequests },
@@ -173,7 +176,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </footer>
 
       <nav className="tabbar" aria-label="Main">
-        {nav.map((n) => (
+        {nav.filter((n) => !n.railOnly).map((n) => (
           <NavLink key={n.to} to={n.to} end={n.end}>
             <Icon name={n.icon} size={22} />
             {n.label.replace("Body & vitals", "Body").replace("Crew readiness", "Crew")}
