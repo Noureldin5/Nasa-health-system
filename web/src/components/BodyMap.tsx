@@ -4,11 +4,33 @@ import { REGION_ORDER, REGIONS } from "../content/regions";
 import { StatusIcon, STATUS_WORD } from "./status";
 
 /*
- * Clickable body map (docs/REQUIREMENTS.md M1). One SVG drawn as a technical
- * diagram: a neutral silhouette, a status marker on each region (shape + color),
- * and callout buttons with leader lines. On narrow screens the callouts hide and
- * a button list below the figure takes over.
+ * Clickable 2D body map (docs/REQUIREMENTS.md M1): the same NASA astronaut as the 3D view, as a
+ * still picture. The figure is a front render of NASA's EMU spacesuit model made with the 3D view's
+ * own lighting (public/models/README.md), so it needs no WebGL and works on any device. Each region
+ * carries a status marker (shape + color) and a callout button with a leader line. A soft tint in
+ * the status color lies on the suit under each marker, as in 3D. On narrow screens the callouts
+ * hide and the button list below the figure takes over.
  */
+
+const FIGURE_URL = `${import.meta.env.BASE_URL}models/nasa-astronaut-emu-front.webp`;
+/** Size of the rendered picture in pixels, and where it sits in the 640 x 600 drawing. */
+const PIC = { w: 1103, h: 1200 };
+const BOX = { y: 30, h: 540 };
+const FIG = { x: 320 - (BOX.h * PIC.w) / PIC.h / 2, y: BOX.y, w: (BOX.h * PIC.w) / PIC.h, h: BOX.h };
+
+/**
+ * Region anchors as fractions of the picture (0 to 1 from its left and top edge). Measured by the
+ * render script from the same anchors the 3D view snaps to the suit, so 2D and 3D agree.
+ */
+const ANCHOR: Record<RegionKey, [number, number]> = {
+  brain: [0.5, 0.1393],
+  heart: [0.5543, 0.3463],
+  blood: [0.2341, 0.3167],
+  metabolism: [0.5, 0.4786],
+  bones: [0.4305, 0.7143],
+  muscles: [0.574, 0.8259],
+};
+const at = (r: RegionKey): [number, number] => [FIG.x + ANCHOR[r][0] * FIG.w, FIG.y + ANCHOR[r][1] * FIG.h];
 
 const SHORT: Record<RegionKey, string> = {
   brain: "Brain and eyes",
@@ -19,17 +41,18 @@ const SHORT: Record<RegionKey, string> = {
   muscles: "Muscles",
 };
 
-const GEO: Record<RegionKey, { marker: [number, number]; side: "left" | "right"; boxY: number }> = {
-  brain: { marker: [320, 64], side: "left", boxY: 40 },
-  blood: { marker: [228, 252], side: "left", boxY: 222 },
-  bones: { marker: [292, 404], side: "left", boxY: 382 },
-  heart: { marker: [338, 172], side: "right", boxY: 140 },
-  metabolism: { marker: [320, 252], side: "right", boxY: 262 },
-  muscles: { marker: [352, 500], side: "right", boxY: 470 },
-};
-
 const BOX_W = 180;
 const BOX_H = 54;
+/** Callout boxes sit above or below the outstretched arms, never on them. */
+const CALLOUT: Record<RegionKey, { side: "left" | "right"; boxY: number; drop?: boolean }> = {
+  brain: { side: "left", boxY: 22 },
+  blood: { side: "left", boxY: 90, drop: true }, // the marker is right under the box: the leader drops straight down
+  bones: { side: "left", boxY: 396 },
+  heart: { side: "right", boxY: 244 },
+  metabolism: { side: "right", boxY: 316 },
+  muscles: { side: "right", boxY: 456 },
+};
+
 const STATUS_COLOR: Record<Status, string> = {
   ok: "var(--c-ok)",
   watch: "var(--c-watch)",
@@ -37,98 +60,26 @@ const STATUS_COLOR: Record<Status, string> = {
   learning: "var(--c-text-2)",
   nodata: "var(--c-muted)",
 };
+/** How far the status tint spreads on the suit, in drawing units. Quiet for "in range". */
+const TINT: Partial<Record<Status, { r: number; opacity: number }>> = {
+  ok: { r: 44, opacity: 0.5 },
+  watch: { r: 62, opacity: 0.95 },
+  act: { r: 68, opacity: 1 },
+};
 
-function Marker({ status, x, y, r = 7 }: { status: Status; x: number; y: number; r?: number }) {
+function Marker({ status, x, y, r = 8 }: { status: Status; x: number; y: number; r?: number }) {
   const c = STATUS_COLOR[status];
-  const ring = { stroke: "var(--c-surface)", strokeWidth: 2.5 };
-  if (status === "watch") return <path d={`M${x} ${y - r * 1.15} L${x + r * 1.15} ${y + r * 0.85} L${x - r * 1.15} ${y + r * 0.85} Z`} fill={c} {...ring} />;
-  if (status === "act") return <path d={`M${x} ${y - r * 1.2} L${x + r * 1.2} ${y} L${x} ${y + r * 1.2} L${x - r * 1.2} ${y} Z`} fill={c} {...ring} />;
+  const ring = { stroke: "var(--c-head)", strokeWidth: 3 };
+  if (status === "watch") return <path d={`M${x} ${y - r * 1.15} L${x + r * 1.15} ${y + r * 0.85} L${x - r * 1.15} ${y + r * 0.85} Z`} fill={c} {...ring} strokeLinejoin="round" />;
+  if (status === "act") return <path d={`M${x} ${y - r * 1.2} L${x + r * 1.2} ${y} L${x} ${y + r * 1.2} L${x - r * 1.2} ${y} Z`} fill={c} {...ring} strokeLinejoin="round" />;
   if (status === "ok") return <circle cx={x} cy={y} r={r} fill={c} {...ring} />;
-  return <circle cx={x} cy={y} r={r - 1} fill="var(--c-surface)" stroke={c} strokeWidth="1.6" strokeDasharray={status === "learning" ? "3 2" : undefined} />;
-}
-
-/* Silhouette parts: capsules (line + round caps) and two polygons. */
-const CAPSULES: [number, number, number, number, number][] = [
-  [320, 100, 320, 126, 26], // neck
-  [256, 150, 228, 250, 30], // upper arms
-  [384, 150, 412, 250, 30],
-  [228, 250, 212, 340, 25], // forearms
-  [412, 250, 428, 340, 25],
-  [211, 342, 207, 372, 22], // hands
-  [429, 342, 433, 372, 22],
-  [297, 344, 291, 452, 44], // thighs
-  [343, 344, 349, 452, 44],
-  [291, 452, 289, 548, 32], // shins
-  [349, 452, 351, 548, 32],
-  [287, 556, 274, 562, 18], // feet
-  [353, 556, 366, 562, 18],
-];
-const TORSO = "M262 132 Q320 119 378 132 Q396 138 398 160 L385 282 Q381 300 366 305 L274 305 Q259 300 255 282 L242 160 Q244 138 262 132 Z";
-const PELVIS = "M270 296 L370 296 L378 350 Q320 374 262 350 Z";
-
-function Silhouette() {
-  const outline = "var(--c-line-strong)";
-  const fill = "#232329";
+  // Learning and "not tracked": a hollow ring with a dark core, readable on the white suit.
   return (
-    <g aria-hidden="true">
-      {/* pass 1: outline, slightly larger */}
-      <circle cx="320" cy="68" r="35.5" fill={outline} />
-      <path d={TORSO} fill={outline} stroke={outline} strokeWidth="3" strokeLinejoin="round" />
-      <path d={PELVIS} fill={outline} stroke={outline} strokeWidth="3" strokeLinejoin="round" />
-      {CAPSULES.map(([x1, y1, x2, y2, w], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={outline} strokeWidth={w + 3} strokeLinecap="round" />
-      ))}
-      {/* pass 2: fill on top, so overlaps merge into one shape */}
-      <circle cx="320" cy="68" r="34" fill={fill} />
-      <path d={TORSO} fill={fill} />
-      <path d={PELVIS} fill={fill} />
-      {CAPSULES.map(([x1, y1, x2, y2, w], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={fill} strokeWidth={w} strokeLinecap="round" />
-      ))}
-      {/* faint anatomical guides */}
-      <g stroke="var(--c-line-strong)" strokeWidth="1" fill="none" opacity="0.7">
-        <path d="M300 62 h10 M330 62 h10" />
-        <path d="M270 150 Q320 166 370 150" />
-        <path d="M320 140 V296" strokeDasharray="2 5" />
-        <path d="M282 330 Q320 344 358 330" />
-      </g>
+    <g>
+      <circle cx={x} cy={y} r={r + 1} fill="var(--c-surface)" stroke="var(--c-head)" strokeWidth="2" />
+      <circle cx={x} cy={y} r={r - 2.5} fill="none" stroke={status === "learning" ? "var(--c-text)" : c} strokeWidth="2" strokeDasharray={status === "learning" ? "3 2" : undefined} />
     </g>
   );
-}
-
-function Highlight({ region }: { region: RegionKey }) {
-  const s = { stroke: "var(--c-link)", strokeWidth: 2, fill: "rgb(90 162 255 / 0.14)" };
-  switch (region) {
-    case "brain":
-      return <circle cx="320" cy="68" r="34" {...s} />;
-    case "heart":
-      return <path d="M338 186 C 314 170, 318 146, 338 158 C 358 146, 362 170, 338 186 Z" {...s} />;
-    case "blood":
-      return (
-        <g>
-          <polyline points="256,150 228,250 212,340" fill="none" stroke="rgb(90 162 255 / 0.22)" strokeWidth="30" strokeLinecap="round" strokeLinejoin="round" />
-          <polyline points="252,156 226,250 211,336" fill="none" stroke="var(--c-link)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </g>
-      );
-    case "metabolism":
-      return <ellipse cx="320" cy="248" rx="44" ry="32" {...s} />;
-    case "bones":
-      return (
-        <g stroke="var(--c-link)" strokeWidth="6" strokeLinecap="round">
-          <line x1="296" y1="350" x2="291" y2="446" />
-          <line x1="344" y1="350" x2="349" y2="446" />
-          <line x1="290" y1="460" x2="289" y2="540" strokeWidth="4" />
-          <line x1="350" y1="460" x2="351" y2="540" strokeWidth="4" />
-        </g>
-      );
-    case "muscles":
-      return (
-        <g {...s}>
-          <ellipse cx="290" cy="492" rx="15" ry="40" />
-          <ellipse cx="350" cy="492" rx="15" ry="40" />
-        </g>
-      );
-  }
 }
 
 export function BodyMap({ statuses, selected, onSelect }: {
@@ -142,24 +93,53 @@ export function BodyMap({ statuses, selected, onSelect }: {
       onSelect(r);
     }
   }
+  const feetY = FIG.y + FIG.h - 6;
 
   return (
     <>
-      <svg className="bodymap__svg" viewBox="0 0 640 590" role="group" aria-label="Body map. Select a region to see its status and explainer.">
-        <Silhouette />
-        {selected && <Highlight region={selected} />}
+      <svg className="bodymap__svg" viewBox="0 0 640 600" role="group" aria-label="Body map on a NASA astronaut in the EMU spacesuit. Select a region to see its status and explainer.">
+        <defs>
+          {(["ok", "watch", "act"] as Status[]).map((s) => (
+            <radialGradient key={s} id={`bm-tint-${s}`}>
+              <stop offset="0" style={{ stopColor: STATUS_COLOR[s], stopOpacity: 1 }} />
+              <stop offset="0.55" style={{ stopColor: STATUS_COLOR[s], stopOpacity: 0.45 }} />
+              <stop offset="1" style={{ stopColor: STATUS_COLOR[s], stopOpacity: 0 }} />
+            </radialGradient>
+          ))}
+          <radialGradient id="bm-shadow">
+            <stop offset="0" stopColor="#000" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Scanner platform and contact shadow under the boots, as in the 3D view. */}
+        <g aria-hidden="true">
+          <ellipse cx="320" cy={feetY} rx="150" ry="17" fill="none" stroke="var(--c-line-strong)" />
+          <ellipse cx="320" cy={feetY} rx="112" ry="12.5" fill="none" stroke="var(--c-line-strong)" />
+          <ellipse cx="320" cy={feetY} rx="132" ry="15" fill="url(#bm-shadow)" />
+          <image href={FIGURE_URL} x={FIG.x} y={FIG.y} width={FIG.w} height={FIG.h} preserveAspectRatio="xMidYMid meet" />
+          {/* Status tint on the suit: multiplied, so it colors the white suit and vanishes on the dark background. */}
+          {REGION_ORDER.map((r) => {
+            const t = TINT[statuses[r].status];
+            const [x, y] = at(r);
+            return t ? <circle key={r} className="bm-tint" cx={x} cy={y} r={t.r} fill={`url(#bm-tint-${statuses[r].status})`} opacity={t.opacity} /> : null;
+          })}
+        </g>
+
         <g className="bm-callouts">
           {REGION_ORDER.map((r) => {
-            const g = GEO[r];
+            const g = CALLOUT[r];
             const st = statuses[r];
+            const [mx, my] = at(r);
             const boxX = g.side === "left" ? 16 : 640 - 16 - BOX_W;
             const edgeX = g.side === "left" ? boxX + BOX_W : boxX;
             const cy = g.boxY + BOX_H / 2;
             const elbowX = g.side === "left" ? edgeX + 16 : edgeX - 16;
             const on = selected === r;
+            const leader = g.drop ? `${mx},${g.boxY + BOX_H} ${mx},${my}` : `${edgeX},${cy} ${elbowX},${cy} ${mx},${my}`;
             return (
               <g key={r}>
-                <polyline className={`bm-leader${on ? " bm-leader--on" : ""}`} points={`${edgeX},${cy} ${elbowX},${cy} ${g.marker[0]},${g.marker[1]}`} />
+                <polyline className={`bm-leader${on ? " bm-leader--on" : ""}`} points={leader} />
                 <g
                   className="bm-callout"
                   role="button"
@@ -185,13 +165,21 @@ export function BodyMap({ statuses, selected, onSelect }: {
             );
           })}
         </g>
-        {REGION_ORDER.map((r) => (
-          <g key={r} style={{ cursor: "pointer" }} onClick={() => onSelect(r)} aria-hidden="true">
-            <circle cx={GEO[r].marker[0]} cy={GEO[r].marker[1]} r="16" fill="transparent" />
-            {selected === r && <circle cx={GEO[r].marker[0]} cy={GEO[r].marker[1]} r="13" fill="none" stroke="var(--c-link)" strokeWidth="1.5" />}
-            <Marker status={statuses[r].status} x={GEO[r].marker[0]} y={GEO[r].marker[1]} />
-          </g>
-        ))}
+
+        {REGION_ORDER.map((r) => {
+          const [x, y] = at(r);
+          return (
+            <g key={r} style={{ cursor: "pointer" }} onClick={() => onSelect(r)} aria-hidden="true">
+              <circle cx={x} cy={y} r="22" fill="transparent" />
+              {selected === r && <circle className="bm-ring" cx={x} cy={y} r="19" />}
+              <Marker status={statuses[r].status} x={x} y={y} />
+            </g>
+          );
+        })}
+
+        <text className="bm-credit" x="624" y="594" textAnchor="end">
+          MODEL: NASA 3D RESOURCES · EMU SPACESUIT
+        </text>
       </svg>
       <div className="bodymap__list">
         {REGION_ORDER.map((r) => (

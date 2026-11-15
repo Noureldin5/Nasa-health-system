@@ -6,7 +6,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import type { RegionKey, Status } from "../api/types";
 import { REGION_ORDER, REGIONS } from "../content/regions";
-import { StatusIcon, STATUS_WORD } from "./status";
+import type { Mark } from "../lib/replay";
+import { MarkIcon, StatusIcon, STATUS_WORD } from "./status";
 
 /*
  * 3D body map on NASA's own astronaut model: the EMU spacesuit from NASA 3D
@@ -17,9 +18,26 @@ import { StatusIcon, STATUS_WORD } from "./status";
  * they stay keyboard and screen-reader accessible. The 2D map is the fallback.
  */
 
-const MODEL_URL = `${import.meta.env.BASE_URL}models/nasa-astronaut-emu.glb`;
+export const MODEL_URL = `${import.meta.env.BASE_URL}models/nasa-astronaut-emu.glb`;
 /** NASA's model names the helmet visor material "astnt1_2". */
-const VISOR_MATERIAL = "astnt1_2";
+export const VISOR_MATERIAL = "astnt1_2";
+
+/**
+ * Studio look for the suit. The suit texture is near white, so the exposure and the fill are kept
+ * low and the key light comes from the side: the folds, the chest pack and the helmet ring read as
+ * form instead of a flat white shape. Also used to render the 2D figure (public/models/README.md).
+ */
+export const LOOK = { exposure: 0.61, env: 0.36, suitRoughness: 0.78 };
+export function lightScene(scene: THREE.Scene) {
+  const key = new THREE.DirectionalLight(0xfff4e6, 1.55); // warm key, high front left
+  key.position.set(-3.2, 3.4, 3.2);
+  const rim = new THREE.DirectionalLight(0x8fb4e8, 2.6); // cool rim from behind, right
+  rim.position.set(3, 1.8, -3.4);
+  const kicker = new THREE.DirectionalLight(0x9fbbe0, 0.5); // faint cool kicker, low front right
+  kicker.position.set(2.6, -0.6, 2.4);
+  const fill = new THREE.HemisphereLight(0xcfd8e6, 0x0e0e11, 0.22);
+  scene.add(key, rim, kicker, fill);
+}
 
 const SHORT: Record<RegionKey, string> = {
   brain: "Brain and eyes",
@@ -31,8 +49,8 @@ const SHORT: Record<RegionKey, string> = {
 };
 
 /** Anchor targets in normalized body space: height 2, feet at y = -1, facing +z, the astronaut's left at +x. */
-const TARGETS: Record<RegionKey, { p: [number, number, number]; r: number }> = {
-  brain: { p: [0, 0.74, 0.4], r: 0.15 },
+export const TARGETS: Record<RegionKey, { p: [number, number, number]; r: number }> = {
+  brain: { p: [0, 0.86, 0.34], r: 0.15 },
   heart: { p: [0.11, 0.36, 0.4], r: 0.12 },
   blood: { p: [-0.52, 0.42, 0.1], r: 0.11 },
   metabolism: { p: [0, 0.05, 0.4], r: 0.15 },
@@ -48,17 +66,32 @@ const STATUS_HEX: Record<Status, string> = {
   nodata: "#959599",
 };
 
-export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
+const MARK_HEX: Record<Mark, string> = { out: "#ffffff", in: "#959599", learning: "#58585b", none: "#444447" };
+const MARK_SAY: Record<Mark, string> = { out: "outside the usual band", in: "inside the usual band", learning: "baseline being learned", none: "no reading" };
+
+export default function BodyMap3D({ statuses, selected, onSelect, onFail, marks, compact }: {
   statuses: Record<RegionKey, { status: Status; reason: string }>;
   selected: RegionKey | null;
   onSelect: (r: RegionKey) => void;
   onFail: () => void;
+  /** Mission replay: show where each region stood on a past day instead of today's status. */
+  marks?: Record<RegionKey, { mark: Mark; why: string }>;
+  /** Shorter stage with labels only where something is outside the band. */
+  compact?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const hotRefs = useRef<Partial<Record<RegionKey, HTMLButtonElement | null>>>({});
   const anchorsRef = useRef<Partial<Record<RegionKey, { pos: THREE.Vector3; normal: THREE.Vector3 }>>>({});
   const markerRef = useRef<{ group: THREE.Group; base: number } | null>(null);
   const [ready, setReady] = useState(false);
+  // Status glow painted on the suit around each region (shared by every suit material).
+  const glowRef = useRef({
+    uRegionPos: { value: REGION_ORDER.map(() => new THREE.Vector3(0, -9, 0)) },
+    uRegionCol: { value: REGION_ORDER.map(() => new THREE.Color(0x000000)) },
+    uRegionRad: { value: REGION_ORDER.map((r) => TARGETS[r].r * 2.9) },
+    uRegionAmp: { value: REGION_ORDER.map(() => 0) },
+    uRegionPulse: { value: REGION_ORDER.map(() => 0) },
+  });
   const failRef = useRef(onFail);
   failRef.current = onFail;
 
@@ -78,7 +111,7 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.92;
+    renderer.toneMappingExposure = LOOK.exposure;
     renderer.domElement.setAttribute("aria-hidden", "true");
     renderer.domElement.className = "body3d__canvas";
     host.prepend(renderer.domElement);
@@ -88,16 +121,11 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
     const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environment = envTex;
 
-    // Studio light: warm-neutral key from the front left, cool rim from behind, soft sky fill.
-    const key = new THREE.DirectionalLight(0xffffff, 1.3);
-    key.position.set(-2, 3, 4);
-    const rim = new THREE.DirectionalLight(0x9fbbe0, 2.4);
-    rim.position.set(2.5, 1.5, -3.5);
-    const fill = new THREE.HemisphereLight(0xdfe6f0, 0x18181c, 0.4);
-    scene.add(key, rim, fill);
+    lightScene(scene);
 
+    // Opens on a three-quarter view, so the suit reads as a volume before anyone touches it.
     const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 50);
-    camera.position.set(0.5, 0.15, 5.4);
+    camera.position.set(1.75, 0.3, 5.1);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     controls.enableDamping = true;
@@ -136,6 +164,25 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
       ticks.push(new THREE.Vector3(Math.cos(a) * 0.8, -1, Math.sin(a) * 0.8), new THREE.Vector3(Math.cos(a) * o, -1, Math.sin(a) * o));
     }
     platform.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ticks), ringMat));
+    // Soft contact shadow, so the boots stand on the platform instead of floating over it.
+    const shadowCanvas = document.createElement("canvas");
+    shadowCanvas.width = shadowCanvas.height = 128;
+    const sctx = shadowCanvas.getContext("2d");
+    if (sctx) {
+      const g = sctx.createRadialGradient(64, 64, 4, 64, 64, 64);
+      g.addColorStop(0, "rgba(0,0,0,0.62)");
+      g.addColorStop(0.55, "rgba(0,0,0,0.24)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      sctx.fillStyle = g;
+      sctx.fillRect(0, 0, 128, 128);
+    }
+    const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+    const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false });
+    const shadowGeo = new THREE.PlaneGeometry(1.5, 1.05);
+    const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.y = -0.998;
+    platform.add(shadow);
     scene.add(platform);
 
     // Scanner ring for the selected region, drawn on top and turned to the camera.
@@ -180,20 +227,34 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
             mat.roughness = 0.16;
             mat.envMapIntensity = 1.6;
           } else {
-            mat.roughness = 0.72;
-            mat.envMapIntensity = 0.9;
-            // Slow scan band in world height, added to NASA's own material.
+            mat.roughness = LOOK.suitRoughness;
+            mat.envMapIntensity = LOOK.env;
+            // Added to NASA's own material: a slow scan band in world height, and a soft tint
+            // around each body region in its status color (the hotspot still carries shape + word).
             mat.onBeforeCompile = (shader) => {
               shader.uniforms.uTime = scanUniforms.uTime;
               shader.uniforms.uScan = scanUniforms.uScan;
-              shader.vertexShader = `varying float vScanY;\n${shader.vertexShader.replace(
+              Object.assign(shader.uniforms, glowRef.current);
+              shader.vertexShader = `varying vec3 vWorldPos;\n${shader.vertexShader.replace(
                 "#include <project_vertex>",
-                "#include <project_vertex>\n  vScanY = (modelMatrix * vec4(transformed, 1.0)).y;",
+                "#include <project_vertex>\n  vWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;",
               )}`;
-              shader.fragmentShader = `uniform float uTime;\nuniform float uScan;\nvarying float vScanY;\n${shader.fragmentShader.replace(
-                "#include <emissivemap_fragment>",
-                "#include <emissivemap_fragment>\n  float scanY = sin(uTime * 0.45) * 1.05;\n  float band = exp(-pow((vScanY - scanY) * 10.0, 2.0));\n  totalEmissiveRadiance += vec3(0.35, 0.5, 0.75) * band * 0.3 * uScan;",
-              )}`;
+              shader.fragmentShader = `uniform float uTime;\nuniform float uScan;\nuniform vec3 uRegionPos[6];\nuniform vec3 uRegionCol[6];\nuniform float uRegionRad[6];\nuniform float uRegionAmp[6];\nuniform float uRegionPulse[6];\nvarying vec3 vWorldPos;\n${shader.fragmentShader
+                .replace(
+                  "#include <color_fragment>",
+                  `#include <color_fragment>
+  vec3 regionGlow = vec3(0.0);
+  for (int i = 0; i < 6; i++) {
+    float g = smoothstep(uRegionRad[i], 0.0, distance(vWorldPos, uRegionPos[i]));
+    float a = g * g * uRegionAmp[i] * (1.0 + uRegionPulse[i] * 0.3 * sin(uTime * 2.4));
+    diffuseColor.rgb = mix(diffuseColor.rgb, uRegionCol[i], clamp(a, 0.0, 0.9));
+    regionGlow += uRegionCol[i] * a * 0.22;
+  }`,
+                )
+                .replace(
+                  "#include <emissivemap_fragment>",
+                  "#include <emissivemap_fragment>\n  float scanY = sin(uTime * 0.45) * 1.05;\n  float band = exp(-pow((vWorldPos.y - scanY) * 10.0, 2.0));\n  totalEmissiveRadiance += vec3(0.35, 0.5, 0.75) * band * 0.3 * uScan + regionGlow;",
+                )}`;
             };
           }
         });
@@ -237,6 +298,7 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
             }
           }
           anchorsRef.current[r] = { pos: bestPos.addScaledVector(bestNormal, 0.012), normal: bestNormal };
+          glowRef.current.uRegionPos.value[REGION_ORDER.indexOf(r)].copy(bestPos);
         }
         setReady(true);
       },
@@ -284,7 +346,9 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
         const x = (proj.x * 0.5 + 0.5) * w;
         const y = (-proj.y * 0.5 + 0.5) * h;
         toCam.copy(camera.position).sub(a.pos).normalize();
-        el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+        const left = x < w / 2 - 6;
+        el.dataset.side = left ? "left" : "right";
+        el.style.transform = left ? `translate(calc(${x.toFixed(1)}px - 100% + 32px), ${y.toFixed(1)}px)` : `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
         el.dataset.behind = a.normal.dot(toCam) > -0.05 ? "false" : "true";
       }
     }
@@ -305,6 +369,9 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
         mat.dispose();
       });
       platform.traverse((o) => (o as THREE.Line).geometry?.dispose());
+      shadowTex.dispose();
+      shadowMat.dispose();
+      shadowGeo.dispose();
       ringMat.dispose();
       ringGeo.dispose();
       ringMatSel.dispose();
@@ -318,6 +385,27 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
       markerRef.current = null;
     };
   }, []);
+
+  // The tint on the suit follows each region's status, or its replay mark on a past day.
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const g = glowRef.current;
+    REGION_ORDER.forEach((r, i) => {
+      const mk = marks?.[r];
+      const st = statuses[r].status;
+      let amp = 0;
+      let pulse = 0;
+      let hex = "#000000";
+      if (mk) {
+        if (mk.mark === "out") [amp, pulse, hex] = [0.62, 1, "#bcd6ff"];
+      } else if (st === "act") [amp, pulse, hex] = [0.95, 1, STATUS_HEX.act];
+      else if (st === "watch") [amp, pulse, hex] = [0.86, 1, STATUS_HEX.watch];
+      else if (st === "ok") [amp, pulse, hex] = [0.36, 0, STATUS_HEX.ok];
+      g.uRegionCol.value[i].set(hex);
+      g.uRegionAmp.value[i] = amp;
+      g.uRegionPulse.value[i] = reduced ? 0 : pulse;
+    });
+  }, [statuses, marks, ready]);
 
   // The scanner ring follows the selected region.
   useEffect(() => {
@@ -334,25 +422,27 @@ export default function BodyMap3D({ statuses, selected, onSelect, onFail }: {
   }, [selected, ready]);
 
   return (
-    <div className="body3d">
+    <div className={`body3d${compact ? " body3d--compact" : ""}`}>
       <div ref={hostRef} className="body3d__stage" role="group" aria-label="3D body map on a NASA astronaut in the EMU spacesuit. Drag to rotate. Select a region to see its status and explainer.">
         {!ready && <div className="body3d__loading micro">Loading NASA astronaut model…</div>}
         {REGION_ORDER.map((r) => {
           const st = statuses[r];
+          const mk = marks?.[r];
+          const quiet = compact && (mk ? mk.mark !== "out" : st.status !== "watch" && st.status !== "act");
           return (
             <button
               key={r}
               ref={(el) => (hotRefs.current[r] = el)}
               type="button"
-              className="hotspot"
+              className={`hotspot${mk?.mark === "out" ? " hotspot--out" : ""}${quiet ? " hotspot--quiet" : ""}`}
               data-behind="false"
               aria-pressed={selected === r}
-              aria-label={`${REGIONS[r].label}: ${STATUS_WORD[st.status]}. ${st.reason}.`}
+              aria-label={mk ? `${REGIONS[r].label}: ${MARK_SAY[mk.mark]}. ${mk.why}.` : `${REGIONS[r].label}: ${STATUS_WORD[st.status]}. ${st.reason}.`}
               onClick={() => onSelect(r)}
-              style={{ opacity: ready ? undefined : 0, ["--hs-color" as string]: STATUS_HEX[st.status] }}
+              style={{ opacity: ready ? undefined : 0, ["--hs-color" as string]: mk ? MARK_HEX[mk.mark] : STATUS_HEX[st.status] }}
             >
               <span className="hotspot__dot" aria-hidden="true">
-                <StatusIcon status={st.status} size={12} />
+                {mk ? <MarkIcon mark={mk.mark} size={12} /> : <StatusIcon status={st.status} size={12} />}
               </span>
               <span className="hotspot__label">{SHORT[r]}</span>
             </button>
