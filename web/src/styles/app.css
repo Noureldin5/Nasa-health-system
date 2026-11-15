@@ -255,6 +255,13 @@ table {
   border: 1px solid var(--c-line);
   border-radius: var(--r-2);
 }
+/* Many options (the OSD-569 blood count has about 15): wrap inside the card instead of widening the page. */
+.role-switch--wrap {
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
 .role-switch a {
   display: inline-flex;
   align-items: center;

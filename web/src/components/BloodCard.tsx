@@ -90,7 +90,7 @@ export function BloodCard() {
       </header>
       <div className="card__body stack">
         <div className="row row--between">
-          <div className="role-switch" role="group" aria-label="Blood count measure">
+          <div className="role-switch role-switch--wrap" role="group" aria-label="Blood count measure">
             {data.indicators.map((i) => (
               <a
                 key={i.key}
