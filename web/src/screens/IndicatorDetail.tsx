@@ -10,7 +10,6 @@ import { DemoTag, ErrorNote, SourceTag } from "../components/ui";
 import { HAZARDS } from "../content/hazards";
 import { RISKS_FOR_METRIC, RISK_PAGES } from "../content/risks";
 import { INDICATORS } from "../content/indicators";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtDayTime, fmtNum, fmtPoint, fmtUsual, sourceLabel } from "../lib/format";
 import { missionWindow } from "../lib/mission";
@@ -246,9 +245,11 @@ function Detail({ r, k, table, setTable, role, crewId }: {
             </span>
             {c.contactIf.charAt(0).toUpperCase() + c.contactIf.slice(1)}
           </div>
-          <p className="small muted">
-            {DISCLAIMER} {k === "mood" ? "Self-reported in the check-in." : ""} {b.state === "ready" ? `Band ${fmtNum(b.low, c.decimals)}–${fmtNum(b.high, c.decimals)} ${c.unit}.` : ""}
-          </p>
+          {(k === "mood" || b.state === "ready") && (
+            <p className="small muted">
+              {k === "mood" ? "Self-reported in the check-in." : ""} {b.state === "ready" ? `Band ${fmtNum(b.low, c.decimals)}–${fmtNum(b.high, c.decimals)} ${c.unit}.` : ""}
+            </p>
+          )}
         </aside>
       </div>
     </>

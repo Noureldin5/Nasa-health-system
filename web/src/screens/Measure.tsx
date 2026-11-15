@@ -6,7 +6,6 @@ import { Icon } from "../components/icons";
 import { StatusPill } from "../components/status";
 import { PageHead } from "../components/ui";
 import { INDICATORS } from "../content/indicators";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useAction, useQuery } from "../lib/app";
 import { fmtPoint } from "../lib/format";
 
@@ -73,7 +72,6 @@ export function Measure() {
         <Link to="/" className="btn btn--primary btn--lg" style={{ alignSelf: "flex-start" }}>
           Back to today
         </Link>
-        <p className="small muted">{DISCLAIMER}</p>
       </div>
     );
   }

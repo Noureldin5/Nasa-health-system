@@ -4,7 +4,6 @@ import { api } from "../api/client";
 import type { BriefDraft } from "../api/types";
 import { Icon } from "../components/icons";
 import { PageHead } from "../components/ui";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useAction, useQuery } from "../lib/app";
 
 /**
@@ -139,7 +138,7 @@ export function BriefComposer() {
               Cancel
             </Link>
           </div>
-          <p className="small muted">{DISCLAIMER} Listed in your sync log when it is sent.</p>
+          <p className="small muted">Listed in your sync log when it is sent.</p>
         </>
       )}
     </div>

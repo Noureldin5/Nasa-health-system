@@ -5,7 +5,6 @@ import { HeadacheStrip, PointTable, TrendChart } from "../components/charts";
 import { Icon } from "../components/icons";
 import { StatusIcon } from "../components/status";
 import { DemoTag, ErrorNote, PageHead, SourceTag } from "../components/ui";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtDayTime, fmtNum } from "../lib/format";
 import { missionWindow } from "../lib/mission";
@@ -160,7 +159,6 @@ export function Cabin() {
               <Icon name="consult" size={18} /> Ask the flight surgeon
             </Link>
           )}
-          <p className="small muted">{DISCLAIMER}</p>
         </aside>
       </div>
     </div>

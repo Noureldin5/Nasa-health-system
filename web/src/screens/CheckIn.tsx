@@ -7,7 +7,6 @@ import { Icon } from "../components/icons";
 import { StatusIcon, StatusPill } from "../components/status";
 import { SourceTag } from "../components/ui";
 import { MOOD_WORDS, RESTED_WORDS } from "../content/indicators";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtPoint } from "../lib/format";
 
@@ -211,7 +210,7 @@ export function CheckIn() {
                 {step === STEPS.length - 1 ? "Skip and finish" : "Skip"} <Icon name="chevron-right" size={16} />
               </button>
             </div>
-            <p className="small muted">{DISCLAIMER} Your answers go to your flight surgeon with the rest of your record at the next ground link.</p>
+            <p className="small muted">Your answers go to your flight surgeon with the rest of your record at the next ground link.</p>
           </>
         )}
       </div>
@@ -263,7 +262,7 @@ function Result({ result, headRef, onDone }: { result: CheckInResult; headRef: R
       <button type="button" className="btn btn--secondary btn--lg" onClick={onDone}>
         Done
       </button>
-      <p className="small muted">{DISCLAIMER} Compared with your own baseline.</p>
+      <p className="small muted">Compared with your own baseline.</p>
     </div>
   );
 }

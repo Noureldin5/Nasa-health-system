@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { api } from "../api/client";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtTime } from "../lib/format";
 import { BrandMark, Icon, type IconName } from "./icons";
@@ -112,10 +111,6 @@ export function Shell({ children }: { children: ReactNode }) {
               </button>
             </div>
           )}
-          <span className="tag" title="All data in this demo is simulated except the NASA OSD-569 reference">
-            <span className="hide-sm">Simulated data</span>
-            <span className="show-sm">Sim</span>
-          </span>
         </div>
       </header>
 
@@ -167,9 +162,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </div>
 
       <footer className="footer">
-        <span className="footer__disclaimer">{DISCLAIMER}</span>
-        <span>Simulated data is labeled. NASA reference: OSDR OSD-569.</span>
-        <span>{api.mode === "mock" ? "Mock API: runs in the browser, no backend" : "Connected to the station API"}</span>
+        {api.mode !== "mock" && <span>Connected to the station API</span>}
         {api.resetDemo && (
           <button type="button" onClick={reset}>
             Reset demo data
