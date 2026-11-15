@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtTime } from "../lib/format";
 import { BrandMark, Icon, type IconName } from "./icons";
+import { SignalStrip } from "./SignalPath";
 
 interface NavItem {
   to: string;
@@ -14,7 +15,7 @@ interface NavItem {
 }
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { role, mission, link, syncing, syncNow, bump, toast } = useApp();
+  const { role, mission, link, syncing, syncNow, bump, toast, linkProfile } = useApp();
   const me = useQuery(`shell-me`, () => api.getAstronautView(ME));
   const inbox = useQuery(`shell-inbox`, () => api.getInbox());
 
@@ -87,7 +88,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {link && (
             <div
               className={`link-chip${syncing ? " link-chip--busy" : ""}`}
-              title={`Simulated ground link. Sync now opens a link window. Signal delay about ${link.oneWayDelaySec} s each way (demo parameter).`}
+              title={`Simulated ground link. Sync now opens a link window. Signal time one way at ${linkProfile.name}: ${linkProfile.delayText}.`}
             >
               {syncing ? (
                 <>
@@ -100,7 +101,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 <>
                   <span className={`link-chip__dot${pending ? " link-chip__dot--pending" : ""}`} aria-hidden="true" />
                   <span className="link-chip__text">
-                    Last sync {fmtTime(link.lastSync)}
+                    {linkProfile.short} · last sync {fmtTime(link.lastSync)}
                     {pending ? ` · ${pending} queued` : ""}
                   </span>
                 </>
@@ -113,6 +114,7 @@ export function Shell({ children }: { children: ReactNode }) {
           )}
         </div>
       </header>
+      <SignalStrip />
 
       <div className="app__body">
         <nav className="rail" aria-label="Main">

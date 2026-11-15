@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { BriefCard, GroundFeed, SyncLog } from "../components/record";
 import { Icon } from "../components/icons";
+import { LinkDistance } from "../components/SignalPath";
 import { Empty, ErrorNote, PageHead } from "../components/ui";
 import { LINK_WINDOW_HOURS } from "../content/sources";
 import { ME, useAction, useApp, useQuery } from "../lib/app";
@@ -11,7 +12,7 @@ import { MyReadiness } from "./Readiness";
 /** Consult layer for the astronaut: replies and notes from ground, own briefs, sync log (D5, D6). */
 export function Consult() {
   const nav = useNavigate();
-  const { link, syncNow, syncing } = useApp();
+  const { link, syncNow, syncing, linkProfile } = useApp();
   const rec = useQuery(`astro-${ME}`, () => api.getAstronautView(ME));
   const log = useQuery("link-log", () => api.getLinkLog());
   const { run } = useAction();
@@ -58,12 +59,15 @@ export function Consult() {
               </div>
               <div className="stack" style={{ ["--gap" as string]: "2px" }}>
                 <span className="micro">Signal delay</span>
-                <span className="mono strong">~{link.oneWayDelaySec} s one way</span>
+                <span className="mono strong">{linkProfile.delayText} one way</span>
               </div>
             </div>
             <button type="button" className="btn btn--secondary btn--lg" onClick={syncNow} disabled={syncing}>
               <Icon name="sync" size={18} /> Sync now (demo)
             </button>
+          </div>
+          <div className="card__foot">
+            <LinkDistance />
           </div>
           <div className="card__foot small muted">
             Everything works offline on the station server. Items wait in a queue and go at the next window, about every {LINK_WINDOW_HOURS.value} h (demo parameter).
