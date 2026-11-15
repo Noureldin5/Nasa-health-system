@@ -24,9 +24,46 @@ export type IconName =
   | "arrow-right"
   | "clock"
   | "info"
-  | "reset";
+  | "reset"
+  | "ask"
+  | "replay"
+  | "play"
+  | "pause"
+  | "step-back"
+  | "step-forward"
+  | "draft"
+  | "signal";
 
 const paths: Record<IconName, JSX.Element> = {
+  ask: (
+    <>
+      <path d="M4 5.5h16v10H9l-5 4v-14z" />
+      <path d="M10 9.2a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M12 14.6v.1" />
+    </>
+  ),
+  replay: (
+    <>
+      <path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" />
+      <path d="M4 4.5v3h3M12 8v4.2l2.8 1.8" />
+    </>
+  ),
+  play: <path d="M8 5.5v13l10.5-6.5z" />,
+  pause: <path d="M8 5.5v13M16 5.5v13" />,
+  "step-back": <path d="M7 6v12M18 6l-8 6 8 6z" />,
+  "step-forward": <path d="M17 6v12M6 6l8 6-8 6z" />,
+  draft: (
+    <>
+      <path d="M5 19l1-4L16.5 4.5a1.8 1.8 0 0 1 2.6 0l.4.4a1.8 1.8 0 0 1 0 2.6L9 18z" />
+      <path d="M14.5 6.5l3 3M13 19h6" />
+    </>
+  ),
+  signal: (
+    <>
+      <circle cx="5" cy="12" r="2" />
+      <circle cx="19" cy="12" r="2" />
+      <path d="M8.5 12h1.5M11.5 12h1.5M14.5 12h1" />
+    </>
+  ),
   today: (
     <>
       <circle cx="12" cy="12" r="4" />

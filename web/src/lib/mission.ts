@@ -16,3 +16,10 @@ export function missionWindow(m: Mission, maxDays = 14) {
   }));
   return { domain: [start, end] as [number, number], ticks, fmt: (t: number) => fmtDayTime(t, m) };
 }
+
+/** Start and end of one mission day on the time axis. */
+export function daySpan(m: Mission, day: number): [number, number] {
+  const today = Math.floor(Date.parse(m.now) / DAY) * DAY;
+  const start = today - (m.day - day) * DAY;
+  return [start, start + DAY];
+}
