@@ -3,6 +3,7 @@ dist/
 build/
 .env
 .env.*
+!.env.example
 *.log
 .DS_Store
 __pycache__/
@@ -15,3 +16,7 @@ __pycache__/
 # Python test cache
 .pytest_cache/
 .superpowers/
+
+# Record assistant answer cache (api/routes/ai.py)
+.ai_cache.json
+.ai_cache.tmp

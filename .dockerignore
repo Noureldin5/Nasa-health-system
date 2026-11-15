@@ -8,3 +8,6 @@ web/dist
 design
 prototype
 docs
+# Never bake a provider key or the answer cache into an image
+**/.env*
+**/.ai_cache.*

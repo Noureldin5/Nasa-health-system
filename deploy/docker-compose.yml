@@ -38,6 +38,11 @@ services:
       VM_URL: http://victoriametrics:8428
       METRICS_BACKEND: vm
       SEED_DAY: "10" # reloads the simulated mission on every start. Set to "" to keep data.
+    # Optional key for the record assistant (api/routes/ai.py). Without the file the app
+    # answers from fixed rules. See .env.example.
+    env_file:
+      - path: ../.env
+        required: false
     depends_on:
       victoriametrics:
         condition: service_healthy
