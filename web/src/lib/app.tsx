@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { api } from "../api/client";
-import type { LinkState, Mission } from "../api/types";
+import type { LinkState, Mission, SyncEntry } from "../api/types";
+import { LINK_PROFILES, type LinkProfile, type LinkProfileKey } from "../content/lightTime";
 
 /** The astronaut using this device. One crew tablet per person in the story. */
 export const ME = "a1";
@@ -21,6 +22,31 @@ interface AppState {
   link: LinkState | null;
   syncing: boolean;
   syncNow: () => Promise<void>;
+  /** Mission distance for the ground link: sets the signal delay shown and the sync animation. */
+  linkProfile: LinkProfile;
+  setLinkProfile: (k: LinkProfileKey) => void;
+  /** The transmission in flight, for the signal path strip. Null when the link is idle. */
+  transmission: Transmission | null;
+}
+
+export interface Transmission {
+  phase: "up" | "down" | "done";
+  /** Each leg of the animation in ms (uplink, then downlink). */
+  legMs: number;
+  up: number;
+  down: number;
+  entry: SyncEntry | null;
+}
+
+const PROFILE_KEY = "oyb-link-profile";
+function savedProfile(): LinkProfileKey {
+  try {
+    const v = localStorage.getItem(PROFILE_KEY);
+    if (v === "station" || v === "moon" || v === "mars") return v;
+  } catch {
+    /* storage blocked */
+  }
+  return "station";
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -33,7 +59,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [mission, setMission] = useState<Mission | null>(null);
   const [link, setLink] = useState<LinkState | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [profileKey, setProfileKey] = useState<LinkProfileKey>(savedProfile);
+  const [transmission, setTransmission] = useState<Transmission | null>(null);
+  const linkProfile = LINK_PROFILES[profileKey];
   const toastId = useRef(0);
+  const setLinkProfile = useCallback((k: LinkProfileKey) => {
+    setProfileKey(k);
+    try {
+      localStorage.setItem(PROFILE_KEY, k);
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
 
   const bump = useCallback(() => setVersion((v) => v + 1), []);
   const toast = useCallback((text: string) => {
@@ -64,24 +101,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const syncNow = useCallback(async () => {
     setSyncing(true);
+    // The signal visibly travels: uplink leg, then downlink leg. The real delay is shown on the
+    // strip; the animation is time-compressed (demo parameter, content/lightTime.ts).
+    const legMs = linkProfile.demoMs / 2;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const base = { legMs, up: link?.pendingToGround ?? 0, down: link?.pendingFromGround ?? 0 };
+    setTransmission({ ...base, phase: "up", entry: null });
     try {
-      // The link window stays visibly open for the simulated signal delay (demo parameter).
-      const delayMs = Math.min(Math.max((link?.oneWayDelaySec ?? 1) * 600, 900), 2400);
-      const [entry] = await Promise.all([api.syncNow(), new Promise((r) => setTimeout(r, delayMs))]);
+      const [entry] = await Promise.all([api.syncNow(), wait(legMs)]);
+      setTransmission({ ...base, phase: "down", entry });
+      await wait(legMs);
       const up = entry.toGround.length;
       const down = entry.fromGround.length;
+      setTransmission({ ...base, phase: "done", entry });
       toast(`Ground link: sent ${up} item${up === 1 ? "" : "s"}, received ${down}. Logged in the sync log.`);
       bump();
+      window.setTimeout(() => setTransmission((t) => (t?.phase === "done" ? null : t)), 2600);
     } catch (e) {
+      setTransmission(null);
       toast(`Sync failed: ${(e as Error).message}`);
     } finally {
       setSyncing(false);
     }
-  }, [bump, toast, link]);
+  }, [bump, toast, link, linkProfile]);
 
   const value = useMemo(
-    () => ({ role, version, bump, toast, mission, link, syncing, syncNow }) satisfies AppState,
-    [role, version, bump, toast, mission, link, syncing, syncNow],
+    () => ({ role, version, bump, toast, mission, link, syncing, syncNow, linkProfile, setLinkProfile, transmission }) satisfies AppState,
+    [role, version, bump, toast, mission, link, syncing, syncNow, linkProfile, setLinkProfile, transmission],
   );
 
   return (

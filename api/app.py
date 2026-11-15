@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from clock import Clock
 from metrics.fake import FakeMetrics
 from metrics.port import MetricsPort, MetricsUnavailable
-from routes import astronaut, briefs, crew, demo, ground, reference
+from routes import ai, astronaut, briefs, crew, demo, ground, reference
 from routes import link as link_routes
 from services.record import Conflict, CrewNotFound, NotFound, Services, reset_demo
 from settings import Settings
@@ -76,6 +76,7 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
         reference.router,
         demo.router,
         link_routes.router,
+        ai.router,
     ):
         app.include_router(router)
 

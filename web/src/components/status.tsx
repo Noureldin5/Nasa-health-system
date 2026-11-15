@@ -1,4 +1,5 @@
 import type { Status } from "../api/types";
+import type { Mark } from "../lib/replay";
 
 /**
  * Status is always shape + word + color (docs/DESIGN.md, docs/REQUIREMENTS.md M3):
@@ -56,5 +57,20 @@ export function StatusLegend() {
         </span>
       ))}
     </div>
+  );
+}
+
+/**
+ * Mission replay mark (lib/replay.ts): where a reading stood against the usual band on a past day.
+ * Squares on purpose, so it is never mistaken for a status (circle, triangle, diamond).
+ */
+export function MarkIcon({ mark, size = 12 }: { mark: Mark; size?: number }) {
+  return (
+    <svg className="status-icon" width={size} height={size} viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      {mark === "out" && <rect x="1.5" y="1.5" width="9" height="9" fill="var(--c-text-strong)" />}
+      {mark === "in" && <rect x="2.2" y="2.2" width="7.6" height="7.6" fill="none" stroke="var(--c-text-2)" strokeWidth="1.4" />}
+      {mark === "learning" && <rect x="2.2" y="2.2" width="7.6" height="7.6" fill="none" stroke="var(--c-muted)" strokeWidth="1.4" strokeDasharray="2.2 1.8" />}
+      {mark === "none" && <path d="M3 6h6" stroke="var(--c-muted)" strokeWidth="1.4" />}
+    </svg>
   );
 }

@@ -37,6 +37,24 @@ The built app has no runtime CDN: fonts (Public Sans, DM Mono), chart code, thre
 
 The demo state is kept in the browser (localStorage), so a reload keeps your check-in, brief and notes until you reset.
 
+## Mission replay, light-time link, record assistant (added 2026-11-15)
+
+Three additions on top of the demo path. All work in mock and http mode, and with the network off.
+
+- **Mission replay** (`/replay`, and `/ground/crew/:id/replay` from the ground copy): one scrubber over the mission. The 3D body map, cabin CO2, headaches, sleep, heart rate and mood move under one playhead, and the record's real events (alert, brief, reply, note) are marked on the track. Past days are drawn as "inside / outside today's usual band" with square marks, never with a status pill: the status the app gave on that day came from that day's alert logic, which a replay cannot know. Only today's frame shows the record's real statuses (`src/lib/replay.ts`). Playback starts at the last calibration day.
+- **Light-time link**: the Consult screen has a mission distance (LEO, Moon, Mars). Pressing Sync shows the record and the brief travelling to ground and the reply coming back, with a clock in real signal time (`src/components/SignalPath.tsx`, `src/content/lightTime.ts`). Only the Mars figure is a NASA statement ("a communication delay of up to 20 minutes one way", https://www.nasa.gov/hrp/hazard-distance-from-earth/). Moon (1.28 s) and LEO are derived from NASA distances divided by the speed of light and labeled "derived". The animation is time-compressed and says by how much.
+- **Record assistant** (`/ask`, "Why this alert?" on Today, "Draft from pinned items" in the brief composer): plain-words text built from facts the app already computed. Every answer has cite chips (metric, day, value) whose values are read from the record, and the cited days light up on the charts (`?hl=12,13` on the indicator and Cabin Link screens).
+  - Without a model it still works: the answer is built by fixed rules from the same facts (`src/ai/assistant.ts`) and is tagged "Fixed rules". This is the path that runs with the network off.
+  - With a key on the station server, a language model rephrases the same facts (`api/routes/ai.py`). The key never reaches the browser. Timeout 4 s, answers cached in `api/.ai_cache.json` so a rehearsed demo replays offline.
+  - Strong symptoms, questions about medicines and any open "Act now" alert get a fixed "contact the flight surgeon" text and never reach the model. Model text that reads like a dose or a diagnosis is dropped.
+  - Open record: each answer has "What was sent to <provider>" with the exact facts, or "Nothing left the station", and the Ask screen lists every send. No names are sent ("Crew member", "Flight surgeon"). The assistant is on the astronaut side only, so ground never reads assistant text the astronaut cannot see. It never writes to the record and never changes a status.
+  - With the mission distance set to Mars the model is not called at all: there is no live link, so the fixed rules answer.
+  - The cloud model is a stand-in for an on-board model: on a Mars-distance mission there is no link to call it over, and the fixed-rules path is what remains.
+
+Set it up: copy `.env.example` to `.env` in the repo root, set `AI_PROVIDER` (gemini, deepseek or openai) and `AI_API_KEY`, restart the API. `GET /api/ai/status` says whether a key is set. Checked on 2026-11-15: Gemini has a free tier for `gemini-3.5-flash-lite` (https://ai.google.dev/gemini-api/docs/pricing), Kyrgyzstan is in Google's region list (https://ai.google.dev/gemini-api/docs/available-regions), and free-tier content is used to improve Google products, which is acceptable here because every value is simulated and no names are sent. DeepSeek's pricing page lists no free tier (https://api-docs.deepseek.com/quick_start/pricing). Gemini was called with a real key on 2026-11-15: `gemini-3.5-flash-lite` with `reasoning_effort: minimal` answers in 1 to 2 s, inside the 4 s limit. DeepSeek has not been called with a real key; that preset was only tested against a local stand-in server.
+
+Files outside `web/` (for B and C): new `api/routes/ai.py` and `api/tests/routes/test_ai.py`; one import and one router line in `api/app.py`; optional `env_file` on the `api` service in `deploy/docker-compose.yml`; `!.env.example` and the cache file in `.gitignore`; `**/.env*` and the cache file in `.dockerignore`; new `.env.example`. `api/openapi.json` was not regenerated (`uv run python scripts/export_openapi.py`).
+
 ## Structure
 
 ```
@@ -47,10 +65,14 @@ src/
   mocks/              MOCK ONLY: seeded 14-day mission (3 crew), in-browser store, placeholder logic
   mocks/fixtures/osd569.ts   REAL NASA OSDR OSD-569 values (generated from the CSV, cited)
   content/            all copy: indicators, body regions, HRP hazards, thresholds with sources
-  components/         Shell, Dashboard (one record view), BodyMap, charts, IndicatorCard, record parts
+  ai/                 record assistant: facts sent to the model, safety rules, fixed-rule answers
+  components/         Shell, Dashboard (one record view), BodyMap, charts, IndicatorCard, record parts,
+                      assistant (draft block, cite chips), SignalPath (ground link in flight)
+  lib/replay.ts       per-day marks and events for the mission replay
   screens/            Today, CheckIn, Health, IndicatorDetail, Measure, Cabin, Consult, BriefComposer,
-                      WhatGroundSees, ground/Crew, ground/Inbox, ground/Record
+                      WhatGroundSees, Replay, Ask, ground/Crew, ground/Inbox, ground/Record
   styles/tokens.css   design tokens with their sources
+  styles/features.css replay, signal path, assistant and Today layout (same tokens)
 ```
 
 ## Backend integration (done for the demo path)
@@ -83,6 +105,9 @@ src/
 `src/components/BodyMap3D.tsx`: NASA's own astronaut model in the EMU spacesuit, from NASA 3D Resources (`public/models/`, source and terms in `public/models/README.md`). Physically based lighting with an environment map, a reflective gold visor, a cool rim light, a slow scan band added to NASA's materials, and a scanner ring on the selected region. The file is Draco-compressed; the decoder is bundled in `public/draco/`. Drag to rotate, scroll to zoom, auto-rotates when idle.
 
 - Region hotspots are HTML buttons that follow anchors snapped to the skin, so they work with the keyboard and screen readers. Hotspots on the far side dim.
+- Each region is also tinted on the suit itself in its status color (a small shader addition to NASA's material), and pulses gently for Watch and Act now. The hotspot still carries the shape and the word, so status is never color alone. Labels sit on the outside of the body, so they do not cross the torso.
+- Lighting is kept low and from the side (`lightScene`, `LOOK`), because the suit texture is near white and washes out under a bright front light. A soft contact shadow sits under the boots.
+- The 2D map is the same astronaut: a front render of the NASA model made with the same lighting (`public/models/nasa-astronaut-emu-front.webp`, 26 kB), with status markers, a status tint and callouts drawn over it in SVG. It needs no WebGL.
 - A row of region buttons under the model keeps large, fixed targets for gloves.
 - three.js and the model load in a separate chunk only when the 3D view is open.
 - Falls back to the 2D SVG map when WebGL is missing or the model fails. The 3D/2D choice is remembered. Phones start in 2D.
@@ -91,7 +116,7 @@ src/
 ## Rules the UI follows
 
 - Status = shape + word + color (circle In range, triangle Watch, diamond Act now). Never color alone.
-- Every health message: what changed, one next step, "Contact the flight surgeon if...". Footer: "Decision support, not a diagnosis."
+- Every health message: what changed, one next step, "Contact the flight surgeon if...". The line "Decision support, not a diagnosis" and the "Simulated data" tag in the top bar were removed from the screens on 2026-11-15 (frontend owner's decision); the record assistant block keeps "not a diagnosis".
 - Simulated values carry a "Simulated" tag. The OSD-569 card says "Inspiration4 crew sample, not your labs" and cites the dataset.
 - Any number without a source is labeled "Demo parameter" (`src/content/sources.ts`).
 - Open record: the astronaut's Health screen, the Ground record and "What ground sees" render the same `Dashboard` from the same record shape.

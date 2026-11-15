@@ -3,7 +3,6 @@ import type { Readiness as R } from "../api/types";
 import { Icon } from "../components/icons";
 import { StatusIcon } from "../components/status";
 import { Empty, ErrorNote, PageHead } from "../components/ui";
-import { DISCLAIMER } from "../content/sources";
 import { useQuery } from "../lib/app";
 
 /**
@@ -68,7 +67,7 @@ export function Readiness() {
           </div>
         </>
       )}
-      <p className="small muted">{DISCLAIMER} Readiness supports planning. It is not a fitness-for-duty decision.</p>
+      <p className="small muted">Readiness supports planning. It is not a fitness-for-duty decision.</p>
     </div>
   );
 }

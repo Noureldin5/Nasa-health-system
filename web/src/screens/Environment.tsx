@@ -2,7 +2,6 @@ import { useState } from "react";
 import { DemoTag, PageHead } from "../components/ui";
 import { HAZARDS, HAZARD_ORDER, type HazardKey } from "../content/hazards";
 import { HAZARD_PAGES, PARTNER_RESOURCES, RISKS_HUB, RISK_PAGES } from "../content/risks";
-import { DISCLAIMER } from "../content/sources";
 
 /**
  * Environment Switcher (S2): the challenge asks for insights in "a spacecraft, a space station, a rover,
@@ -169,7 +168,6 @@ export function Environment() {
         </ul>
       </section>
 
-      <p className="small muted">{DISCLAIMER}</p>
     </div>
   );
 }

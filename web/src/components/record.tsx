@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Alert, Brief, Mission, Readout, RecordView, Reply, SyncEntry } from "../api/types";
 import { INDICATORS } from "../content/indicators";
-import { DISCLAIMER } from "../content/sources";
 import { fmtDayTime } from "../lib/format";
 import { Icon, type IconName } from "./icons";
 import { StatusIcon, StatusPill } from "./status";
@@ -34,7 +33,7 @@ export function ReadoutHero({ readout, children }: { readout: Readout; children?
           )}
           {children}
           <p className="small muted" style={{ marginTop: 12 }}>
-            {DISCLAIMER} Compared with your own baseline.
+            Compared with your own baseline.
           </p>
         </div>
       </div>
@@ -84,9 +83,6 @@ export function AlertCard({ alert, mission, actions, perspective = "astronaut" }
         )}
       </dl>
       {actions && <div className="alert__actions">{actions}</div>}
-      <p className="small muted" style={{ padding: "0 var(--s-5) var(--s-4) calc(var(--s-5) + 4px)" }}>
-        {DISCLAIMER}
-      </p>
     </section>
   );
 }

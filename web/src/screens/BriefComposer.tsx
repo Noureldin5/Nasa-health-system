@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { BriefDraft } from "../api/types";
+import { AssistantNote, useAssist } from "../components/assistant";
 import { Icon } from "../components/icons";
 import { PageHead } from "../components/ui";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useAction, useQuery } from "../lib/app";
 
 /**
@@ -21,6 +21,16 @@ export function BriefComposer() {
   const [draft, setDraft] = useState<BriefDraft | null>(null);
   const [include, setInclude] = useState<boolean[]>([]);
   const { run, busy } = useAction();
+  const cabin = useQuery(`cabin-${ME}-a`, () => api.getCabin(ME, "astronaut"));
+  const drafter = useAssist();
+
+  /** The record assistant drafts the question from the pinned items. The astronaut edits and sends. */
+  async function draftWithAssistant() {
+    if (!draft || !rec.data) return;
+    const pinned = draft.pinned.filter((_, i) => include[i] ?? true);
+    const out = await drafter.run("draft_brief", { rec: rec.data, cabin: cabin.data ?? null }, { pinned });
+    if (out.source !== "rule" && out.text) setDraft((d) => (d ? { ...d, question: out.text } : d));
+  }
 
   useEffect(() => {
     if (!draftQ.data || draft) return;
@@ -72,20 +82,30 @@ export function BriefComposer() {
               <h2 id="q-title" style={{ fontSize: "var(--fs-h3)" }}>
                 Your question
               </h2>
-              <span className="small muted">Edit freely</span>
+              <div className="row">
+                <span className="small muted">Edit freely</span>
+                <button type="button" className="btn btn--secondary" onClick={draftWithAssistant} disabled={drafter.busy || !rec.data}>
+                  <Icon name="draft" size={16} /> {drafter.busy ? "Drafting" : "Draft from pinned items"}
+                </button>
+              </div>
             </header>
             <div className="card__body">
               <label className="field">
                 <span className="sr-only">Question for the flight surgeon</span>
                 <textarea
                   className="textarea"
-                  style={{ fontSize: "var(--fs-lead)", minHeight: 120 }}
+                  style={{ fontSize: "var(--fs-lead)", minHeight: 168 }}
                   value={draft.question}
                   onChange={(e) => setDraft({ ...draft, question: e.target.value })}
                   placeholder="What would you like to ask?"
                   autoFocus
                 />
               </label>
+              {(drafter.result || drafter.busy) && (
+                <div style={{ marginTop: 12 }}>
+                  <AssistantNote result={drafter.result} busy={drafter.busy} title="Question drafted by the record assistant" textless linkCites={false} />
+                </div>
+              )}
             </div>
           </section>
 
@@ -139,7 +159,7 @@ export function BriefComposer() {
               Cancel
             </Link>
           </div>
-          <p className="small muted">{DISCLAIMER} Listed in your sync log when it is sent.</p>
+          <p className="small muted">Listed in your sync log when it is sent.</p>
         </>
       )}
     </div>

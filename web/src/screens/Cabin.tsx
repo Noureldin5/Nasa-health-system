@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import { HeadacheStrip, PointTable, TrendChart } from "../components/charts";
 import { Icon } from "../components/icons";
 import { StatusIcon } from "../components/status";
 import { DemoTag, ErrorNote, PageHead, SourceTag } from "../components/ui";
-import { DISCLAIMER } from "../content/sources";
 import { ME, useApp, useQuery } from "../lib/app";
 import { fmtDayTime, fmtNum } from "../lib/format";
-import { missionWindow } from "../lib/mission";
+import { daySpan, missionWindow } from "../lib/mission";
 
 /**
  * Cabin Link (S1): cabin CO2 next to headaches from check-ins. Two charts on a
@@ -21,6 +20,7 @@ export function Cabin() {
   const crewId = id ?? ME;
   const cabin = useQuery(`cabin-${crewId}-${role}`, () => api.getCabin(crewId, role));
   const [table, setTable] = useState(false);
+  const [params, setParams] = useSearchParams();
   const d = cabin.data;
 
   if (!d || !mission) return <div className="loading" style={{ minHeight: 500 }} aria-busy="true" />;
@@ -28,6 +28,9 @@ export function Cabin() {
   const pts = d.co2.map((p) => ({ t: Date.parse(p.t), v: p.v, source: p.source }));
   const latest = d.co2[d.co2.length - 1];
   const heads = d.headaches.map((h) => ({ ...h, t: Date.parse(h.t) }));
+  // Days the record assistant cited (?hl=12,13) are lit on both charts.
+  const hl = (params.get("hl") ?? "").split(",").map(Number).filter((n) => Number.isInteger(n) && n >= 1 && n <= mission.day);
+  const spans = hl.map((n) => daySpan(mission, n));
 
   return (
     <div className="stack" style={{ ["--gap" as string]: "var(--s-5)" }}>
@@ -95,8 +98,17 @@ export function Cabin() {
                   showDots={false}
                   height={280}
                   formatTime={(t) => `${win.fmt(t)} GMT`}
+                  highlightSpans={spans}
                 />
-                <HeadacheStrip items={heads} xDomain={win.domain} ticks={win.ticks} formatTime={(t) => win.fmt(t)} />
+                <HeadacheStrip items={heads} xDomain={win.domain} ticks={win.ticks} formatTime={(t) => win.fmt(t)} highlightSpans={spans} />
+                {hl.length > 0 && (
+                  <p className="hl-note">
+                    <span>Lit columns: day {hl.join(", ")}, the days the record assistant referred to.</span>
+                    <button type="button" className="btn btn--ghost" onClick={() => setParams({}, { replace: true })}>
+                      Clear
+                    </button>
+                  </p>
+                )}
               </div>
             )}
             <div className="legend">
@@ -160,7 +172,6 @@ export function Cabin() {
               <Icon name="consult" size={18} /> Ask the flight surgeon
             </Link>
           )}
-          <p className="small muted">{DISCLAIMER}</p>
         </aside>
       </div>
     </div>

@@ -128,13 +128,28 @@ export interface TrendChartProps {
   yFloor?: number;
   yCeil?: number;
   showDots?: boolean;
-  children?: (ctx: { x: (t: number) => number; width: number; margin: typeof MARGIN }) => ReactNode;
+  /** Time spans to highlight as columns, for example the days the record assistant cited. */
+  highlightSpans?: [number, number][];
+  /** Extra values the y axis must cover (a forecast, for example). */
+  extraY?: number[];
+  /** Drawn under the series: forecast cone, shading. */
+  underlay?: (ctx: ChartCtx) => ReactNode;
+  /** Drawn over the series: playhead, markers. */
+  children?: (ctx: ChartCtx) => ReactNode;
+}
+
+export interface ChartCtx {
+  x: (t: number) => number;
+  y: (v: number) => number;
+  width: number;
+  height: number;
+  margin: typeof MARGIN;
 }
 
 const MARGIN = { top: 14, right: 16, bottom: 30, left: 52 };
 
 export function TrendChart(props: TrendChartProps) {
-  const { label, points, xDomain, ticks, kind = "line", unit, decimals, band, band2, threshold, shadeAbove, lastStatus, height = 260, formatTime, yFloor, yCeil } = props;
+  const { label, points, xDomain, ticks, kind = "line", unit, decimals, band, band2, threshold, shadeAbove, lastStatus, height = 260, formatTime, yFloor, yCeil, highlightSpans, extraY } = props;
   const { ref, width } = useWidth<HTMLDivElement>(640);
   const [active, setActive] = useState<number | null>(null);
   const innerW = Math.max(10, width - MARGIN.left - MARGIN.right);
@@ -143,7 +158,7 @@ export function TrendChart(props: TrendChartProps) {
   const { x, y, yTicks } = useMemo(() => {
     const vals = points.flatMap((p) => (p.v2 != null ? [p.v, p.v2] : [p.v]));
     const extra = [band?.low, band?.high, band2?.low, band2?.high, threshold?.value].filter((v): v is number => v != null && Number.isFinite(v));
-    const all = [...vals, ...extra];
+    const all = [...vals, ...extra, ...(extraY ?? []).filter((v) => Number.isFinite(v))];
     let lo = all.length ? Math.min(...all) : 0;
     let hi = all.length ? Math.max(...all) : 1;
     const span = hi - lo || Math.abs(hi) * 0.1 || 1;
@@ -154,7 +169,10 @@ export function TrendChart(props: TrendChartProps) {
     const y = scaleLinear().domain([lo, hi]).range([innerH, 0]).nice(4);
     const x = scaleLinear().domain(xDomain).range([0, innerW]);
     return { x, y, yTicks: y.ticks(4) };
-  }, [points, band, band2, threshold, xDomain, innerW, innerH, yFloor, yCeil]);
+  }, [points, band, band2, threshold, xDomain, innerW, innerH, yFloor, yCeil, extraY]);
+
+  const ctx: ChartCtx = { x, y, width: innerW, height: innerH, margin: MARGIN };
+  const inSpan = (t: number) => !!highlightSpans?.some(([a, b]) => t >= a && t < b);
 
   const path = useMemo(
     () =>
@@ -226,6 +244,13 @@ export function TrendChart(props: TrendChartProps) {
                 </g>
               ),
           )}
+          {highlightSpans?.map(([a, b]) => (
+            <g key={a} className="chart__hl">
+              <rect x={x(a)} y={0} width={Math.max(2, x(b) - x(a))} height={innerH} />
+              <line x1={x(a)} x2={x(b)} y1={0} y2={0} />
+            </g>
+          ))}
+          {props.underlay?.(ctx)}
           {threshold && (
             <g>
               <line x1={0} x2={innerW} y1={y(threshold.value)} y2={y(threshold.value)} stroke="var(--c-act)" strokeWidth="1.5" strokeDasharray="6 4" />
@@ -259,7 +284,7 @@ export function TrendChart(props: TrendChartProps) {
                       cy={y(v)}
                       r={i === active ? 6 : 4.5}
                       fill={i === points.length - 1 && lastStatus ? STATUS_FILL[lastStatus] : "var(--c-series)"}
-                      stroke="var(--c-surface)"
+                      stroke={inSpan(p.t) ? "var(--c-text-strong)" : "var(--c-surface)"}
                       strokeWidth="2"
                     />
                   ))}
@@ -274,15 +299,15 @@ export function TrendChart(props: TrendChartProps) {
                       key={p.t}
                       cx={x(p.t)}
                       cy={y(p.v)}
-                      r={i === points.length - 1 ? 5.5 : 4}
+                      r={inSpan(p.t) ? 6 : i === points.length - 1 ? 5.5 : 4}
                       fill={i === points.length - 1 && lastStatus ? STATUS_FILL[lastStatus] : "var(--c-series)"}
-                      stroke="var(--c-surface)"
+                      stroke={inSpan(p.t) ? "var(--c-text-strong)" : "var(--c-surface)"}
                       strokeWidth="2"
                     />
                   ))}
               </>
             )}
-          {props.children?.({ x, width: innerW, margin: MARGIN })}
+          {props.children?.(ctx)}
           {act && (
             <g pointerEvents="none">
               <line x1={x(act.t)} x2={x(act.t)} y1={0} y2={innerH} stroke="var(--c-text-2)" strokeWidth="1" />
@@ -321,11 +346,12 @@ export function TrendChart(props: TrendChartProps) {
 
 const STRENGTH_SIZE: Record<Headache, number> = { none: 0, mild: 7, moderate: 10, strong: 13 };
 
-export function HeadacheStrip({ items, xDomain, ticks, formatTime }: {
+export function HeadacheStrip({ items, xDomain, ticks, formatTime, highlightSpans }: {
   items: { day: number; t: number; strength: Headache }[];
   xDomain: [number, number];
   ticks: DayTick[];
   formatTime: (t: number) => string;
+  highlightSpans?: [number, number][];
 }) {
   const { ref, width } = useWidth<HTMLDivElement>(640);
   const innerW = Math.max(10, width - MARGIN.left - MARGIN.right);
@@ -339,6 +365,9 @@ export function HeadacheStrip({ items, xDomain, ticks, formatTime }: {
           <text x={-10} y={mid} dy="0.32em" textAnchor="end" fill="var(--c-muted)" fontSize="11" fontFamily="var(--font-mono)">
             HEAD
           </text>
+          {highlightSpans?.map(([a, b]) => (
+            <rect key={a} className="chart__hl-fill" x={x(a)} y={0} width={Math.max(2, x(b) - x(a))} height={h} />
+          ))}
           <line x1={0} x2={innerW} y1={mid} y2={mid} stroke="var(--c-grid)" />
           {ticks.map((tk) => (
             <line key={tk.t} x1={x(tk.t)} x2={x(tk.t)} y1={mid - 3} y2={mid + 3} stroke="var(--c-line-strong)" />
