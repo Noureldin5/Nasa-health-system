@@ -1,13 +1,16 @@
+import { useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { MetricKey, RecordView } from "../api/types";
+import { AssistantNote, useAssist } from "../components/assistant";
 import { AlertCard, GroundFeed, ReadoutHero } from "../components/record";
 import { Icon } from "../components/icons";
-import { StatusIcon } from "../components/status";
+import { MarkIcon, StatusIcon } from "../components/status";
 import { ErrorNote, SourceTag } from "../components/ui";
 import { INDICATORS } from "../content/indicators";
 import { ME, useAction, useApp, useQuery } from "../lib/app";
 import { fmtNum, fmtPoint, fmtTime } from "../lib/format";
+import { buildReplay, MARK_WORD, type Mark } from "../lib/replay";
 
 /** Weekly slot: due when the last reading is this many days old. Demo parameter. */
 const WEEKLY_DUE_DAYS = 4;
@@ -26,41 +29,21 @@ export function Streak({ days, today }: { days: number[]; today: number }) {
     end -= 1;
   }
   const week = Array.from({ length: 7 }, (_, i) => today - 6 + i).filter((d) => d > 0);
-  const weekDone = week.filter((d) => done.has(d)).length;
   return (
-    <section className="card card--pad" aria-label="Check-in streak">
-      <div className="row row--between" style={{ flexWrap: "wrap", gap: 12 }}>
-        <div className="stack" style={{ ["--gap" as string]: "2px" }}>
-          <span className="micro">Mission quest · check-in streak</span>
-          <b style={{ fontSize: 22 }}>
-            {streak} {streak === 1 ? "day" : "days"} in a row
-          </b>
-          <span className="small text-2">
-            {weekDone} of the last {week.length} days checked in. Counts check-ins only, never your health values.
-          </span>
-        </div>
-        <ol className="row" style={{ gap: 6, listStyle: "none", padding: 0 }} aria-label="Last 7 days">
-          {week.map((d) => (
-            <li
-              key={d}
-              aria-label={`Day ${d}: ${done.has(d) ? "checked in" : d === today ? "not yet" : "no check-in"}`}
-              style={{
-                minWidth: 44,
-                minHeight: 44,
-                display: "grid",
-                placeItems: "center",
-                border: "1px solid var(--c-line-strong)",
-                borderRadius: 8,
-                fontFamily: "var(--font-mono)",
-                fontSize: 12,
-              }}
-            >
-              {done.has(d) ? "✓" : d === today ? "•" : "–"}
-              <span className="small muted">{d}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
+    <section className="card streak" aria-label="Check-in streak">
+      <span>
+        <b className="strong">
+          {streak} {streak === 1 ? "day" : "days"} in a row
+        </b>{" "}
+        · check-in streak. Counts check-ins only, never your health values.
+      </span>
+      <ol className="streak__days" aria-label="Last 7 days">
+        {week.map((d) => (
+          <li key={d} className={done.has(d) ? "is-done" : ""} aria-label={`Day ${d}: ${done.has(d) ? "checked in" : d === today ? "not yet" : "no check-in"}`}>
+            {done.has(d) ? "✓" : d}
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
@@ -71,7 +54,21 @@ export function Today() {
   const rec = useQuery(`astro-${ME}`, () => api.getAstronautView(ME));
   const cabin = useQuery(`cabin-${ME}-a`, () => api.getCabin(ME, "astronaut"));
   const { run, busy } = useAction();
+  const explain = useAssist();
+  const [question, setQuestion] = useState("");
   const r = rec.data;
+  // One mark per mission day for the replay entry: was anything outside the usual band that day?
+  const ribbon = useMemo(() => {
+    if (!r) return [];
+    const rp = buildReplay(r, cabin.data ?? null, []);
+    return Array.from({ length: rp.days }, (_, i) => {
+      const day = i + 1;
+      const h = rp.headache[i];
+      const marks = rp.series.map((x) => rp.markOf(x.key, day));
+      const mark: Mark = day <= rp.calibrationDays ? "learning" : marks.includes("out") || (h != null && h !== "none") ? "out" : "in";
+      return { day, mark };
+    });
+  }, [r, cabin.data]);
 
   if (!r || !mission) return <div className="loading" style={{ minHeight: 400 }} aria-busy="true" />;
 
@@ -84,6 +81,12 @@ export function Today() {
     return !l || Math.floor((Date.parse(r.mission.now) - Date.parse(l.t)) / 86_400_000) >= WEEKLY_DUE_DAYS;
   });
   const openAlert = r.alert && r.alert.state !== "closed" ? r.alert : null;
+
+  function ask(e: FormEvent) {
+    e.preventDefault();
+    if (question.trim()) nav(`/ask?q=${encodeURIComponent(question.trim())}`);
+  }
+  const suggestions = [openAlert ? "Why did this alert come up?" : "How has my sleep been this week?", "What did ground write about me?"];
 
   async function sameAsYesterday() {
     await run(() => api.postCheckIn(ME, { sameAsYesterday: true, rested: null, headache: null, mood: null, vision: null }), "Check-in saved: same as yesterday.");
@@ -104,6 +107,8 @@ export function Today() {
         </Link>
       </div>
 
+      <div className="today-top">
+        <div className="stack">
       {!r.readout.checkInDone ? (
         <section className="card" aria-labelledby="ci-title">
           <div className="card__body" style={{ display: "grid", gap: "var(--s-5)", gridTemplateColumns: "minmax(0,1fr)" }}>
@@ -151,6 +156,35 @@ export function Today() {
       )}
 
       <Streak days={r.checkIns.map((c) => c.day)} today={r.mission.day} />
+        </div>
+        <aside className="stack" aria-labelledby="glance-title">
+          <h2 id="glance-title" className="sr-only">
+            At a glance
+          </h2>
+          <div className="glance">
+            <Glance to="/health/sleep" label="Sleep last night" value={fmtPoint("sleep", sleep.latest)} unit="h" r={r} k="sleep" />
+            <Glance to="/health/hr" label="Resting heart rate" value={fmtPoint("hr", hr.latest)} unit="bpm" r={r} k="hr" />
+            <Link to="/cabin" className="stat">
+              <span className="micro">Cabin CO2 now · {r.mission.module}</span>
+              <span className="stat__value">
+                {co2 ? fmtNum(co2.v) : "–"}
+                <small>ppm</small>
+              </span>
+              <span className="stat__sub">
+                {cabin.data && co2 && co2.v > cabin.data.usual.high ? (
+                  <>
+                    <StatusIcon status="watch" /> Above the module's usual {fmtNum(cabin.data.usual.low)}–{fmtNum(cabin.data.usual.high)}
+                  </>
+                ) : (
+                  <>
+                    <StatusIcon status="ok" /> In the module's usual range
+                  </>
+                )}
+              </span>
+            </Link>
+          </div>
+        </aside>
+      </div>
 
       {openAlert && (
         <AlertCard
@@ -164,6 +198,9 @@ export function Today() {
               <Link to="/cabin" className="btn btn--secondary btn--lg">
                 <Icon name="cabin" size={18} /> See cabin CO2
               </Link>
+              <button type="button" className="btn btn--secondary btn--lg" onClick={() => explain.run("explain_alert", { rec: r, cabin: cabin.data ?? null })} disabled={explain.busy}>
+                <Icon name="ask" size={18} /> Why this alert?
+              </button>
               <button type="button" className="btn btn--ghost" onClick={() => run(() => api.closeAlert(openAlert.id), "Alert closed. Ground sees it at the next link.")}>
                 Close alert
               </button>
@@ -171,6 +208,50 @@ export function Today() {
           }
         />
       )}
+
+      {openAlert && <AssistantNote result={explain.result} busy={explain.busy} title="Why this alert" />}
+
+      <div className="tools">
+        <form className="tool" onSubmit={ask} role="search" aria-labelledby="ask-title">
+          <span className="micro">Ask my record</span>
+          <span id="ask-title" className="tool__title">
+            Ask about your own data, get days and values back
+          </span>
+          <div className="ask">
+            <Icon name="ask" size={20} />
+            <label className="sr-only" htmlFor="today-ask">
+              Your question
+            </label>
+            <input id="today-ask" className="ask__input" value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="How has my sleep been this week?" maxLength={400} autoComplete="off" />
+            <button type="submit" className="btn btn--primary" disabled={!question.trim()}>
+              Ask
+            </button>
+          </div>
+          <div className="row">
+            {suggestions.map((q) => (
+              <Link key={q} to={`/ask?q=${encodeURIComponent(q)}`} className="btn btn--secondary">
+                {q}
+              </Link>
+            ))}
+          </div>
+        </form>
+        <Link to="/replay?play=1" className="tool" aria-label="Mission replay: play the mission day by day">
+          <span className="micro">Mission replay</span>
+          <span className="tool__title">
+            <Icon name="play" size={16} style={{ verticalAlign: "-2px", marginRight: 6 }} />
+            Play the mission, day by day
+          </span>
+          <div className="ribbon" aria-hidden="true">
+            {ribbon.map((d) => (
+              <span key={d.day} className={`ribbon__day${d.mark === "out" ? " ribbon__day--out" : ""}`} title={`Day ${d.day}: ${MARK_WORD[d.mark].toLowerCase()}`}>
+                <MarkIcon mark={d.mark} size={10} />
+                {d.day}
+              </span>
+            ))}
+          </div>
+          <span className="small text-2">Body map, cabin CO2, headaches, sleep and heart rate under one playhead.</span>
+        </Link>
+      </div>
 
       {weeklyDue.length > 0 && (
         <section className="card" aria-labelledby="weekly-title">
@@ -205,30 +286,11 @@ export function Today() {
           <GroundFeed rec={r} mission={r.mission} perspective="astronaut" limit={3} onAck={(rep, ack) => (ack === "follow-up" ? nav(`/consult/new?followup=${rep.briefId}`) : run(() => api.ackReply(rep.id, ack), "Marked done."))} />
         </section>
 
-        <aside className="section" aria-labelledby="glance-title">
-          <h2 id="glance-title">At a glance</h2>
-          <div className="stat-strip" style={{ gridTemplateColumns: "minmax(0,1fr)" }}>
-            <Glance to="/health/sleep" label="Sleep last night" value={fmtPoint("sleep", sleep.latest)} unit="h" r={r} k="sleep" />
-            <Glance to="/health/hr" label="Resting heart rate" value={fmtPoint("hr", hr.latest)} unit="bpm" r={r} k="hr" />
-            <Link to="/cabin" className="stat">
-              <span className="micro">Cabin CO2 now · {r.mission.module}</span>
-              <span className="stat__value">
-                {co2 ? fmtNum(co2.v) : "–"}
-                <small>ppm</small>
-              </span>
-              <span className="stat__sub">
-                {cabin.data && co2 && co2.v > cabin.data.usual.high ? (
-                  <>
-                    <StatusIcon status="watch" /> Above the module's usual {fmtNum(cabin.data.usual.low)}–{fmtNum(cabin.data.usual.high)}
-                  </>
-                ) : (
-                  <>
-                    <StatusIcon status="ok" /> In the module's usual range
-                  </>
-                )}
-              </span>
-            </Link>
+        <aside className="section" aria-labelledby="worth-title" style={{ marginTop: 0 }}>
+          <div className="section__head">
+            <h2 id="worth-title">Worth checking</h2>
           </div>
+          {r.worthChecking.length === 0 && <div className="empty">Nothing else is outside your usual range.</div>}
           {r.worthChecking.length > 0 && (
             <div className="kv-list" style={{ background: "var(--c-surface)" }}>
               {r.worthChecking.map((w) => (
